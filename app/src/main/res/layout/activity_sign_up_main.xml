@@ -102,4 +102,13 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.411" />
+
+    <Button
+        android:id="@+id/backButton"
+        android:layout_width="87dp"
+        android:layout_height="40dp"
+        android:text="Back"
+        tools:layout_editor_absoluteX="9dp"
+        tools:layout_editor_absoluteY="6dp" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>
