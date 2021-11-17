@@ -23,7 +23,6 @@ public class SignUpMainActivity extends AppCompatActivity {
     Button mRegisterButton;
     FirebaseAuth fAuth;
     FirebaseFirestore fStore;
-    String userID;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,13 +39,13 @@ public class SignUpMainActivity extends AppCompatActivity {
 
         fAuth = FirebaseAuth.getInstance();
         fStore = FirebaseFirestore.getInstance();
+
         /*
         if (fAuth.getCurrentUser() != null){
             startActivity(new Intent(getApplicationContext(), LoginActivity.class));
             finish();
         }
         */
-
 
         mRegisterButton.setOnClickListener(new View.OnClickListener(){
             @Override
@@ -67,8 +66,8 @@ public class SignUpMainActivity extends AppCompatActivity {
                 }
 
 
-                if (password.length() < 6) {
-                    mPassword.setError("Password must be >= 6 characters");
+                if (password.length() < 8) {
+                    mPassword.setError("Password must be >= 8 characters");
                     return;
                 }
 
@@ -88,7 +87,8 @@ public class SignUpMainActivity extends AppCompatActivity {
 */
 
                             startActivity(new Intent(getApplicationContext(), LoginActivity.class));
-                        } else {
+                        }
+                        else {
                             Toast.makeText(SignUpMainActivity.this, "Error " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
                         }
                     }
