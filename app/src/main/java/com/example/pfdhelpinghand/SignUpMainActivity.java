@@ -13,7 +13,11 @@ import android.widget.Toast;
 import java.util.HashMap;
 
 public class SignUpMainActivity extends AppCompatActivity {
-    EditText mFullName, mEmail, mPassword, mPassword2, mPhone;
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_sign_up_main);
 
 
+    }
 }
