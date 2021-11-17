@@ -24,6 +24,7 @@ public class SignUpMainActivity extends AppCompatActivity {
     FirebaseAuth fAuth;
     FirebaseFirestore fStore;
     String userID;
+    
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
