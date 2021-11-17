@@ -33,7 +33,7 @@ public class LoginActivity extends AppCompatActivity {
         });
 
 
-        Button navToCaregiverButton = findViewById(R.id.CaregiverPageButton);
+        Button navToCaregiverButton = findViewById(R.id.caregiverMainPage);
         navToCaregiverButton.setOnClickListener(new View.OnClickListener(){
             public void onClick(View v)
             {
