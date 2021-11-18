@@ -11,11 +11,13 @@ public class Elderly extends User{
     protected List<Medication> medList;
     protected List<Appointment> apptList;
     protected List<Caretaker> caretakerList;
+
     private List<EmergencyPerson> emergencyPersonList;
 
 
 
-    public Elderly(String name, String email, String phoneNum, String pw, String address, List<EmergencyPerson> eList){
+    public Elderly(String id, String name, String email, String phoneNum, String pw, String address, List<EmergencyPerson> eList){
+        this.ID = id;
         this.fullName = name;
         this.email = email;
         this.phoneNumber = phoneNum;

@@ -155,7 +155,7 @@ public class SignUpElderlyActivity extends AppCompatActivity {
                             user.updateProfile(profileUpdates);
 
                             eList.add(new EmergencyPerson(contactName, contactPhone));
-                            elderly = new Elderly(userFullName, email, phone, password, address, eList);
+                            elderly = new Elderly(userID, userFullName, email, phone, password, address, eList);
 
 
                             fStore.collection("Elderly").document(userID)
