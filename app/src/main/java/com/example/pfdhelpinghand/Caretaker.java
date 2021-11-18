@@ -1,6 +1,7 @@
 package com.example.pfdhelpinghand;
 
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Caretaker extends User{
@@ -14,5 +15,13 @@ public class Caretaker extends User{
     public void assignElderly(Elderly e){
         this.caringFor.add(e);
         e.caretakerList.add(this);
+    }
+
+    public Caretaker(String name, String email, String phoneNum, String pw){
+        this.fullName = name;
+        this.email = email;
+        this.phoneNumber = phoneNum;
+        this.password = pw;
+        this.caringFor = new ArrayList<Elderly>();
     }
 }

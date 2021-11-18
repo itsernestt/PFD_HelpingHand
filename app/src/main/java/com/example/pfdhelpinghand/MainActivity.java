@@ -31,6 +31,14 @@ public class MainActivity extends AppCompatActivity {
         String json = gson.toJson(elderly);
         prefEditor.putString("elderlyObj",json);
 
+        Button settingsButton = findViewById(R.id.settingsBtn);
+        settingsButton.setOnClickListener(new View.OnClickListener(){
+            public void onClick(View v){
+                Intent navigateToSettings = new Intent(MainActivity.this, ElderlySettingsActivity.class);
+                startActivity(navigateToSettings);
+            }
+        });
+
         Button lostButton = findViewById(R.id.lostButton);
         lostButton.setOnClickListener(new View.OnClickListener(){
             public void onClick(View v){
