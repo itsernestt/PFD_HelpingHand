@@ -23,7 +23,9 @@ import com.google.firebase.auth.UserProfileChangeRequest;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 
@@ -33,11 +35,15 @@ public class SignUpElderlyActivity extends AppCompatActivity {
     FirebaseAuth fAuth;
     FirebaseFirestore fStore;
     String userID;
+    List<EmergencyPerson> eList;
+    Elderly elderly;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_up_elderly);
+
+        eList = new ArrayList<EmergencyPerson>();
 
         eFullName = findViewById(R.id.elderlyName);
         eEmail = findViewById(R.id.elderlyEmail);
@@ -148,19 +154,12 @@ public class SignUpElderlyActivity extends AppCompatActivity {
                             UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder().setDisplayName(userFullName + "-elderly").build();
                             user.updateProfile(profileUpdates);
 
+                            eList.add(new EmergencyPerson(contactName, contactPhone));
+                            elderly = new Elderly(userFullName, email, phone, password, address, eList);
 
-                            Map<String, Object> userData = new HashMap<>();
-
-                            userData.put("FullName", userFullName);
-                            userData.put("Email", email);
-                            userData.put("Password", password);
-                            userData.put("Phone", phone);
-                            userData.put("ContactPersonName0",contactName);
-                            userData.put("ContactPersonPhone0", contactPhone);
-                            userData.put("Address", address);
 
                             fStore.collection("Elderly").document(userID)
-                                    .set(userData)
+                                    .set(elderly)
                                     .addOnSuccessListener(new OnSuccessListener<Void>() {
                                         @Override
                                         public void onSuccess(Void aVoid) {
@@ -172,7 +171,6 @@ public class SignUpElderlyActivity extends AppCompatActivity {
                                     Log.e("TAG", "onFailure: " + e.toString());
                                 }
                             });
-
                             startActivity(new Intent(getApplicationContext(), MainActivity.class));
                         }
                     }

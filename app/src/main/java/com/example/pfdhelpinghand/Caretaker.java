@@ -8,13 +8,8 @@ public class Caretaker extends User{
     // Elderly being taken care of by this caretaker
     protected List<Elderly> caringFor;
 
-    public List<Elderly> returnElderly(){
-        return caringFor;
-    }
+    public Caretaker(){
 
-    public void assignElderly(Elderly e){
-        this.caringFor.add(e);
-        e.caretakerList.add(this);
     }
 
     public Caretaker(String name, String email, String phoneNum, String pw){
@@ -24,4 +19,15 @@ public class Caretaker extends User{
         this.password = pw;
         this.caringFor = new ArrayList<Elderly>();
     }
+
+    public List<Elderly> returnElderly(){
+        return caringFor;
+    }
+
+    public void assignElderly(Elderly e){
+        this.caringFor.add(e);
+        e.caretakerList.add(this);
+    }
+
+
 }
