@@ -23,8 +23,6 @@ public class SignUpMainActivity extends AppCompatActivity {
     Button mRegisterButton;
     FirebaseAuth fAuth;
     FirebaseFirestore fStore;
-    String userID;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -77,7 +75,7 @@ public class SignUpMainActivity extends AppCompatActivity {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
-                            Toast.makeText(SignUpMainActivity.this, "User Created", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(SignUpMainActivity.this, "Caregiver user Created", Toast.LENGTH_SHORT).show();
 /*
                             userID = fAuth.getCurrentUser().getUid();
                             DocumentReference documentReference = fStore.collection("Caregivers").document(userID);
@@ -87,7 +85,7 @@ public class SignUpMainActivity extends AppCompatActivity {
                             user.put("phone", phone);
 */
 
-                            startActivity(new Intent(getApplicationContext(), LoginActivity.class));
+                            startActivity(new Intent(getApplicationContext(), CaregiverMainActivity.class));
                         } else {
                             Toast.makeText(SignUpMainActivity.this, "Error " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
                         }
