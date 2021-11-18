@@ -16,20 +16,17 @@
         <entry key="..\:/Users/ernes/AndroidStudioProjects/PFDHelpingHand/app/src/main/res/layout/activity_sign_up_elderly.xml" value="0.1" />
         <entry key="..\:/Users/ernes/AndroidStudioProjects/PFDHelpingHand/app/src/main/res/layout/activity_sign_up_main.xml" value="0.1" />
         <entry key="..\:/Users/ernes/AndroidStudioProjects/PFDHelpingHand/app/src/main/res/layout/activity_weekly_medication.xml" value="0.1" />
-        <entry key="..\:/Users/ernes/AndroidStudioProjects/PFD_HelpingHand/app/src/main/res/drawable/ic_launcher_background.xml" value="0.15989583333333332" />
-        <entry key="..\:/Users/ernes/AndroidStudioProjects/PFD_HelpingHand/app/src/main/res/drawable/roundedrectangle.xml" value="0.20833333333333334" />
-        <entry key="..\:/Users/ernes/AndroidStudioProjects/PFD_HelpingHand/app/src/main/res/drawable/sosbutton.xml" value="0.15989583333333332" />
-        <entry key="..\:/Users/ernes/AndroidStudioProjects/PFD_HelpingHand/app/src/main/res/drawable/soscorrectbutton.xml" value="0.15989583333333332" />
-        <entry key="..\:/Users/ernes/AndroidStudioProjects/PFD_HelpingHand/app/src/main/res/layout/activity_main.xml" value="0.4" />
         <entry key="..\:/Users/ernes/StudioProjects/PFD_HelpingHand/app/src/main/res/layout/activity_main.xml" value="0.27355072463768115" />
-        <entry key="..\:/Users/nhaak/AndroidStudioProjects/PFD_HelpingHand/app/src/main/res/layout/activity_elderly_settings.xml" value="0.536" />
-        <entry key="..\:/Users/nhaak/AndroidStudioProjects/PFD_HelpingHand/app/src/main/res/layout/activity_main.xml" value="0.4" />
         <entry key="..\:/Users/nhaak/AndroidStudioProjects/PFD_HelpingHand/app/src/main/res/layout/activity_medication_alarm.xml" value="0.14375" />
-        <entry key="..\:/Users/nhaak/AndroidStudioProjects/PFD_HelpingHand/app/src/main/res/layout/activity_view_caregivers.xml" value="0.2" />
         <entry key="app/src/main/res/layout/activity_caregiver_main.xml" value="0.22987908705997454" />
+        <entry key="app/src/main/res/layout/activity_elderly_settings.xml" value="0.13340691596871088" />
         <entry key="app/src/main/res/layout/activity_help_lost.xml" value="0.1" />
         <entry key="app/src/main/res/layout/activity_login.xml" value="0.2365369678962225" />
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.2290555488411043" />
+        <entry key="app/src/main/res/layout/activity_medication_alarm.xml" value="0.12537993920972645" />
+        <entry key="app/src/main/res/layout/activity_sign_up_elderly.xml" value="0.23393115631176886" />
+        <entry key="app/src/main/res/layout/activity_sign_up_main.xml" value="0.18614130434782608" />
+        <entry key="app/src/main/res/layout/activity_view_caregivers.xml" value="0.12454710144927536" />
         <entry key="app/src/main/res/layout/activity_weekly_medication.xml" value="0.1" />
       </map>
     </option>

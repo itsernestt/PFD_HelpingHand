@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -33,6 +34,30 @@ public class LoginActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        if (user != null) {
+            if (user != null)
+            {
+                String username = user.getDisplayName();
+
+                String[] separated = username.split("-");
+                String user_type = separated[1];
+                Toast.makeText(LoginActivity.this, "Log in successfully " + user_type, Toast.LENGTH_SHORT).show();
+
+                if (user_type.equals("caregiver"))
+                {
+                    startActivity(new Intent(getApplicationContext(), CaregiverMainActivity.class));
+                }
+                else if (user_type.equals("elderly"))
+                {
+                    startActivity(new Intent(getApplicationContext(), MainActivity.class));
+                }
+            }
+        } else {
+            // User is signed out
+            Log.d("TAG", "onAuthStateChanged:signed_out");
+        }
 
         mEmail = findViewById(R.id.loginEmail);
         mPassword = findViewById(R.id.loginPassword);
@@ -133,7 +158,7 @@ public class LoginActivity extends AppCompatActivity {
         navToCaregiverButton.setOnClickListener(new View.OnClickListener(){
             public void onClick(View v)
             {
-                Intent navigateToCaregiverPage = new Intent(LoginActivity.this, com.example.pfdhelpinghand.CaregiverMainActivity.class);
+                Intent navigateToCaregiverPage = new Intent(LoginActivity.this, CaregiverMainActivity.class);
                 startActivity(navigateToCaregiverPage);
             }
         });
@@ -142,7 +167,7 @@ public class LoginActivity extends AppCompatActivity {
         navToElderlyButton.setOnClickListener(new View.OnClickListener(){
             public void onClick(View v)
             {
-                Intent navigateToElderlyPage = new Intent(LoginActivity.this, com.example.pfdhelpinghand.MainActivity.class);
+                Intent navigateToElderlyPage = new Intent(LoginActivity.this, MainActivity.class);
                 startActivity(navigateToElderlyPage);
             }
         });
