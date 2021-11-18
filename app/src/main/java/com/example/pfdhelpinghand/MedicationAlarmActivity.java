@@ -33,7 +33,7 @@ public class MedicationAlarmActivity extends AppCompatActivity {
 
         weeklyMedButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                Intent navigateTo = new Intent(MedicationAlarmActivity.this, WeeklyMedicationActivity.class);
+                Intent navigateTo = new Intent(MedicationAlarmActivity.this, com.example.pfdhelpinghand.WeeklyMedicationActivity.class);
                 startActivity(navigateTo);
             }
         });
