@@ -21,8 +21,10 @@ import com.google.firebase.firestore.FirebaseFirestore;
 public class LoginActivity extends AppCompatActivity {
     EditText mEmail, mPassword;
     Button mLoginButton;
-    ProgressBar mProgressBar;
+
     FirebaseAuth fAuth;
+    FirebaseFirestore fStore;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,6 +34,7 @@ public class LoginActivity extends AppCompatActivity {
         mEmail = findViewById(R.id.loginEmail);
         mPassword = findViewById(R.id.loginPassword);
         mLoginButton = findViewById(R.id.loginButton);
+
         mProgressBar = findViewById(R.id.progressBar);
         fAuth = FirebaseAuth.getInstance();
 
@@ -39,6 +42,7 @@ public class LoginActivity extends AppCompatActivity {
         mLoginButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
                 String email = mEmail.getText().toString().trim();
                 String password = mPassword.getText().toString().trim();
 
@@ -59,20 +63,19 @@ public class LoginActivity extends AppCompatActivity {
                     return;
                 }
 
-                mProgressBar.setVisibility(View.VISIBLE);
-                mLoginButton.setVisibility(View.INVISIBLE);
-                //Authenticate the user
 
                 fAuth.signInWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
-                            Toast.makeText(LoginActivity.this, "Login successfully", Toast.LENGTH_SHORT).show();
+
+                            Toast.makeText(LoginActivity.this, "Log in successfully", Toast.LENGTH_SHORT).show();
                             startActivity(new Intent(getApplicationContext(), CaregiverMainActivity.class));
                         } else {
                             Toast.makeText(LoginActivity.this, "Error " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
                         }
                     }
+
                     });
                }
             });
