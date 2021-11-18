@@ -21,7 +21,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 public class LoginActivity extends AppCompatActivity {
     EditText mEmail, mPassword;
     Button mLoginButton;
-
+    ProgressBar mProgressBar;
     FirebaseAuth fAuth;
     FirebaseFirestore fStore;
 
@@ -34,8 +34,8 @@ public class LoginActivity extends AppCompatActivity {
         mEmail = findViewById(R.id.loginEmail);
         mPassword = findViewById(R.id.loginPassword);
         mLoginButton = findViewById(R.id.loginButton);
-
         mProgressBar = findViewById(R.id.progressBar);
+
         fAuth = FirebaseAuth.getInstance();
 
 
@@ -67,6 +67,9 @@ public class LoginActivity extends AppCompatActivity {
                 fAuth.signInWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
+                        mProgressBar.setVisibility(View.VISIBLE);
+                        mLoginButton.setVisibility(View.INVISIBLE);
+                        
                         if (task.isSuccessful()) {
 
                             Toast.makeText(LoginActivity.this, "Log in successfully", Toast.LENGTH_SHORT).show();
