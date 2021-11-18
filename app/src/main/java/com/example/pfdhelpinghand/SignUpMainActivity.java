@@ -129,6 +129,7 @@ public class SignUpMainActivity extends AppCompatActivity {
                             userData.put("Email", email);
                             userData.put("Password", password);
                             userData.put("Phone", phone);
+
                             fStore.collection("Caregiver").document(userID)
                                     .set(userData)
                                     .addOnSuccessListener(new OnSuccessListener<Void>() {
@@ -142,9 +143,6 @@ public class SignUpMainActivity extends AppCompatActivity {
                                     Log.e("TAG", "onFailure: " + e.toString());
                                 }
                             });
-
-
-
                             startActivity(new Intent(getApplicationContext(), CaregiverMainActivity.class));
                         }
 

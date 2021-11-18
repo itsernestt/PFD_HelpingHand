@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
     android:layout_width="350dp"
     android:layout_height="475dp"
@@ -47,17 +48,24 @@
             android:gravity="center" >
 
             <EditText
-                android:id="@+id/pairingId"
+                android:id="@+id/pairupId"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="43dp"
                 android:layout_weight="1"
                 android:background="@color/white"
                 android:ems="10"
                 android:hint="Enter account ID"
                 android:inputType="textPersonName"
-                android:textColor="@color/white" />
+                android:textColor="@color/black" />
         </LinearLayout>
     </LinearLayout>
+
+    <TextView
+        android:id="@+id/popupMessage"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="@color/white" />
+
 
     <Button
         android:id="@+id/pairupButton"
@@ -66,6 +74,15 @@
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="25dp"
         android:text="Pair Up Now"
+        android:textColor="@color/white" />
+
+    <EditText
+        android:id="@+id/editTextTextPersonName3"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:inputType="textPersonName"
+        android:text="QetuoXwn5YhTn41ZWRVnq1wvDXD2"
         android:textColor="@color/white" />
 
 </LinearLayout>

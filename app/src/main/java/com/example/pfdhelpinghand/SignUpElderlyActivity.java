@@ -32,6 +32,7 @@ public class SignUpElderlyActivity extends AppCompatActivity {
     Button eRegisterButton;
     FirebaseAuth fAuth;
     FirebaseFirestore fStore;
+    String userID;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -140,11 +141,10 @@ public class SignUpElderlyActivity extends AppCompatActivity {
                         if (task.isSuccessful()) {
 
                             Toast.makeText(SignUpElderlyActivity.this, "Elderly User Created", Toast.LENGTH_SHORT).show();
-
-                            FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-                            String userID = user.getUid();
+                            userID = fAuth.getCurrentUser().getUid();
 
                             // set the user display name
+                            FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
                             UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder().setDisplayName(userFullName + "-elderly").build();
                             user.updateProfile(profileUpdates);
 
@@ -159,12 +159,11 @@ public class SignUpElderlyActivity extends AppCompatActivity {
                             userData.put("ContactPersonPhone0", contactPhone);
                             userData.put("Address", address);
 
-                            fStore.collection("Elderly")
-                                    .add(userData)
-                                    .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+                            fStore.collection("Elderly").document(userID)
+                                    .set(userData)
+                                    .addOnSuccessListener(new OnSuccessListener<Void>() {
                                         @Override
-                                        public void onSuccess(DocumentReference documentReference) {
-
+                                        public void onSuccess(Void aVoid) {
                                             Log.d("TAG","onSuccess: Elderly user profile created for " + userID);
                                         }
                                     }).addOnFailureListener(new OnFailureListener() {
@@ -175,9 +174,6 @@ public class SignUpElderlyActivity extends AppCompatActivity {
                             });
 
                             startActivity(new Intent(getApplicationContext(), MainActivity.class));
-                        }
-                        else {
-                            Toast.makeText(SignUpElderlyActivity.this, "Error " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
                         }
                     }
                 });
