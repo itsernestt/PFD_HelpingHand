@@ -34,11 +34,12 @@ public class MedicationAlarmActivity extends AppCompatActivity {
         SharedPreferences mPrefs = getSharedPreferences("details", MODE_PRIVATE);
         String json = mPrefs.getString("elderlyObj", "");
         Elderly elderly = gson.fromJson(json, Elderly.class);
+        /*
         for (Medication m: elderly.medList) {
             medicationList.add(m);
         }
 
-
+        */
         setCurrentDay(currentDate);
 
         medicationBackButton.setOnClickListener(new View.OnClickListener() {

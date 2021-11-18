@@ -24,6 +24,8 @@ public class MainActivity extends AppCompatActivity {
         SharedPreferences mPrefs = getSharedPreferences("details",MODE_PRIVATE);
 
         Elderly elderly = new Elderly();
+        // TODO: set values
+
         SharedPreferences.Editor prefEditor = mPrefs.edit();
         Gson gson = new Gson();
         String json = gson.toJson(elderly);
