@@ -69,13 +69,17 @@ public class LoginActivity extends AppCompatActivity {
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         mProgressBar.setVisibility(View.VISIBLE);
                         mLoginButton.setVisibility(View.INVISIBLE);
-                        
+
                         if (task.isSuccessful()) {
 
                             Toast.makeText(LoginActivity.this, "Log in successfully", Toast.LENGTH_SHORT).show();
                             startActivity(new Intent(getApplicationContext(), CaregiverMainActivity.class));
+                            mLoginButton.setVisibility(View.VISIBLE);
+                            mProgressBar.setVisibility(View.INVISIBLE);
                         } else {
                             Toast.makeText(LoginActivity.this, "Error " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+                            mLoginButton.setVisibility(View.VISIBLE);
+                            mProgressBar.setVisibility(View.INVISIBLE);
                         }
                     }
 
