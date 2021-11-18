@@ -19,6 +19,7 @@ public class MedicationAlarmActivity extends AppCompatActivity {
 
         TextView currentDate = findViewById(R.id.medicationCurrentDate);
         TextView medicationList = findViewById(R.id.medicationList);
+        TextView appointmentList = findViewById(R.id.appointmentList);
         Button medicationBackButton = findViewById(R.id.medicationBackButton);
         Button weeklyMedButton = findViewById(R.id.weeklyMedicationButton);
 
