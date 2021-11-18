@@ -7,6 +7,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.nfc.Tag;
 import android.os.Bundle;
+import android.provider.ContactsContract;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
@@ -117,10 +118,9 @@ public class SignUpMainActivity extends AppCompatActivity {
                             Toast.makeText(SignUpMainActivity.this, "Caregiver User Created", Toast.LENGTH_SHORT).show();
                             userID = fAuth.getCurrentUser().getUid();
 
+                            //Set the user displayname
                             FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-
                             UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder().setDisplayName(userFullName + "-caregiver").build();
-
                             user.updateProfile(profileUpdates);
 
                             Map<String, Object> userData = new HashMap<>();
@@ -129,24 +129,29 @@ public class SignUpMainActivity extends AppCompatActivity {
                             userData.put("Email", email);
                             userData.put("Password", password);
                             userData.put("Phone", phone);
-
-                            fStore.collection("Caregiver")
-                                    .add(userData)
-                                    .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
-                                    @Override
-                                    public void onSuccess(DocumentReference documentReference) {
-                                        userID = documentReference.getId();
-                                        Log.d("TAG","onSuccess: Caregiver user profile created for " + userID);
-                                    }
-                            }).addOnFailureListener(new OnFailureListener() {
+                            fStore.collection("Caregiver").document(userID)
+                                    .set(userData)
+                                    .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                        @Override
+                                        public void onSuccess(Void aVoid) {
+                                            Log.d("TAG","onSuccess: Caregiver user profile created for " + userID);
+                                        }
+                                    }).addOnFailureListener(new OnFailureListener() {
                                 @Override
                                 public void onFailure(@NonNull Exception e) {
                                     Log.e("TAG", "onFailure: " + e.toString());
                                 }
                             });
 
+
+
                             startActivity(new Intent(getApplicationContext(), CaregiverMainActivity.class));
-                        } else {
+                        }
+
+
+
+
+                        else {
                             Toast.makeText(SignUpMainActivity.this, "Error " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
                         }
                     }

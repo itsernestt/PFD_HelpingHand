@@ -18,4 +18,13 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.96"
         android:onClick="logout"/>
+
+    <TextView
+        android:id="@+id/welcomeBanner"
+        android:layout_width="212dp"
+        android:layout_height="30dp"
+        android:text="Welcome, "
+        android:textStyle="bold"
+        tools:layout_editor_absoluteX="31dp"
+        tools:layout_editor_absoluteY="30dp" />
 </androidx.constraintlayout.widget.ConstraintLayout>
