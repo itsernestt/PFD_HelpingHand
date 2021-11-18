@@ -16,6 +16,9 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.UserInfo;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 public class LoginActivity extends AppCompatActivity {
@@ -24,7 +27,7 @@ public class LoginActivity extends AppCompatActivity {
     ProgressBar mProgressBar;
     FirebaseAuth fAuth;
     FirebaseFirestore fStore;
-
+    String userID;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,21 +75,38 @@ public class LoginActivity extends AppCompatActivity {
 
                         if (task.isSuccessful()) {
 
-                            Toast.makeText(LoginActivity.this, "Log in successfully", Toast.LENGTH_SHORT).show();
-                            startActivity(new Intent(getApplicationContext(), CaregiverMainActivity.class));
-                            mLoginButton.setVisibility(View.VISIBLE);
-                            mProgressBar.setVisibility(View.INVISIBLE);
+                            FirebaseUser user = fAuth.getCurrentUser();
+                            if (user != null)
+                            {
+                                String username = user.getDisplayName();
+
+                                String[] separated = username.split("-");
+                                String user_type = separated[1];
+                                Toast.makeText(LoginActivity.this, "Log in successfully " + user_type, Toast.LENGTH_SHORT).show();
+
+                                if (user_type.equals("caregiver"))
+                                {
+                                    startActivity(new Intent(getApplicationContext(), CaregiverMainActivity.class));
+                                }
+                                else if (user_type.equals("elderly"))
+                                {
+                                    startActivity(new Intent(getApplicationContext(), MainActivity.class));
+                                }
+
+                            }
+
+
+
                         } else {
                             Toast.makeText(LoginActivity.this, "Error " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
-                            mLoginButton.setVisibility(View.VISIBLE);
-                            mProgressBar.setVisibility(View.INVISIBLE);
                         }
+                        mLoginButton.setVisibility(View.VISIBLE);
+                        mProgressBar.setVisibility(View.INVISIBLE);
                     }
 
                     });
                }
             });
-
 
 
         Button caregiverSignUpPage = findViewById(R.id.signUpCaregiverButton);

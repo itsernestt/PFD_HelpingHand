@@ -20,6 +20,8 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.UserProfileChangeRequest;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 
@@ -60,7 +62,7 @@ public class SignUpMainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                String userFullName = mFullName.getText().toString().trim();
+                String userFullName = mFullName.getText().toString();
                 String email = mEmail.getText().toString().trim();
                 String phone = mPhone.getText().toString().trim();
                 String password = mPassword.getText().toString().trim();
@@ -115,15 +117,21 @@ public class SignUpMainActivity extends AppCompatActivity {
                             Toast.makeText(SignUpMainActivity.this, "Caregiver User Created", Toast.LENGTH_SHORT).show();
                             userID = fAuth.getCurrentUser().getUid();
 
+                            FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
 
-                            Map<String, Object> user = new HashMap<>();
-                            user.put("FullName", userFullName);
-                            user.put("Email", email);
-                            user.put("Password", password);
-                            user.put("Phone", phone);
+                            UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder().setDisplayName(userFullName + "-caregiver").build();
+
+                            user.updateProfile(profileUpdates);
+
+                            Map<String, Object> userData = new HashMap<>();
+
+                            userData.put("FullName", userFullName);
+                            userData.put("Email", email);
+                            userData.put("Password", password);
+                            userData.put("Phone", phone);
 
                             fStore.collection("Caregiver")
-                                    .add(user)
+                                    .add(userData)
                                     .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
                                     @Override
                                     public void onSuccess(DocumentReference documentReference) {
