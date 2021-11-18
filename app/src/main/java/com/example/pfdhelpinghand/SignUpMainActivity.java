@@ -123,15 +123,10 @@ public class SignUpMainActivity extends AppCompatActivity {
                             UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder().setDisplayName(userFullName + "-caregiver").build();
                             user.updateProfile(profileUpdates);
 
-                            Map<String, Object> userData = new HashMap<>();
-
-                            userData.put("FullName", userFullName);
-                            userData.put("Email", email);
-                            userData.put("Password", password);
-                            userData.put("Phone", phone);
+                            Caretaker caretaker = new Caretaker(userFullName, email, phone, password);
 
                             fStore.collection("Caregiver").document(userID)
-                                    .set(userData)
+                                    .set(caretaker)
                                     .addOnSuccessListener(new OnSuccessListener<Void>() {
                                         @Override
                                         public void onSuccess(Void aVoid) {
@@ -145,8 +140,6 @@ public class SignUpMainActivity extends AppCompatActivity {
                             });
                             startActivity(new Intent(getApplicationContext(), CaregiverMainActivity.class));
                         }
-
-
 
 
                         else {

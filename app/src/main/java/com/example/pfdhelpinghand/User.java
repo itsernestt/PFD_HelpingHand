@@ -6,7 +6,7 @@ import java.io.Serializable;
 
 public class User implements Serializable {
 
-    private int ID;
+    protected String ID;
     protected String fullName;
     protected String phoneNumber;
     protected String email;
@@ -20,11 +20,11 @@ public class User implements Serializable {
         this.password = password;
     }
 
-    public int getID() {
+    public String getID() {
         return ID;
     }
 
-    public void setID(int ID) {
+    public void setID(String ID) {
         this.ID = ID;
     }
 

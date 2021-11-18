@@ -19,6 +19,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -32,7 +33,7 @@ public class CaregiverMainActivity extends AppCompatActivity {
     TextView welcomeBanner;
     FirebaseUser user;
     FirebaseFirestore fStore;
-
+    Caretaker caretaker;
     Dialog myDialog;
 
     @Override
@@ -47,20 +48,12 @@ public class CaregiverMainActivity extends AppCompatActivity {
 
         String userID = user.getUid();
         DocumentReference docRef = fStore.collection("Caregiver").document(userID);
-        docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+        docRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
             @Override
-            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                if (task.isSuccessful()) {
-                    DocumentSnapshot document = task.getResult();
-                    if (document.exists()) {
-                        String userName = document.getString("FullName");
-                        welcomeBanner.setText("Welcome! " + userName);
-                    } else {
-                        Log.d("TAG", "No such document");
-                    }
-                } else {
-                    Log.d("TAG", "get failed with ", task.getException());
-                }
+            public void onSuccess(DocumentSnapshot documentSnapshot)
+            {
+                caretaker = documentSnapshot.toObject(Caretaker.class);
+                welcomeBanner.setText(caretaker.fullName);
             }
         });
 
@@ -107,6 +100,7 @@ public class CaregiverMainActivity extends AppCompatActivity {
                             if (document.exists()) {
                                 pairUpId.setText("");
                                 pairupMessage.setText("Pair up successfully! ");
+
 
                             } else {
                                 Log.d("TAG", "No such document");
