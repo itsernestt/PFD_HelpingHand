@@ -45,15 +45,7 @@ public class MainActivity extends AppCompatActivity {
                 }
             }});
 
-        Button cancelButton = findViewById(R.id.cancelButton);
-        cancelButton.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                switch (v.getId()){
-                    case R.id.cancelButton:
-                        Toast.makeText(getApplicationContext(), "Restarting to cancel SOS functions", Toast.LENGTH_SHORT).show();
-                System.exit(0);
-            }
-        }});
+
 
         Button sosButton = findViewById(R.id.sosButton);
         TextView sosText = findViewById(R.id.sosText);

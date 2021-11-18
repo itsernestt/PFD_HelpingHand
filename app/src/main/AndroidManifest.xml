@@ -24,6 +24,8 @@
         <activity
             android:name=".CaregiverMainActivity"
             android:exported="false" />
+        <activity android:name=".WeeklyMedicationActivity"
+            android:exported="false" />
         <activity
             android:name=".HelpLostActivity"
             android:exported="false" />
