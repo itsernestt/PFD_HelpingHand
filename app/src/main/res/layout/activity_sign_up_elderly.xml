@@ -23,18 +23,6 @@
         app:layout_constraintVertical_bias="0.041" />
 
 
-    <Button
-        android:id="@+id/elderlyRegisterButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Register"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.923" />
-
     <EditText
         android:id="@+id/elderlyName"
         android:layout_width="322dp"
@@ -134,20 +122,31 @@
         app:layout_constraintVertical_bias="0.675"
         tools:ignore="TouchTargetSizeCheck" />
 
-    <EditText
-        android:id="@+id/elderlyAddress"
-        android:layout_width="312dp"
-        android:layout_height="87dp"
-        android:ems="10"
-        android:gravity="start|top"
-        android:hint="Your address"
-        android:inputType="textMultiLine"
+    <Button
+        android:id="@+id/elderlyRegisterButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Register"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.393"
+        app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.802" />
+        app:layout_constraintVertical_bias="0.932" />
+
+    <EditText
+        android:id="@+id/elderlyAddress"
+        android:layout_width="322dp"
+        android:layout_height="45dp"
+        android:ems="10"
+        android:hint="Address"
+        android:inputType="textPersonName"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.494"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.782" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
