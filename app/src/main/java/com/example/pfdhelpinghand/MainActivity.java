@@ -4,9 +4,11 @@ package com.example.pfdhelpinghand;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.graphics.PorterDuff;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -21,10 +23,11 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
+        Button cancelButton = findViewById(R.id.cancelButton);
 
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         String phoneNumber = user.getPhoneNumber();
+
 
         Button settingsButton = findViewById(R.id.settingsBtn);
         settingsButton.setOnClickListener(new View.OnClickListener(){
@@ -52,7 +55,6 @@ public class MainActivity extends AppCompatActivity {
 
         });
 
-        Button cancelButton = findViewById(R.id.cancelButton);
         cancelButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 switch (v.getId()){
@@ -96,4 +98,31 @@ public class MainActivity extends AppCompatActivity {
                     case R.id.sosButton:
                         Toast.makeText(getApplicationContext(), "SOS Button activated", Toast.LENGTH_SHORT).show();
 
-                }}});}}
+                }
+            }
+            public void buttonEffect(View button){
+                button.setOnTouchListener(new View.OnTouchListener() {
+
+                    public boolean onTouch(View v, MotionEvent event) {
+                        switch (event.getAction()) {
+                            case MotionEvent.ACTION_DOWN: {
+                                v.getBackground().setColorFilter(0xe0f47521, PorterDuff.Mode.SRC_ATOP);
+                                v.invalidate();
+                                break;
+                            }
+                            case MotionEvent.ACTION_UP: {
+                                v.getBackground().clearColorFilter();
+                                v.invalidate();
+                                break;
+                            }
+                        }
+                        return false;
+                    }
+                });
+            }
+        }
+
+        )
+        ;
+    }
+}
