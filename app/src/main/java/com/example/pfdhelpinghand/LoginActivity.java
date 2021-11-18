@@ -1,6 +1,7 @@
 package com.example.pfdhelpinghand;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
@@ -29,16 +30,18 @@ public class LoginActivity extends AppCompatActivity {
     FirebaseAuth fAuth;
     FirebaseFirestore fStore;
     String userID;
+    FirebaseUser user;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        fAuth = FirebaseAuth.getInstance();
+        user = fAuth.getCurrentUser();
+
+
         if (user != null) {
-            if (user != null)
-            {
                 String username = user.getDisplayName();
 
                 String[] separated = username.split("-");
@@ -53,10 +56,6 @@ public class LoginActivity extends AppCompatActivity {
                 {
                     startActivity(new Intent(getApplicationContext(), MainActivity.class));
                 }
-            }
-        } else {
-            // User is signed out
-            Log.d("TAG", "onAuthStateChanged:signed_out");
         }
 
         mEmail = findViewById(R.id.loginEmail);
@@ -64,7 +63,6 @@ public class LoginActivity extends AppCompatActivity {
         mLoginButton = findViewById(R.id.loginButton);
         mProgressBar = findViewById(R.id.progressBar);
 
-        fAuth = FirebaseAuth.getInstance();
 
 
         mLoginButton.setOnClickListener(new View.OnClickListener() {
