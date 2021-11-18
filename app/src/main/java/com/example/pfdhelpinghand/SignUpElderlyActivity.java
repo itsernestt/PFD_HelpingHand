@@ -4,8 +4,6 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
-import android.location.Address;
-import android.nfc.Tag;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
@@ -30,8 +28,8 @@ import java.util.Map;
 
 
 public class SignUpElderlyActivity extends AppCompatActivity {
-    EditText mFullName, mEmail, mPhone, mPassword, mPassword2, mContactName, mContactPhone, mAddress;
-    Button mRegisterButton;
+    EditText eFullName, eEmail, ePhone, ePassword, ePassword2, eContactName, eContactPhone, eAddress;
+    Button eRegisterButton;
     FirebaseAuth fAuth;
     FirebaseFirestore fStore;
 
@@ -40,15 +38,16 @@ public class SignUpElderlyActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_up_elderly);
 
-        mFullName = findViewById(R.id.elderlyName);
-        mEmail = findViewById(R.id.elderlyEmail);
-        mPhone = findViewById(R.id.elderlyPhone);
-        mPassword = findViewById(R.id.elderlyPassword);
-        mPassword2 = findViewById(R.id.elderlyPassword2);
-        mContactName = findViewById(R.id.elderlyContactName);
-        mContactPhone = findViewById(R.id.elderlyContactPhone);
+        eFullName = findViewById(R.id.elderlyName);
+        eEmail = findViewById(R.id.elderlyEmail);
+        ePhone = findViewById(R.id.elderlyPhone);
+        ePassword = findViewById(R.id.elderlyPassword);
+        ePassword2 = findViewById(R.id.elderlyPassword2);
+        eContactName = findViewById(R.id.elderlyContactName);
+        eContactPhone = findViewById(R.id.elderlyContactPhone);
+        eAddress = findViewById(R.id.elderlyAddress);
 
-        mRegisterButton = findViewById(R.id.elderlyRegisterButton);
+        eRegisterButton = findViewById(R.id.elderlyRegisterButton);
 
         fAuth = FirebaseAuth.getInstance();
         fStore = FirebaseFirestore.getInstance();
@@ -58,72 +57,78 @@ public class SignUpElderlyActivity extends AppCompatActivity {
             finish();
         }
 
-        mRegisterButton.setOnClickListener(new View.OnClickListener(){
+        eRegisterButton.setOnClickListener(new View.OnClickListener(){
             @Override
-            public void onClick(View v) {
 
-                String userFullName = mFullName.getText().toString();
-                String email = mEmail.getText().toString().trim();
-                String phone = mPhone.getText().toString().trim();
-                String password = mPassword.getText().toString().trim();
-                String password2 = mPassword2.getText().toString().trim();
-                String contactName = mContactName.getText().toString();
-                String contactPhone = mContactPhone.getText().toString().trim();
-                String address = mAddress.getText().toString();
+            public void onClick(View v) {
+                String userFullName = eFullName.getText().toString();
+                String email = eEmail.getText().toString().trim();
+                String phone = ePhone.getText().toString().trim();
+                String password = ePassword.getText().toString().trim();
+                String password2 = ePassword2.getText().toString().trim();
+
+                String contactName = eContactName.getText().toString();
+
+                String contactPhone = eContactPhone.getText().toString().trim();
+
+                String address = eAddress.getText().toString();
+
 
                 if (TextUtils.isEmpty(userFullName)) {
-                    mFullName.setError("Your full name is required!");
+                    eFullName.setError("Your full name is required!");
                     return;
                 }
 
+
+
                 if (TextUtils.isEmpty(email)) {
-                    mEmail.setError("Email is required!");
+                    eEmail.setError("Email is required!");
                     return;
                 }
 
                 if (TextUtils.isEmpty(phone)) {
-                    mPhone.setError("Your phone number is required!");
+                    ePhone.setError("Your phone number is required!");
                     return;
                 }
 
 
                 if (TextUtils.isEmpty(password)) {
-                    mPassword.setError("Password is required!");
+                    ePassword.setError("Password is required!");
                     return;
                 }
 
 
                 if (password.length() < 8) {
-                    mPassword.setError("Password must be >= 8 characters");
+                    ePassword.setError("Password must be >= 8 characters");
                     return;
                 }
 
                 if (TextUtils.isEmpty(password2))
                 {
-                    mPassword2.setError("Please enter your password again");
+                    ePassword2.setError("Please enter your password again");
                     return;
                 }
 
                 if (!password.equals(password2))
                 {
-                    mPassword2.setError("Password does not match! ");
-                    mPassword2.setText("");
+                    ePassword2.setError("Password does not match! ");
+                    ePassword2.setText("");
                     return;
                 }
 
                 if (TextUtils.isEmpty(contactName))
                 {
-                    mPassword2.setError("Contact person name is required!");
+                    eContactName.setError("Contact person name is required!");
                     return;
                 }
                 if (TextUtils.isEmpty(contactPhone))
                 {
-                    mPassword2.setError("Contact person phone number is required!");
+                    eContactPhone.setError("Contact person phone number is required!");
                     return;
                 }
                 if (TextUtils.isEmpty(address))
                 {
-                    mPassword2.setError("Address is required!");
+                    eAddress.setError("Address is required!");
                     return;
                 }
 
@@ -139,9 +144,10 @@ public class SignUpElderlyActivity extends AppCompatActivity {
                             FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
                             String userID = user.getUid();
 
+                            // set the user display name
                             UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder().setDisplayName(userFullName + "-elderly").build();
-
                             user.updateProfile(profileUpdates);
+
 
                             Map<String, Object> userData = new HashMap<>();
 
@@ -169,12 +175,16 @@ public class SignUpElderlyActivity extends AppCompatActivity {
                             });
 
                             startActivity(new Intent(getApplicationContext(), MainActivity.class));
-                        } else {
+                        }
+                        else {
                             Toast.makeText(SignUpElderlyActivity.this, "Error " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
                         }
                     }
                 });
+
+
             }
+
         });
 
 
