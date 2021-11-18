@@ -98,5 +98,18 @@
         app:layout_constraintTop_toTopOf="@+id/sosButton"
         app:layout_constraintVertical_bias="0.492" />
 
+    <Button
+        android:id="@+id/settingsBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:layout_marginEnd="5dp"
+        android:background="#3A3A3A"
+        android:backgroundTint="#2C2C2C"
+        android:backgroundTintMode="src_over"
+        android:text="Settings"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

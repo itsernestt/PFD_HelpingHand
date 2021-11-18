@@ -10,6 +10,15 @@ public class User implements Serializable {
     protected String fullName;
     protected String phoneNumber;
     protected String email;
+    protected String password;
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
 
     public int getID() {
         return ID;
