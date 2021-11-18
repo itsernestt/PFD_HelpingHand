@@ -8,18 +8,27 @@ import android.graphics.PorterDuff;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
+
+import org.w3c.dom.Document;
 
 public class MainActivity extends AppCompatActivity {
     FirebaseAuth fAuth;
     FirebaseUser user;
+    FirebaseFirestore fStore;
+    Elderly elderly;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,8 +37,19 @@ public class MainActivity extends AppCompatActivity {
         Button cancelButton = findViewById(R.id.cancelButton);
 
         fAuth = FirebaseAuth.getInstance();
-
+        fStore = FirebaseFirestore.getInstance();
         user = fAuth.getCurrentUser();
+
+        String userID = user.getUid();
+        DocumentReference docRef = fStore.collection("Elderly").document(userID);
+        Log.d("TAG", String.valueOf(docRef));
+        docRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+            @Override
+            public void onSuccess(DocumentSnapshot documentSnapshot) {
+                elderly = documentSnapshot.toObject(Elderly.class);
+                Toast.makeText(getApplicationContext(), elderly.getFullName(), Toast.LENGTH_LONG).show();
+            }
+        });
 
         Button settingsButton = findViewById(R.id.settingsBtn);
         settingsButton.setOnClickListener(new View.OnClickListener(){

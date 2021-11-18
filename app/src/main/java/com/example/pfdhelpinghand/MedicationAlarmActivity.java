@@ -6,10 +6,17 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.gson.Gson;
 
 import java.text.SimpleDateFormat;
@@ -17,6 +24,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MedicationAlarmActivity extends AppCompatActivity {
+    FirebaseAuth fAuth;
+    FirebaseUser user;
+    FirebaseFirestore fStore;
+    Elderly elderly;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,17 +40,38 @@ public class MedicationAlarmActivity extends AppCompatActivity {
         Button medicationBackButton = findViewById(R.id.medicationBackButton);
         Button weeklyMedButton = findViewById(R.id.weeklyMedicationButton);
 
-        List<Medication> medicationList = new ArrayList<>();
-        Gson gson = new Gson();
-        SharedPreferences mPrefs = getSharedPreferences("details", MODE_PRIVATE);
-        String json = mPrefs.getString("elderlyObj", "");
-        Elderly elderly = gson.fromJson(json, Elderly.class);
-        /*
-        for (Medication m: elderly.medList) {
-            medicationList.add(m);
-        }
+        fAuth = FirebaseAuth.getInstance();
+        fStore = FirebaseFirestore.getInstance();
+        user = fAuth.getCurrentUser();
 
-        */
+        String userID = user.getUid();
+        DocumentReference docRef = fStore.collection("Elderly").document(userID);
+        Log.d("TAG", String.valueOf(docRef));
+        docRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+            @Override
+            public void onSuccess(DocumentSnapshot documentSnapshot) {
+                elderly = documentSnapshot.toObject(Elderly.class);
+                long date = System.currentTimeMillis();
+                SimpleDateFormat sdf = new SimpleDateFormat("EEE");
+                String dateString = sdf.format(date);
+                Log.d("TAG", dateString);
+
+                for (Medication m:
+                     elderly.getMedList()) {
+                    if (m.day == dateString){
+                        medicationListTextView.append("\n"+m.medName + "\t" + m.medDescription);
+                    }
+                }
+
+                for (Appointment a:
+                elderly.getApptList()){
+                    if (a.day == dateString){
+                        appointmentListTextView.append("\n"+a.apptName + "\t" + a.location);
+                    }
+                }
+            }
+        });
+
         setCurrentDay(currentDate);
 
         medicationBackButton.setOnClickListener(new View.OnClickListener() {

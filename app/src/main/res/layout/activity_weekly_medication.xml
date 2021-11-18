@@ -20,5 +20,34 @@
         app:strokeColor="#000000"
         app:strokeWidth="2dp" />
 
+    <TextView
+        android:id="@+id/weeklyMedHeader"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Weekly Medications"
+        android:textSize="20sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/weeklyMedicationBackButton" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/weeklyMedRV"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="1dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/weeklyMedHeader" />
+
+    <Button
+        android:id="@+id/EditMedBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Edit"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/weeklyMedRV" />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>
