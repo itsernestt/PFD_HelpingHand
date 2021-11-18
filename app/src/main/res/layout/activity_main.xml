@@ -8,8 +8,9 @@
 
     <Button
         android:id="@+id/sosButton"
-        android:layout_width="200dp"
-        android:layout_height="200dp"
+        android:background="@drawable/soscorrectbutton"
+        android:layout_width="250dp"
+        android:layout_height="250dp"
         android:layout_marginTop="-180dp"
         app:backgroundTint="#FA6C6C"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -28,12 +29,12 @@
         android:backgroundTint="#FF4B4B"
         android:text="CANCEL"
         app:layout_constraintEnd_toEndOf="@+id/sosButton"
-        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="@+id/sosButton"
         app:layout_constraintTop_toBottomOf="@+id/sosButton" />
 
     <Button
         android:id="@+id/medAlarmButton"
+        android:background="@drawable/sosbutton"
         android:layout_width="160dp"
         android:layout_height="75dp"
         android:layout_marginStart="25dp"
@@ -41,7 +42,8 @@
         android:layout_marginEnd="28dp"
         android:layout_marginBottom="43dp"
         android:text="Appointments"
-        app:backgroundTint="#00500B"
+        android:textColor="#000000"
+        app:backgroundTint="#affdae"
         app:layout_constraintBottom_toTopOf="@+id/lostButton"
         app:layout_constraintEnd_toStartOf="@+id/locationButton"
         app:layout_constraintStart_toStartOf="parent"
@@ -50,14 +52,16 @@
 
     <Button
         android:id="@+id/locationButton"
+        android:background="@drawable/sosbutton"
         android:layout_width="160dp"
         android:layout_height="75dp"
         android:layout_marginStart="28dp"
         android:layout_marginTop="101dp"
         android:layout_marginEnd="25dp"
         android:layout_marginBottom="43dp"
-        android:text="Button"
-        app:backgroundTint="#00500B"
+        android:text="Real Time Maps"
+        android:textColor="#000000"
+        app:backgroundTint="#affdae"
         app:layout_constraintBottom_toTopOf="@+id/lostButton"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/medAlarmButton"
@@ -66,26 +70,26 @@
 
     <Button
         android:id="@+id/lostButton"
+        android:background="@drawable/roundedrectangle"
         android:layout_width="200dp"
         android:layout_height="80dp"
-        android:layout_marginStart="106dp"
-        android:layout_marginEnd="105dp"
+        android:layout_marginTop="135dp"
         android:layout_marginBottom="76dp"
         android:text="Help, I am Lost!"
         app:backgroundTint="#FF2E2E"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/cancelButton" />
 
     <TextView
         android:id="@+id/sosText"
         android:layout_width="100dp"
         android:layout_height="100dp"
-        android:layout_marginStart="2dp"
-        android:layout_marginTop="35dp"
+        android:layout_marginTop="32dp"
         android:elevation="5dp"
         android:text="SOS"
+        android:textColor="#ffffff"
         android:textSize="49dp"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="@+id/sosButton"

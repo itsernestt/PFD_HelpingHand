@@ -4,6 +4,7 @@ package com.example.pfdhelpinghand;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.view.View;
@@ -11,12 +12,19 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+
 public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        String phoneNumber = user.getPhoneNumber();
 
         Button lostButton = findViewById(R.id.lostButton);
         lostButton.setOnClickListener(new View.OnClickListener(){
@@ -35,13 +43,14 @@ public class MainActivity extends AppCompatActivity {
             }
 
         });
+
         Button cancelButton = findViewById(R.id.cancelButton);
         cancelButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 switch (v.getId()){
                     case R.id.cancelButton:
                         Toast.makeText(getApplicationContext(), "Restarting to cancel SOS functions", Toast.LENGTH_SHORT).show();
-                        System.exit(0);
+                        MagicAppRestart.doRestart(MainActivity.this);
                 }
             }});
 
@@ -65,6 +74,11 @@ public class MainActivity extends AppCompatActivity {
                     public void onFinish() {
                         sosText.setText("SOS");
                         sosButton.setClickable(true);
+                        Intent callIntent = new Intent(Intent.ACTION_CALL);
+                        callIntent.setData(Uri.parse(phoneNumber));
+                        //startActivity(callIntent);
+                        Toast.makeText(getApplicationContext(), "Calling person, please wait", Toast.LENGTH_SHORT).show();
+
                     }
 
                 }.start();
