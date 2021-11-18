@@ -8,15 +8,16 @@ public class Elderly extends User{
 
     private String elderlyAddress;
 
-    protected List<Medication> medList;
-    protected List<Appointment> apptList;
-    protected List<Caretaker> caretakerList;
+    protected ArrayList<Medication> medList;
+    protected ArrayList<Appointment> apptList;
+    protected ArrayList<Caretaker> caretakerList;
 
     private List<EmergencyPerson> emergencyPersonList;
 
+    public Elderly(){}
 
-
-    public Elderly(String id, String name, String email, String phoneNum, String pw, String address, List<EmergencyPerson> eList){
+    public Elderly(String id, String name, String email, String phoneNum, String pw, String address, List<EmergencyPerson> eList,
+                   ArrayList<Medication> mList, ArrayList<Appointment> aList){
         this.ID = id;
         this.fullName = name;
         this.email = email;
@@ -24,6 +25,12 @@ public class Elderly extends User{
         this.password = pw;
         this.elderlyAddress = address;
         this.emergencyPersonList = eList;
+        this.medList = mList;
+        this.apptList = aList;
+    }
+
+    public void setElderlyAddress(String elderlyAddress) {
+        this.elderlyAddress = elderlyAddress;
     }
 
     public String getAddress(){
@@ -39,6 +46,14 @@ public class Elderly extends User{
 
     public void addAppointment(Appointment a){
         this.apptList.add(a);
+    }
+
+    public ArrayList<Appointment> getApptList() {
+        return apptList;
+    }
+
+    public ArrayList<Medication> getMedList() {
+        return medList;
     }
 
     public void addEmergencyPerson(EmergencyPerson e){this.emergencyPersonList.add(e); }
