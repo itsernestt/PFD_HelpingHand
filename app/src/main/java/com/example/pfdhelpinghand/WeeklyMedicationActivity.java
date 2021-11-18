@@ -16,6 +16,7 @@ public class WeeklyMedicationActivity extends AppCompatActivity {
 
         Button weeklyMedBackButton = findViewById(R.id.weeklyMedicationBackButton);
 
+        int x = 1;
         weeklyMedBackButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 Intent navigateToPreviousPage = new Intent(WeeklyMedicationActivity.this, com.example.pfdhelpinghand.MedicationAlarmActivity.class);
