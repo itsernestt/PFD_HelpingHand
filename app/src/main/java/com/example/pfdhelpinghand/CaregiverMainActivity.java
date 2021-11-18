@@ -16,6 +16,7 @@ import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.FirebaseError;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -26,30 +27,34 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import java.time.Instant;
 
 public class CaregiverMainActivity extends AppCompatActivity {
-    FirebaseAuth fAuth;
+
+// here
     TextView welcomeBanner;
+    FirebaseUser user;
+    FirebaseFirestore fStore;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_caregiver_main);
 
-        FirebaseUser user = fAuth.getInstance().getCurrentUser();
-        String userID = user.getUid();
+        fStore = FirebaseFirestore.getInstance();
+        user = FirebaseAuth.getInstance().getCurrentUser();
 
         welcomeBanner = findViewById(R.id.welcomeBanner);
 
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
-        DocumentReference docRef = db.collection("Caregiver").document(userID);
+        String userID = user.getUid();
+        DocumentReference docRef = fStore.collection("Caregiver").document(userID);
+
+
         docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                 if (task.isSuccessful()) {
                     DocumentSnapshot document = task.getResult();
                     if (document.exists()) {
-                        Log.d("TAG", "DocumentSnapshot data: " + document.getData());
-
-                        welcomeBanner.setText((CharSequence) document.getData());
+                        String userName = document.getString("FullName");
+                        welcomeBanner.setText("Welcome! "+ userName);
                     } else {
                         Log.d("TAG", "No such document");
                     }
@@ -58,9 +63,7 @@ public class CaregiverMainActivity extends AppCompatActivity {
                 }
             }
         });
-
-
-
+        //until here
     }
 
 

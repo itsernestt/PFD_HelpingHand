@@ -18,6 +18,8 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
 public class MainActivity extends AppCompatActivity {
+    FirebaseAuth fAuth;
+    FirebaseUser user;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -25,9 +27,9 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         Button cancelButton = findViewById(R.id.cancelButton);
 
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-        String phoneNumber = user.getPhoneNumber();
+        fAuth = FirebaseAuth.getInstance();
 
+        user = fAuth.getCurrentUser();
 
         Button settingsButton = findViewById(R.id.settingsBtn);
         settingsButton.setOnClickListener(new View.OnClickListener(){
@@ -85,7 +87,6 @@ public class MainActivity extends AppCompatActivity {
                         sosText.setText("SOS");
                         sosButton.setClickable(true);
                         Intent callIntent = new Intent(Intent.ACTION_CALL);
-                        callIntent.setData(Uri.parse(phoneNumber));
                         //startActivity(callIntent);
                         Toast.makeText(getApplicationContext(), "Calling person, please wait", Toast.LENGTH_SHORT).show();
 
@@ -122,7 +123,12 @@ public class MainActivity extends AppCompatActivity {
             }
         }
 
-        )
-        ;
+        );
+
+    }
+    public void logout(View view) {
+        FirebaseAuth.getInstance().signOut();
+        startActivity(new Intent(getApplicationContext(), LoginActivity.class));
+        finish();
     }
 }
