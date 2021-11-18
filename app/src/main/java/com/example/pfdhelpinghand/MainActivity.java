@@ -1,4 +1,5 @@
 package com.example.pfdhelpinghand;
+//ernest
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -34,17 +35,21 @@ public class MainActivity extends AppCompatActivity {
             }
 
         });
+        Button cancelButton = findViewById(R.id.cancelButton);
+        cancelButton.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                switch (v.getId()){
+                    case R.id.cancelButton:
+                        Toast.makeText(getApplicationContext(), "Restarting to cancel SOS functions", Toast.LENGTH_SHORT).show();
+                        System.exit(0);
+                }
+            }});
 
         Button sosButton = findViewById(R.id.sosButton);
         TextView sosText = findViewById(R.id.sosText);
         sosButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {
-
-                switch (view.getId()){
-                    case R.id.sosButton:
-                        Toast.makeText(getApplicationContext(), "SOS Button activated", Toast.LENGTH_LONG).show();
-
-                }
+                sosButton.setClickable(false);
                 new CountDownTimer(9000, 1000) {
 
                     public void onTick(long millisUntilFinished) {
@@ -57,11 +62,14 @@ public class MainActivity extends AppCompatActivity {
 
                     public void onFinish() {
                         sosText.setText("SOS");
+                        sosButton.setClickable(true);
                     }
+
                 }.start();
 
-            }
 
+                switch (view.getId()){
+                    case R.id.sosButton:
+                        Toast.makeText(getApplicationContext(), "SOS Button activated", Toast.LENGTH_SHORT).show();
 
-        });}}
-
+                }}});}}
