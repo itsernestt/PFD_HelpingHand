@@ -3,28 +3,24 @@ package com.example.pfdhelpinghand;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.Dialog;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 
-import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
-import com.google.firebase.FirebaseError;
-import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
-
-import java.time.Instant;
 
 public class CaregiverMainActivity extends AppCompatActivity {
 
@@ -32,6 +28,8 @@ public class CaregiverMainActivity extends AppCompatActivity {
     TextView welcomeBanner;
     FirebaseUser user;
     FirebaseFirestore fStore;
+
+    Dialog myDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,16 +61,35 @@ public class CaregiverMainActivity extends AppCompatActivity {
                 }
             }
         });
-        //until here
+        myDialog = new Dialog(this);
+
+
     }
 
+    public void ShowPopup(View v) {
+        TextView closeBut;
+        Button pairupBut;
+        myDialog.setContentView(R.layout.activity_pop_up_window);
+        closeBut =(TextView) myDialog.findViewById(R.id.closePopupButton);
+        closeBut.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                myDialog.dismiss();
+            }
+        });
 
+        pairupBut = (Button) myDialog.findViewById(R.id.pairupButton);
+
+        myDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        myDialog.show();
+    }
 
     public void logout(View view) {
         FirebaseAuth.getInstance().signOut();
         startActivity(new Intent(getApplicationContext(), LoginActivity.class));
         finish();
     }
+
 
 
 }
