@@ -3,6 +3,7 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="../../../../layout/custom_preview.xml" value="0.190625" />
         <entry key="..\:/Users/Chen Han/PFD_HelpingHand/app/src/main/res/layout/activity_login.xml" value="0.33" />
         <entry key="..\:/Users/Chen Han/PFD_HelpingHand/app/src/main/res/layout/activity_main.xml" value="0.20520833333333333" />
         <entry key="..\:/Users/Chen Han/PFD_HelpingHand/app/src/main/res/layout/activity_sign_up_elderly.xml" value="0.33" />
@@ -15,12 +16,16 @@
         <entry key="..\:/Users/ernes/AndroidStudioProjects/PFDHelpingHand/app/src/main/res/layout/activity_sign_up_elderly.xml" value="0.1" />
         <entry key="..\:/Users/ernes/AndroidStudioProjects/PFDHelpingHand/app/src/main/res/layout/activity_sign_up_main.xml" value="0.1" />
         <entry key="..\:/Users/ernes/AndroidStudioProjects/PFDHelpingHand/app/src/main/res/layout/activity_weekly_medication.xml" value="0.1" />
-        <entry key="..\:/Users/nhaak/AndroidStudioProjects/PFD_HelpingHand/app/src/main/res/layout/activity_medication_alarm.xml" value="0.14375" />
-        <entry key="..\:/Users/nhaak/AndroidStudioProjects/PFD_HelpingHand/app/src/main/res/layout/activity_weekly_medication.xml" value="0.14375" />
+        <entry key="..\:/Users/ernes/StudioProjects/PFD_HelpingHand/app/src/main/res/layout/activity_main.xml" value="0.27355072463768115" />
+        <entry key="app/src/main/res/layout/activity_caregiver_main.xml" value="0.22987908705997454" />
+        <entry key="app/src/main/res/layout/activity_help_lost.xml" value="0.1" />
+        <entry key="app/src/main/res/layout/activity_login.xml" value="0.2365369678962225" />
+        <entry key="app/src/main/res/layout/activity_main.xml" value="0.2290555488411043" />
+        <entry key="app/src/main/res/layout/activity_weekly_medication.xml" value="0.1" />
       </map>
     </option>
   </component>
-  <component name="ProjectRootManager" version="2" languageLevel="JDK_11" project-jdk-name="11" project-jdk-type="JavaSDK">
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_11" default="true" project-jdk-name="11" project-jdk-type="JavaSDK">
     <output url="file://$PROJECT_DIR$/build/classes" />
   </component>
   <component name="ProjectType">
