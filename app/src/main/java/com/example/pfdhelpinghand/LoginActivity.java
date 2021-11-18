@@ -21,8 +21,10 @@ import com.google.firebase.firestore.FirebaseFirestore;
 public class LoginActivity extends AppCompatActivity {
     EditText mEmail, mPassword;
     Button mLoginButton;
+
     FirebaseAuth fAuth;
     FirebaseFirestore fStore;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,10 +35,11 @@ public class LoginActivity extends AppCompatActivity {
         mPassword = findViewById(R.id.loginPassword);
         mLoginButton = findViewById(R.id.loginButton);
 
+        mProgressBar = findViewById(R.id.progressBar);
         fAuth = FirebaseAuth.getInstance();
-        fStore = FirebaseFirestore.getInstance();
 
-        mLoginButton.setOnClickListener(new View.OnClickListener(){
+
+        mLoginButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
@@ -60,28 +63,30 @@ public class LoginActivity extends AppCompatActivity {
                     return;
                 }
 
-                //register the user in the firebase
+
                 fAuth.signInWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
-                            Toast.makeText(LoginActivity.this, "Log in successfully", Toast.LENGTH_SHORT).show();
 
+                            Toast.makeText(LoginActivity.this, "Log in successfully", Toast.LENGTH_SHORT).show();
                             startActivity(new Intent(getApplicationContext(), CaregiverMainActivity.class));
                         } else {
                             Toast.makeText(LoginActivity.this, "Error " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
                         }
                     }
-                });
 
-            }
-        });
+                    });
+               }
+            });
+
 
 
         Button caregiverSignUpPage = findViewById(R.id.signUpCaregiverButton);
         caregiverSignUpPage.setOnClickListener(new View.OnClickListener(){
             public void onClick(View v)
             {
+
                 Intent navigateToCaregiverSignUpPage = new Intent(LoginActivity.this, SignUpMainActivity.class);
                 startActivity(navigateToCaregiverSignUpPage);
             }
