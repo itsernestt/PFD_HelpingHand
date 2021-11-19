@@ -47,6 +47,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onSuccess(DocumentSnapshot documentSnapshot) {
                 elderly = documentSnapshot.toObject(Elderly.class);
+
                 Toast.makeText(getApplicationContext(), elderly.getFullName(), Toast.LENGTH_LONG).show();
             }
         });

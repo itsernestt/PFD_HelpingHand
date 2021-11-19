@@ -10,6 +10,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
@@ -28,6 +29,7 @@ public class MedicationAlarmActivity extends AppCompatActivity {
     FirebaseUser user;
     FirebaseFirestore fStore;
     Elderly elderly;
+    ArrayList<Medication> meds;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,6 +45,7 @@ public class MedicationAlarmActivity extends AppCompatActivity {
         fAuth = FirebaseAuth.getInstance();
         fStore = FirebaseFirestore.getInstance();
         user = fAuth.getCurrentUser();
+        meds = new ArrayList<Medication>();
 
         String userID = user.getUid();
         DocumentReference docRef = fStore.collection("Elderly").document(userID);
@@ -55,6 +58,12 @@ public class MedicationAlarmActivity extends AppCompatActivity {
                 SimpleDateFormat sdf = new SimpleDateFormat("EEE");
                 String dateString = sdf.format(date);
                 Log.d("TAG", dateString);
+
+                Toast.makeText(getApplicationContext(), elderly.getFullName(), Toast.LENGTH_LONG).show();
+
+                meds = elderly.getMedList();
+                Medication medication = meds.get(0);
+                medicationListTextView.setText(medication.day);
 
                 for (Medication m:
                      elderly.getMedList()) {

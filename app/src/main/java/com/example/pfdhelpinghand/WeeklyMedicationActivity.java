@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -27,18 +28,23 @@ public class WeeklyMedicationActivity extends AppCompatActivity {
     FirebaseFirestore fStore;
     Elderly elderly;
     ArrayList<Medication> meds;
+    TextView monDisplay;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_medication_layout);
+        setContentView(R.layout.activity_weekly_medication);
 
         fAuth = FirebaseAuth.getInstance();
         fStore = FirebaseFirestore.getInstance();
         user = fAuth.getCurrentUser();
+        meds = new ArrayList<Medication>();
+
+        monDisplay = findViewById(R.id.weeklyMedicationMon);
 
         String userID = user.getUid();
         Log.d("TAG", userID);
+
         DocumentReference docRef = fStore.collection("Elderly").document(userID);
         Log.d("TAG", String.valueOf(docRef));
         docRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
@@ -46,17 +52,18 @@ public class WeeklyMedicationActivity extends AppCompatActivity {
             public void onSuccess(DocumentSnapshot documentSnapshot) {
                 elderly = documentSnapshot.toObject(Elderly.class);
                 Log.d("TAG", String.valueOf(elderly==null));
+
+                meds = elderly.getMedList();
+                Medication monday = meds.get(0);
+                monDisplay.setText("Medication name: " +monday.medName +
+                        "\n" + "Medication description: " + monday.medDescription + "\n" +
+                        "Day: " + monday.day);
             }
         });
 
+
+
         Button weeklyMedBackButton = findViewById(R.id.weeklyMedicationBackButton);
-
-        RecyclerView rvMeds = (RecyclerView) findViewById(R.id.weeklyMedRV);
-
-        meds = elderly.getMedList();
-        MedicationAdapter adapter = new MedicationAdapter(meds);
-        rvMeds.setAdapter(adapter);
-        rvMeds.setLayoutManager(new LinearLayoutManager(this));
 
 
         weeklyMedBackButton.setOnClickListener(new View.OnClickListener() {
@@ -65,5 +72,9 @@ public class WeeklyMedicationActivity extends AppCompatActivity {
                 startActivity(navigateToPreviousPage);
             }
         });
+
+
+
+
     }
 }
