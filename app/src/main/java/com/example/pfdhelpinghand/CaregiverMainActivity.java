@@ -27,14 +27,19 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class CaregiverMainActivity extends AppCompatActivity {
 
     // here
-    TextView welcomeBanner;
+    TextView welcomeBanner, caregiverViewElderly;
     FirebaseUser user;
     FirebaseFirestore fStore;
     Caretaker caretaker;
     Dialog myDialog;
+    String userID;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,20 +50,21 @@ public class CaregiverMainActivity extends AppCompatActivity {
         user = FirebaseAuth.getInstance().getCurrentUser();
 
         welcomeBanner = findViewById(R.id.welcomeBanner);
+        caregiverViewElderly = findViewById(R.id.caregiverViewElderly);
 
-        String userID = user.getUid();
+        userID = user.getUid();
+
         DocumentReference docRef = fStore.collection("Caregiver").document(userID);
         docRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
             @Override
             public void onSuccess(DocumentSnapshot documentSnapshot)
             {
                 caretaker = documentSnapshot.toObject(Caretaker.class);
-                welcomeBanner.setText(caretaker.fullName);
+                welcomeBanner.setText(caretaker.getFullName());
             }
         });
 
         myDialog = new Dialog(this);
-
 
     }
 
@@ -92,14 +98,33 @@ public class CaregiverMainActivity extends AppCompatActivity {
                 }
 
                 DocumentReference docRef = fStore.collection("Elderly").document(elderId);
-                docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                docRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
                     @Override
-                    public void onComplete (@NonNull Task <DocumentSnapshot> task) {
-                        if (task.isSuccessful()) {
-                            DocumentSnapshot document = task.getResult();
-                            if (document.exists()) {
+                    public void onSuccess (DocumentSnapshot documentSnapshot) {
+                            if (documentSnapshot.exists()) {
+
                                 pairUpId.setText("");
                                 pairupMessage.setText("Pair up successfully! ");
+
+                                Elderly elderly = documentSnapshot.toObject(Elderly.class);
+                                List<Elderly> elderlyList;
+                                elderlyList = new ArrayList<Elderly>();
+                                elderlyList.add(elderly);
+                                elderlyList = caretaker.returnElderly();
+
+                                caregiverViewElderly.setText("Elderly name: " + elderly.getFullName() + "\n" +
+                                        "Elderly phone: " + elderly.phoneNumber + "\n" +
+                                                "Elderly address: " + elderly.getAddress() + "\n"
+                                );
+                                fStore.collection("Caregiver").document(userID)
+                                        .set(caretaker)
+                                        .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                            @Override
+                                            public void onSuccess(Void aVoid) {
+                                                Log.d("TAG","onSuccess: Caregiver user profile created for " + userID);
+                                            }
+                                        });
+
 
 
                             } else {
@@ -108,8 +133,7 @@ public class CaregiverMainActivity extends AppCompatActivity {
                                 pairUpId.setText("");
                             }
                         }
-                    }
-                });
+                    });
 
 
             }
