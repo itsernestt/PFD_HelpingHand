@@ -12,13 +12,15 @@ public class Caretaker extends User{
 
     }
 
-    public Caretaker(String name, String email, String phoneNum, String pw){
+    public Caretaker(String id, String name, String email, String phoneNum, String pw, ArrayList<Elderly> eList){
+        this.ID = id;
         this.fullName = name;
         this.email = email;
         this.phoneNumber = phoneNum;
         this.password = pw;
-        this.caringFor = new ArrayList<Elderly>();
+        this.caringFor = eList;
     }
+
 
     public List<Elderly> returnElderly(){
         return caringFor;
