@@ -64,7 +64,6 @@ public class LoginActivity extends AppCompatActivity {
         mProgressBar = findViewById(R.id.progressBar);
 
 
-
         mLoginButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -152,23 +151,9 @@ public class LoginActivity extends AppCompatActivity {
         });
 
 
-        Button navToCaregiverButton = findViewById(R.id.caregiverMainPage);
-        navToCaregiverButton.setOnClickListener(new View.OnClickListener(){
-            public void onClick(View v)
-            {
-                Intent navigateToCaregiverPage = new Intent(LoginActivity.this, CaregiverMainActivity.class);
-                startActivity(navigateToCaregiverPage);
-            }
-        });
 
-        Button navToElderlyButton = findViewById(R.id.elderlyMainPageButton);
-        navToElderlyButton.setOnClickListener(new View.OnClickListener(){
-            public void onClick(View v)
-            {
-                Intent navigateToElderlyPage = new Intent(LoginActivity.this, MainActivity.class);
-                startActivity(navigateToElderlyPage);
-            }
-        });
+
+
 
 
 
