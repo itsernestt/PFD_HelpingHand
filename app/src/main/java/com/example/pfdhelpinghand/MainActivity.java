@@ -48,13 +48,10 @@ public class MainActivity extends AppCompatActivity {
 
         String userID = user.getUid();
         DocumentReference docRef = fStore.collection("Elderly").document(userID);
-        Log.d("TAG", String.valueOf(docRef));
         docRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
             @Override
             public void onSuccess(DocumentSnapshot documentSnapshot) {
                 elderly = documentSnapshot.toObject(Elderly.class);
-
-                Toast.makeText(getApplicationContext(), elderly.getFullName(), Toast.LENGTH_LONG).show();
             }
         });
 

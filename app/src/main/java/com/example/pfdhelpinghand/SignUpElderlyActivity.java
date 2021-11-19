@@ -155,10 +155,8 @@ public class SignUpElderlyActivity extends AppCompatActivity {
                             user.updateProfile(profileUpdates);
 
                             eList.add(new EmergencyPerson(contactName, contactPhone));
-                            Medication m = new Medication("ADHD", "Take three times", "Mon");
-                            ArrayList<Medication> mList = new ArrayList<Medication>();
-                            mList.add(m);
-                            elderly = new Elderly(userID, userFullName, email, phone, password, address, eList, mList, new ArrayList<Appointment>() );
+
+                            elderly = new Elderly(userID, userFullName, email, phone, password, address, eList, new ArrayList<Medication>(), new ArrayList<Appointment>() );
 
 
                             fStore.collection("Elderly").document(userID)

@@ -30,6 +30,7 @@ public class MedicationAlarmActivity extends AppCompatActivity {
     FirebaseFirestore fStore;
     Elderly elderly;
     ArrayList<Medication> meds;
+    ArrayList<Appointment> appts;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,6 +47,7 @@ public class MedicationAlarmActivity extends AppCompatActivity {
         fStore = FirebaseFirestore.getInstance();
         user = fAuth.getCurrentUser();
         meds = new ArrayList<Medication>();
+        appts = new ArrayList<Appointment>();
 
         String userID = user.getUid();
         DocumentReference docRef = fStore.collection("Elderly").document(userID);
@@ -62,20 +64,21 @@ public class MedicationAlarmActivity extends AppCompatActivity {
                 Toast.makeText(getApplicationContext(), elderly.getFullName(), Toast.LENGTH_LONG).show();
 
                 meds = elderly.getMedList();
-                Medication medication = meds.get(0);
-                medicationListTextView.setText(medication.day);
-
                 for (Medication m:
-                     elderly.getMedList()) {
-                    if (m.day == dateString){
-                        medicationListTextView.append("\n"+m.medName + "\t" + m.medDescription);
+                     meds) {
+                    String day = m.getDay();
+                    if (day.equals(dateString)){
+                        medicationListTextView.append("\nMedication name: " + m.medName +
+                                "\nInstructions: " + m.medDescription + "\nDay: " + m.day + "\n");
                     }
                 }
 
+                appts = elderly.getApptList();
                 for (Appointment a:
-                elderly.getApptList()){
-                    if (a.day == dateString){
-                        appointmentListTextView.append("\n"+a.apptName + "\t" + a.location);
+                appts){
+                    if (a.day.equals(dateString)){
+                        appointmentListTextView.append("\nAppointment name: "+ a.apptName
+                                + "\nLocation: " + a.location + "\nDay: " + a.day);
                     }
                 }
             }
