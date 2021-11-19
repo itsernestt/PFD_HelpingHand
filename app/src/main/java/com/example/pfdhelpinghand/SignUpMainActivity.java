@@ -26,6 +26,7 @@ import com.google.firebase.auth.UserProfileChangeRequest;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -123,7 +124,8 @@ public class SignUpMainActivity extends AppCompatActivity {
                             UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder().setDisplayName(userFullName + "-caregiver").build();
                             user.updateProfile(profileUpdates);
 
-                            Caretaker caretaker = new Caretaker(userFullName, email, phone, password);
+
+                            Caretaker caretaker = new Caretaker(userID, userFullName, email, phone, password, new ArrayList<Elderly>());
 
                             fStore.collection("Caregiver").document(userID)
                                     .set(caretaker)
