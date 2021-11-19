@@ -12,4 +12,8 @@ public class Medication {
         this.medName = name;
         this.day = day;
     }
+
+    public String getDay(){
+        return this.day;
+    }
 }
