@@ -7,6 +7,7 @@ import java.util.List;
 public class Elderly extends User{
 
     private String elderlyAddress;
+    private String currentLocation;
 
     protected ArrayList<Medication> medList;
     protected ArrayList<Appointment> apptList;
@@ -16,7 +17,7 @@ public class Elderly extends User{
 
     public Elderly(){}
 
-    public Elderly(String id, String name, String email, String phoneNum, String pw, String address, List<EmergencyPerson> eList,
+    public Elderly(String id, String name, String email, String phoneNum, String pw, String address, String cLocation, List<EmergencyPerson> eList,
                    ArrayList<Medication> mList, ArrayList<Appointment> aList, ArrayList<String> cList){
         this.ID = id;
         this.fullName = name;
@@ -24,6 +25,7 @@ public class Elderly extends User{
         this.phoneNumber = phoneNum;
         this.password = pw;
         this.elderlyAddress = address;
+        this.currentLocation = cLocation;
         this.emergencyPersonList = eList;
         this.medList = mList;
         this.apptList = aList;
@@ -36,6 +38,14 @@ public class Elderly extends User{
     public void setElderlyAddress(String elderlyAddress) {
 
         this.elderlyAddress = elderlyAddress;
+    }
+
+    public String getCurrentLocation(){
+        return currentLocation;
+    }
+    public void setCurrentLocation(String currentLocation) {
+
+        this.currentLocation = currentLocation;
     }
 
     public List<EmergencyPerson> getEmergencyPerson(){
