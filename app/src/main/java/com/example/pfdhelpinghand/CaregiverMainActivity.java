@@ -76,7 +76,14 @@ public class CaregiverMainActivity extends AppCompatActivity {
                 {
                     for (Elderly e : elderlyList)
                     {
-                        caregiverViewElderly.setText(caregiverViewElderly.getText() + "\n" + e.getFullName());
+                        Integer count = elderlyList.indexOf(e) + 1;
+
+                        caregiverViewElderly.setText(caregiverViewElderly.getText() + "\n" +
+                                                        "Elderly " + Integer.toString(count) +  ":" + "\n" +
+                                                        "Name: " + e.getFullName() + "\n" +
+                                                        "Phone number: " + e.getPhoneNumber() + "\n" +
+                                                        "Address: " + e.getAddress() + "\n" +
+                                                        "Current Location: " + e.getCurrentLocation() + "\n");
                     }
                 }
                 else
