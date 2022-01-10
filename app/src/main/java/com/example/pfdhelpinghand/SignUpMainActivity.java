@@ -124,8 +124,8 @@ public class SignUpMainActivity extends AppCompatActivity {
                             UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder().setDisplayName(userFullName + "-caregiver").build();
                             user.updateProfile(profileUpdates);
 
-
-                            Caretaker caretaker = new Caretaker(userID, userFullName, email, phone, password, new ArrayList<Elderly>());
+                            ArrayList<Elderly> eList = new ArrayList<Elderly>();
+                            Caretaker caretaker = new Caretaker(userID, userFullName, email, phone, password, eList);
 
                             fStore.collection("Caregiver").document(userID)
                                     .set(caretaker)
