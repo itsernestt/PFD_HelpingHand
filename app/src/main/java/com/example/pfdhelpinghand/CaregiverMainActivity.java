@@ -158,39 +158,33 @@ public class CaregiverMainActivity extends AppCompatActivity {
                                 // 2. Update the caregiverList at the elderly side
                                 Boolean isContainCaregiver = false;
                                 String caregiverID = caretaker.getID();
-                                for (Elderly e : elderlyList)
+                                ArrayList<String> caregiverList = elderly.getCaretakerList();
+                                for (String c : caregiverList)
                                 {
-                                    if (e.getID().equals(elderlyID))
+                                    if (c.equals(caregiverID))
                                     {
-                                        isContain = true;
+                                        isContainCaregiver = true;
                                     }
                                 }
-                                if (!isContain)
+                                if (!isContainCaregiver)
                                 {
-                                    elderlyList.add(elderly);
+                                    elderly.addCaretaker(caregiverID);
+
                                 }
                                 else{
-                                    pairupMessage.setText("The elderly has already been added!");
+                                    pairupMessage.setText(pairupMessage.getText() + "\n" +
+                                                        "The care-taker has been updated on the elderly too!");
                                 }
 
 
-                                /* For testing
-                                caregiverViewElderly.setText("Elderly name: " + elderly.getFullName() + "\n" +
-                                        "Elderly phone: " + elderly.phoneNumber + "\n" +
-                                                "Elderly address: " + elderly.getAddress() + "\n");
-                                */
-
                                 // Updates the elderly on the firestore
-                                fStore.collection("Caregiver").document(userID)
-                                        .set(caretaker)
+                                fStore.collection("Elderly").document(elderlyID)
+                                        .set(elderly)
                                         .addOnSuccessListener(new OnSuccessListener<Void>() {
                                             @Override
                                             public void onSuccess(Void aVoid) {
                                                 Log.d("TAG","onSuccess: Caregiver user updated for" + userID);
 
-                                                // Add a two second delay before refreshing the page just to show the connection result
-
-                                                overridePendingTransition(0, 0);
                                             }
                                         });
 
@@ -204,7 +198,6 @@ public class CaregiverMainActivity extends AppCompatActivity {
 
                                                 // Add a two second delay before refreshing the page just to show the connection result
                                                 mHandler.postDelayed(mRefreshPage, 2000);
-                                                overridePendingTransition(0, 0);
                                             }
                                         });
 
