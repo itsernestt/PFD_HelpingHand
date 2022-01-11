@@ -1,10 +1,11 @@
 package com.example.pfdhelpinghand;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -18,19 +19,19 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.gson.Gson;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MedicationAlarmActivity extends AppCompatActivity {
+public class MedicationAppointmentActivity extends AppCompatActivity {
     FirebaseAuth fAuth;
     FirebaseUser user;
     FirebaseFirestore fStore;
     Elderly elderly;
     ArrayList<Medication> meds;
     ArrayList<Appointment> appts;
+    RecyclerView recyclerView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,6 +51,7 @@ public class MedicationAlarmActivity extends AppCompatActivity {
         appts = new ArrayList<Appointment>();
 
         String userID = user.getUid();
+        recyclerView = findViewById(R.id.recyclerView1);
         DocumentReference docRef = fStore.collection("Elderly").document(userID);
         Log.d("TAG", String.valueOf(docRef));
         docRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
@@ -63,13 +65,13 @@ public class MedicationAlarmActivity extends AppCompatActivity {
 
                 Toast.makeText(getApplicationContext(), elderly.getFullName(), Toast.LENGTH_LONG).show();
 
+                List medications = new ArrayList();
                 meds = elderly.getMedList();
                 for (Medication m:
                      meds) {
                     String day = m.getDay();
                     if (day.equals(dateString)){
-                        medicationListTextView.append("\nMedication name: " + m.medName +
-                                "\nInstructions: " + m.medDescription + "\nDay: " + m.day + "\n");
+                        medications.add(m);
                     }
                 }
 
@@ -81,21 +83,29 @@ public class MedicationAlarmActivity extends AppCompatActivity {
                                 + "\nLocation: " + a.location + "\nDay: " + a.day);
                     }
                 }
+
+                MedAdapter medAdapter = new MedAdapter(medications);
+
+                recyclerView.setAdapter(medAdapter);
+
             }
         });
 
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        RecyclerView.ItemDecoration itemDecoration = new DividerItemDecoration(this, DividerItemDecoration.VERTICAL);
+        recyclerView.addItemDecoration(itemDecoration);
         setCurrentDay(currentDate);
 
         medicationBackButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                Intent navigateToPreviousPage = new Intent(MedicationAlarmActivity.this, com.example.pfdhelpinghand.MainActivity.class);
+                Intent navigateToPreviousPage = new Intent(MedicationAppointmentActivity.this, com.example.pfdhelpinghand.MainActivity.class);
                 startActivity(navigateToPreviousPage);
             }
         });
 
         weeklyMedButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                Intent navigateTo = new Intent(MedicationAlarmActivity.this, com.example.pfdhelpinghand.WeeklyMedicationActivity.class);
+                Intent navigateTo = new Intent(MedicationAppointmentActivity.this, com.example.pfdhelpinghand.WeeklyMedicationActivity.class);
                 startActivity(navigateTo);
             }
         });
