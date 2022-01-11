@@ -5,7 +5,9 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#EBFFEF"
-    tools:context=".MedicationAlarmActivity">
+    android:fadeScrollbars="false"
+    android:verticalScrollbarPosition="defaultPosition"
+    tools:context=".MedicationAppointmentActivity">
 
     <Button
         android:id="@+id/medicationBackButton"
@@ -50,19 +52,20 @@
         android:id="@+id/appointmentListTV"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="25dp"
+        android:layout_marginTop="5dp"
         android:maxLines="4"
         android:scrollbars="vertical"
         android:text="Appointments for today:"
         android:textColor="#000000"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/medicationListTV" />
+        app:layout_constraintTop_toBottomOf="@+id/recyclerView1" />
 
     <Button
         android:id="@+id/weeklyMedicationButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="112dp"
         android:text="View Weekly Medications"
         android:textColor="#000000"
         app:backgroundTint="#FFFFFF"
@@ -76,13 +79,27 @@
         android:id="@+id/weeklyAppointmentButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="15dp"
+        android:layout_marginTop="28dp"
         android:text="View Weekly Appointments"
         android:textColor="#000000"
         app:backgroundTint="#FFFFFF"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.496"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/weeklyMedicationButton"
         app:strokeColor="#100F0F"
         app:strokeWidth="1dp" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerView1"
+        android:layout_width="363dp"
+        android:layout_height="88dp"
+        android:layout_marginTop="16dp"
+        android:scrollbarSize="5dp"
+        android:scrollbarThumbVertical="@android:color/darker_gray"
+        android:scrollbars="vertical"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.555"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/medicationListTV" />
 </androidx.constraintlayout.widget.ConstraintLayout>
