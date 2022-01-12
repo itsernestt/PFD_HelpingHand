@@ -24,8 +24,12 @@
         <entry key="..\:/Users/ernes/StudioProjects/PFD_HelpingHand/app/src/main/res/layout/activity_main.xml" value="0.27355072463768115" />
         <entry key="..\:/Users/nhaak/AndroidStudioProjects/PFD_HelpingHand/app/src/main/res/drawable/customborder.xml" value="0.536" />
         <entry key="..\:/Users/nhaak/AndroidStudioProjects/PFD_HelpingHand/app/src/main/res/drawable/roundedrectangle.xml" value="0.290625" />
+        <entry key="..\:/Users/nhaak/AndroidStudioProjects/PFD_HelpingHand/app/src/main/res/font/roboto_medium.xml" value="0.17395833333333333" />
+        <entry key="..\:/Users/nhaak/AndroidStudioProjects/PFD_HelpingHand/app/src/main/res/layout/activity_add_medication_button.xml" value="0.4426229508196721" />
+        <entry key="..\:/Users/nhaak/AndroidStudioProjects/PFD_HelpingHand/app/src/main/res/layout/activity_caregiver_main.xml" value="0.14375" />
         <entry key="..\:/Users/nhaak/AndroidStudioProjects/PFD_HelpingHand/app/src/main/res/layout/activity_medappt_alarm.xml" value="0.4" />
         <entry key="..\:/Users/nhaak/AndroidStudioProjects/PFD_HelpingHand/app/src/main/res/layout/activity_medication_alarm.xml" value="0.176" />
+        <entry key="..\:/Users/nhaak/AndroidStudioProjects/PFD_HelpingHand/app/src/main/res/layout/activity_weekly_appointment.xml" value="0.27447916666666666" />
         <entry key="..\:/Users/nhaak/AndroidStudioProjects/PFD_HelpingHand/app/src/main/res/layout/activity_weekly_medication.xml" value="0.23072916666666668" />
         <entry key="..\:/Users/nhaak/AndroidStudioProjects/PFD_HelpingHand/app/src/main/res/layout/appointment_item.xml" value="0.27447916666666666" />
         <entry key="..\:/Users/nhaak/AndroidStudioProjects/PFD_HelpingHand/app/src/main/res/layout/medication_item.xml" value="0.36626506024096384" />

@@ -156,9 +156,7 @@ public class SignUpElderlyActivity extends AppCompatActivity {
 
                             eList.add(new EmergencyPerson(contactName, contactPhone));
 
-                            Medication m = new Medication("ADHD", "Take three times", "Mon");
                             ArrayList<Medication> mList = new ArrayList<Medication>();
-                            mList.add(m);
                             elderly = new Elderly(userID, userFullName, email, phone, password, address, "", eList, mList, new ArrayList<Appointment>(), new ArrayList<String>() );
 
 
