@@ -14,7 +14,10 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.PFDHelpingHand">
         <activity
-            android:name=".AddMedicationButton"
+            android:name=".WeeklyAppointmentActivity"
+            android:exported="false" />
+        <activity
+            android:name=".AddMedication"
             android:exported="false" />
         <activity
             android:name=".ViewCaregivers"

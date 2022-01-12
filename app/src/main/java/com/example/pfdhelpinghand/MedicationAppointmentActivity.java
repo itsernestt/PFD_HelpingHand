@@ -42,6 +42,7 @@ public class MedicationAppointmentActivity extends AppCompatActivity {
         TextView currentDate = findViewById(R.id.medicationCurrentDate);
         Button medicationBackButton = findViewById(R.id.medicationBackButton);
         Button weeklyMedButton = findViewById(R.id.weeklyMedicationButton);
+        Button weeklyApptButton = findViewById(R.id.weeklyAppointmentButton);
 
         fAuth = FirebaseAuth.getInstance();
         fStore = FirebaseFirestore.getInstance();
@@ -61,15 +62,15 @@ public class MedicationAppointmentActivity extends AppCompatActivity {
                 long date = System.currentTimeMillis();
                 SimpleDateFormat sdf = new SimpleDateFormat("EEE");
                 String dateString = sdf.format(date);
-                Log.d("TAG", dateString);
 
-                Toast.makeText(getApplicationContext(), elderly.getFullName(), Toast.LENGTH_LONG).show();
+
+
 
                 List medications = new ArrayList();
                 List appointments = new ArrayList();
                 meds = elderly.getMedList();
                 if (meds.isEmpty()){
-                    Medication m = new Medication("No medications today!", "", "");
+                    Medication m = new Medication("No medications today!","", "", false);
                     medications.add(m);
                 }else{
                     for (Medication m:
@@ -116,6 +117,13 @@ public class MedicationAppointmentActivity extends AppCompatActivity {
         weeklyMedButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 Intent navigateTo = new Intent(MedicationAppointmentActivity.this, com.example.pfdhelpinghand.WeeklyMedicationActivity.class);
+                startActivity(navigateTo);
+            }
+        });
+
+        weeklyApptButton.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                Intent navigateTo = new Intent(MedicationAppointmentActivity.this, com.example.pfdhelpinghand.WeeklyAppointmentActivity.class);
                 startActivity(navigateTo);
             }
         });

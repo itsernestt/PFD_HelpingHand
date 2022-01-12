@@ -4,12 +4,24 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".WeeklyMedicationActivity">
+    tools:context=".WeeklyAppointmentActivity">
 
-    <Button
-        android:id="@+id/weeklyMedicationBackButton"
+    <TextView
+        android:id="@+id/weeklyMedHeader2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:text="All Appointments"
+        android:textSize="20sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/weeklyApptBackButton" />
+
+    <Button
+        android:id="@+id/weeklyApptBackButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="5dp"
         android:text="Back"
         android:textColor="#000000"
         app:backgroundTint="#00FFFFFF"
@@ -22,35 +34,12 @@
         app:strokeColor="#000000"
         app:strokeWidth="2dp" />
 
-    <TextView
-        android:id="@+id/weeklyMedHeader"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="4dp"
-        android:text="Weekly Medications"
-        android:textSize="20sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/weeklyMedicationBackButton" />
-
-    <Button
-        android:id="@+id/EditMedBtn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:text="Edit"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/allMedsRV" />
-
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/allMedsRV"
+        android:id="@+id/allApptsRV"
         android:layout_width="302dp"
         android:layout_height="411dp"
         android:layout_marginTop="10dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/weeklyMedHeader" />
-
-
+        app:layout_constraintTop_toBottomOf="@+id/weeklyMedHeader2" />
 </androidx.constraintlayout.widget.ConstraintLayout>
