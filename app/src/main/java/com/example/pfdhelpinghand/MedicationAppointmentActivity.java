@@ -31,16 +31,15 @@ public class MedicationAppointmentActivity extends AppCompatActivity {
     Elderly elderly;
     ArrayList<Medication> meds;
     ArrayList<Appointment> appts;
-    RecyclerView recyclerView;
+    RecyclerView medRecyclerView;
+    RecyclerView apptRecyclerView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_medication_alarm);
+        setContentView(R.layout.activity_medappt_alarm);
 
         TextView currentDate = findViewById(R.id.medicationCurrentDate);
-        TextView medicationListTextView = findViewById(R.id.medicationListTV);
-        TextView appointmentListTextView = findViewById(R.id.appointmentListTV);
         Button medicationBackButton = findViewById(R.id.medicationBackButton);
         Button weeklyMedButton = findViewById(R.id.weeklyMedicationButton);
 
@@ -51,7 +50,8 @@ public class MedicationAppointmentActivity extends AppCompatActivity {
         appts = new ArrayList<Appointment>();
 
         String userID = user.getUid();
-        recyclerView = findViewById(R.id.recyclerView1);
+        medRecyclerView = findViewById(R.id.recyclerView1);
+        apptRecyclerView = findViewById(R.id.recyclerView2);
         DocumentReference docRef = fStore.collection("Elderly").document(userID);
         Log.d("TAG", String.valueOf(docRef));
         docRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
@@ -66,34 +66,44 @@ public class MedicationAppointmentActivity extends AppCompatActivity {
                 Toast.makeText(getApplicationContext(), elderly.getFullName(), Toast.LENGTH_LONG).show();
 
                 List medications = new ArrayList();
+                List appointments = new ArrayList();
                 meds = elderly.getMedList();
-                for (Medication m:
-                     meds) {
-                    String day = m.getDay();
-                    if (day.equals(dateString)){
-                        medications.add(m);
+                if (meds.isEmpty()){
+                    Medication m = new Medication("No medications today!", "", "");
+                    medications.add(m);
+                }else{
+                    for (Medication m:
+                            meds) {
+                        String day = m.getDay();
+                        if (day.equals(dateString)){
+                            medications.add(m);
+                        }
                     }
                 }
 
+
                 appts = elderly.getApptList();
-                for (Appointment a:
-                appts){
-                    if (a.day.equals(dateString)){
-                        appointmentListTextView.append("\nAppointment name: "+ a.apptName
-                                + "\nLocation: " + a.location + "\nDay: " + a.day);
+                if (appts.isEmpty()){
+                    Appointment a = new Appointment("No appointments today!","","");
+                    appointments.add(a);
+                }else{
+                    for (Appointment a:
+                            appts){
+                        if (a.day.equals(dateString)){
+                            appointments.add(a);
+                        }
                     }
                 }
 
                 MedAdapter medAdapter = new MedAdapter(medications);
-
-                recyclerView.setAdapter(medAdapter);
-
+                ApptAdapter apptAdapter = new ApptAdapter(appointments);
+                medRecyclerView.setAdapter(medAdapter);
+                apptRecyclerView.setAdapter(apptAdapter);
             }
         });
 
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        RecyclerView.ItemDecoration itemDecoration = new DividerItemDecoration(this, DividerItemDecoration.VERTICAL);
-        recyclerView.addItemDecoration(itemDecoration);
+        medRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+        apptRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         setCurrentDay(currentDate);
 
         medicationBackButton.setOnClickListener(new View.OnClickListener() {
