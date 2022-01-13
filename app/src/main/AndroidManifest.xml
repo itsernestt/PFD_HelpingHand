@@ -14,7 +14,10 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.PFDHelpingHand">
         <activity
-            android:name=".AddMedicationButton"
+            android:name=".WeeklyAppointmentActivity"
+            android:exported="false" />
+        <activity
+            android:name=".AddMedication"
             android:exported="false" />
         <activity
             android:name=".ViewCaregivers"
@@ -26,7 +29,7 @@
             android:name=".SignUpElderlyActivity"
             android:exported="false" />
         <activity
-            android:name=".MedicationAlarmActivity"
+            android:name=".MedicationAppointmentActivity"
             android:exported="false" />
         <activity
             android:name=".SignUpMainActivity"
@@ -50,6 +53,10 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <meta-data
+            android:name="preloaded_fonts"
+            android:resource="@array/preloaded_fonts" />
     </application>
 
 </manifest>

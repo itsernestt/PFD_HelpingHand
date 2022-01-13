@@ -5,7 +5,9 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#EBFFEF"
-    tools:context=".MedicationAlarmActivity">
+    android:fadeScrollbars="false"
+    android:verticalScrollbarPosition="defaultPosition"
+    tools:context=".MedicationAppointmentActivity">
 
     <Button
         android:id="@+id/medicationBackButton"
@@ -25,7 +27,7 @@
         android:id="@+id/medicationCurrentDate"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="10dp"
         android:fontFamily="sans-serif-black"
         android:textColor="#000000"
         android:textSize="20sp"
@@ -50,25 +52,26 @@
         android:id="@+id/appointmentListTV"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="25dp"
+        android:layout_marginTop="5dp"
         android:maxLines="4"
         android:scrollbars="vertical"
         android:text="Appointments for today:"
         android:textColor="#000000"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/medicationListTV" />
+        app:layout_constraintTop_toBottomOf="@+id/recyclerView1" />
 
     <Button
         android:id="@+id/weeklyMedicationButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="15dp"
         android:text="View Weekly Medications"
         android:textColor="#000000"
         app:backgroundTint="#FFFFFF"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/appointmentListTV"
+        app:layout_constraintTop_toBottomOf="@id/recyclerView2"
         app:strokeColor="#000000"
         app:strokeWidth="1dp" />
 
@@ -76,13 +79,42 @@
         android:id="@+id/weeklyAppointmentButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="15dp"
+        android:layout_marginTop="10dp"
         android:text="View Weekly Appointments"
         android:textColor="#000000"
         app:backgroundTint="#FFFFFF"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.496"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/weeklyMedicationButton"
         app:strokeColor="#100F0F"
         app:strokeWidth="1dp" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerView1"
+        android:layout_width="362dp"
+        android:layout_height="120dp"
+        android:layout_marginTop="16dp"
+        android:scrollbarSize="5dp"
+        android:scrollbarThumbVertical="@android:color/darker_gray"
+        android:scrollbars="vertical"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.555"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/medicationListTV" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerView2"
+        android:layout_width="363dp"
+        android:layout_height="120dp"
+        android:layout_marginTop="16dp"
+        android:scrollbarSize="5dp"
+        android:scrollbarThumbVertical="@android:color/darker_gray"
+        android:scrollbars="vertical"
+        app:layout_constraintBottom_toTopOf="@+id/weeklyMedicationButton"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.555"
+        app:layout_constraintStart_toStartOf="parent"
+
+        app:layout_constraintTop_toBottomOf="@+id/appointmentListTV" />
 </androidx.constraintlayout.widget.ConstraintLayout>
