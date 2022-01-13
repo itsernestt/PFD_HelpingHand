@@ -14,6 +14,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.PFDHelpingHand">
         <activity
+            android:name=".CaregiverSetting"
+            android:exported="false" />
+        <activity
             android:name=".WeeklyAppointmentActivity"
             android:exported="false" />
         <activity
