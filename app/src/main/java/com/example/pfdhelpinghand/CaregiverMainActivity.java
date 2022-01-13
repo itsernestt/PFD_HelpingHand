@@ -15,6 +15,8 @@ import android.os.Handler;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
@@ -24,6 +26,7 @@ import android.widget.Toast;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
@@ -51,6 +54,10 @@ public class CaregiverMainActivity extends AppCompatActivity {
     ArrayList<Elderly> elderlyList;
     Elderly elderly;
 
+    //Float button animation
+    FloatingActionButton addBut, settingBut, pairupBut;
+    Animation openAni, closeAni, rotateForward, rotateBackward;
+    boolean isOpen = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,14 +70,42 @@ public class CaregiverMainActivity extends AppCompatActivity {
         user = FirebaseAuth.getInstance().getCurrentUser();
         userID = user.getUid();
 
+        // initialise all the lists
         elderlyIDList = new ArrayList<String>();
         elderlyList = new ArrayList<Elderly>();
 
+        // Main components on the page
         welcomeBanner = findViewById(R.id.welcomeBanner);
         caregiverViewElderly = findViewById(R.id.caregiverViewElderly);
         caregiverTest = findViewById(R.id.caregiverTest);
+        addBut = findViewById(R.id.caregiver_addBut);
+        settingBut = findViewById(R.id.caregiver_settingBut);
+        pairupBut = findViewById(R.id.caregiver_pairupBut);
+
+        // Animation
+        openAni = AnimationUtils.loadAnimation(this, R.anim.floatbut_open);
+        closeAni = AnimationUtils.loadAnimation(this, R.anim.floatbut_close);
+        rotateForward = AnimationUtils.loadAnimation(this, R.anim.rotate_forward);
+        rotateBackward = AnimationUtils.loadAnimation(this, R.anim.rotate_backward);
+
+        addBut.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View view)
+            {
+                animation();
+            }
+        });
+
+        settingBut.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View view)
+            {
+                startActivity(new Intent(CaregiverMainActivity.this, CaregiverSetting.class));
+            }
+        });
 
 
+        // Connect to firestore
         fStore.collection("Caregiver").document(userID)
                 .addSnapshotListener(new EventListener<DocumentSnapshot>() {
                     @Override
@@ -163,6 +198,28 @@ public class CaregiverMainActivity extends AppCompatActivity {
 
 
         return elderly;
+    }
+
+    // For the floating button
+    private void animation(){
+        if (isOpen)
+        {
+            addBut.startAnimation(rotateForward);
+            settingBut.startAnimation(closeAni);
+            pairupBut.startAnimation(closeAni);
+            settingBut.setClickable(false);
+            pairupBut.setClickable(false);
+            isOpen=false;
+
+        }
+        else{
+            addBut.startAnimation(rotateBackward);
+            settingBut.startAnimation(openAni);
+            pairupBut.startAnimation(openAni);
+            settingBut.setClickable(true);
+            pairupBut.setClickable(true);
+            isOpen=true;
+        }
     }
 
 
@@ -290,11 +347,7 @@ public class CaregiverMainActivity extends AppCompatActivity {
         myDialog.show();
     }
 
-    public void logout(View view) {
-        FirebaseAuth.getInstance().signOut();
-        startActivity(new Intent(getApplicationContext(), LoginActivity.class));
-        finish();
-    }
+
 
 
     private Runnable mRefreshPage = new Runnable() {
