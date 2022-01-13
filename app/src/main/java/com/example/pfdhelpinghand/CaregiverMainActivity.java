@@ -1,12 +1,14 @@
 package com.example.pfdhelpinghand;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.Dialog;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.nfc.Tag;
 import android.os.Bundle;
 
 import android.os.Handler;
@@ -26,7 +28,10 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -42,8 +47,9 @@ public class CaregiverMainActivity extends AppCompatActivity {
     Caretaker caretaker;
     Dialog myDialog;
     String userID;
+    ArrayList<String> elderlyIDList;
     ArrayList<Elderly> elderlyList;
-
+    Elderly elderly;
 
 
     @Override
@@ -55,50 +61,110 @@ public class CaregiverMainActivity extends AppCompatActivity {
 
         // Get the current user if he/she has already signed in
         user = FirebaseAuth.getInstance().getCurrentUser();
+        userID = user.getUid();
+
+        elderlyIDList = new ArrayList<String>();
         elderlyList = new ArrayList<Elderly>();
 
         welcomeBanner = findViewById(R.id.welcomeBanner);
         caregiverViewElderly = findViewById(R.id.caregiverViewElderly);
         caregiverTest = findViewById(R.id.caregiverTest);
 
-        userID = user.getUid();
 
-        DocumentReference docRef = fStore.collection("Caregiver").document(userID);
-        docRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-            @Override
-            public void onSuccess(DocumentSnapshot documentSnapshot)
-            {
-                caretaker = documentSnapshot.toObject(Caretaker.class);
-                welcomeBanner.setText(caretaker.getFullName());
-                elderlyList = caretaker.getElderlyList();
+        fStore.collection("Caregiver").document(userID)
+                .addSnapshotListener(new EventListener<DocumentSnapshot>() {
+                    @Override
+                    public void onEvent(@Nullable DocumentSnapshot documentSnapshot, @Nullable FirebaseFirestoreException e) {
+                        if (e != null) {
+                            System.err.println("Listen failed: " + e);
+                            return;
+                        }
 
-                if (elderlyList.size() >= 1)
-                {
-                    for (Elderly e : elderlyList)
-                    {
-                        Integer count = elderlyList.indexOf(e) + 1;
+                        if (documentSnapshot != null && documentSnapshot.exists()) {
 
-                        caregiverViewElderly.setText(caregiverViewElderly.getText() + "\n" +
-                                                        "Elderly " + Integer.toString(count) +  ":" + "\n" +
-                                                        "Name: " + e.getFullName() + "\n" +
-                                                        "Phone number: " + e.getPhoneNumber() + "\n" +
-                                                        "Address: " + e.getAddress() + "\n" +
-                                                        "Current Location: " + e.getCurrentLocation() + "\n");
+
+                            caretaker = documentSnapshot.toObject(Caretaker.class);
+
+                            welcomeBanner.setText(caretaker.getFullName());
+                            elderlyIDList = caretaker.getElderlyList();
+
+
+                            if (elderlyIDList.size() >= 1)
+                            {
+                                for (String eID : elderlyIDList)
+                                {
+
+                                    Integer count = elderlyIDList.indexOf(eID) + 1;
+
+
+                                    fStore.collection("Elderly").document(eID)
+                                            .addSnapshotListener(new EventListener<DocumentSnapshot>() {
+                                                @Override
+                                                public void onEvent(@Nullable DocumentSnapshot documentSnapshot, @Nullable FirebaseFirestoreException e) {
+                                                    if (e != null) {
+                                                        System.err.println("Listen failed: " + e);
+                                                        return;
+                                                    }
+
+                                                    if (documentSnapshot != null && documentSnapshot.exists()) {
+
+                                                        elderly = documentSnapshot.toObject(Elderly.class);
+
+                                                        elderlyList.add(elderly);
+
+                                                        caregiverViewElderly.setText(
+                                                                "Elderly " + Integer.toString(count) +  ":" + "\n" +
+                                                                "Name: " + elderly.getFullName() + "\n" +
+                                                                "Phone number: " + elderly.getPhoneNumber() + "\n" +
+                                                                "Address: " + elderly.getAddress() + "\n" +
+                                                                "Current Location: " + elderly.getCurrentLocation() + "\n");
+
+
+                                                    }
+                                                    else {
+                                                        System.out.print("Current data: null");
+                                                    }
+                                                }
+                                            });
+
+
+
+                                }
+
+                            }
+
+
+                            else
+                            {
+                                caregiverViewElderly.setText("No elderly account linked, please use the pair up button");
+                            }
+
+
+
+
+
+                        }
+
+                        else {
+                            System.out.print("Current data: null");
+                        }
+
                     }
-                }
-                else
-                {
-                    caregiverViewElderly.setText("No elderly account linked, please use the pair up button");
-                }
 
 
+                });
 
-            }
-        });
 
         myDialog = new Dialog(this);
 
     }
+
+    private Elderly getElderlyInformation(String e) {
+
+
+        return elderly;
+    }
+
 
     private Handler mHandler = new Handler();
     public void ShowPopup(View v) {
@@ -141,22 +207,20 @@ public class CaregiverMainActivity extends AppCompatActivity {
                                 pairUpId.setText("");
                                 pairupMessage.setText("Pair up successfully! ");
 
-                                //Initialise a new elderly object
                                 Elderly elderly = documentSnapshot.toObject(Elderly.class);
 
                                 //Check if the elderly object has already been added
                                 Boolean isContain = false;
-                                String elderlyID = elderly.getID();
-                                for (Elderly e : elderlyList)
+                                for (String e : elderlyIDList)
                                 {
-                                    if (e.getID().equals(elderlyID))
+                                    if (e.equals(elderId))
                                     {
                                         isContain = true;
                                     }
                                 }
                                 if (!isContain)
                                 {
-                                    elderlyList.add(elderly);
+                                    elderlyIDList.add(elderId);
                                 }
                                 else{
                                     pairupMessage.setText("The elderly has already been added!");
@@ -185,7 +249,7 @@ public class CaregiverMainActivity extends AppCompatActivity {
 
 
                                 // Updates the elderly on the firestore
-                                fStore.collection("Elderly").document(elderlyID)
+                                fStore.collection("Elderly").document(elderId)
                                         .set(elderly)
                                         .addOnSuccessListener(new OnSuccessListener<Void>() {
                                             @Override
