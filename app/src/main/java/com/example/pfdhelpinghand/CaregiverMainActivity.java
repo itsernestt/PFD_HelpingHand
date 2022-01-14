@@ -29,13 +29,13 @@ import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import java.util.ArrayList;
-
+import java.util.List;
 
 
 public class CaregiverMainActivity extends AppCompatActivity {
 
     // here
-    TextView welcomeBanner, caregiverViewElderly, caregiverTest;
+    TextView caregiverTest, caregiverViewElderly;
     FirebaseUser user;
     FirebaseFirestore fStore;
     Caretaker caretaker;
@@ -70,9 +70,9 @@ public class CaregiverMainActivity extends AppCompatActivity {
         elderlyList = new ArrayList<Elderly>();
 
         // Main components on the page
-        welcomeBanner = findViewById(R.id.welcomeBanner);
-        caregiverViewElderly = findViewById(R.id.caregiverViewElderly);
+
         caregiverTest = findViewById(R.id.caregiverTest);
+        caregiverViewElderly = findViewById(R.id.caregiverViewElderly);
         addBut = findViewById(R.id.caregiver_addBut);
         settingBut = findViewById(R.id.caregiver_settingBut);
         pairupBut = findViewById(R.id.caregiver_pairupBut);
@@ -119,7 +119,7 @@ public class CaregiverMainActivity extends AppCompatActivity {
 
                             caretaker = documentSnapshot.toObject(Caretaker.class);
 
-                            welcomeBanner.setText(caretaker.getFullName());
+
                             elderlyIDList = caretaker.getElderlyList();
 
 
@@ -145,16 +145,7 @@ public class CaregiverMainActivity extends AppCompatActivity {
                                                         elderly = documentSnapshot.toObject(Elderly.class);
 
                                                         elderlyList.add(elderly);
-
-
-
-                                                        ElderlyRecyclerAdapter eAdapter = new ElderlyRecyclerAdapter(elderlyList);
-                                                        caregiverTest.setText(elderlyList.get(0).getFullName());
-                                                        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getApplicationContext());
-                                                        recyclerView.setLayoutManager(layoutManager);
-                                                        recyclerView.setItemAnimator(new DefaultItemAnimator());
-                                                        recyclerView.setAdapter(eAdapter);
-
+                                                        setAdapter();
 
 
                                                     }
@@ -194,12 +185,33 @@ public class CaregiverMainActivity extends AppCompatActivity {
 
         myDialog = new Dialog(this);
 
+
+
+
+
+
     }
 
-    private Elderly getElderlyInformation(String e) {
 
+    public void setAdapter()
+    {
+        ElderlyRecyclerAdapter eAdapter = new ElderlyRecyclerAdapter(elderlyList);
+        caregiverTest.setText(elderlyList.get(0).getFullName());
+        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getApplicationContext());
+        recyclerView.setLayoutManager(layoutManager);
+        recyclerView.setItemAnimator(new DefaultItemAnimator());
+        recyclerView.setAdapter(eAdapter);
+    }
 
-        return elderly;
+    //Testing!!
+    public void addElderlyRecord()
+    {
+        ArrayList<EmergencyPerson> ePerson = new ArrayList<EmergencyPerson>();
+        ePerson.add(new EmergencyPerson("Chance123", "98284455"));
+        elderlyList.add(new Elderly("12345", "Chen Han", "c@gmail.com","982955865",
+                "12345678", "Clementi", "Clementi mall", ePerson,
+                new ArrayList<Medication>(), new ArrayList<Appointment>(), new ArrayList<String>()));
+
     }
 
 

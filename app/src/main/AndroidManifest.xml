@@ -42,7 +42,8 @@
             android:exported="false" />
         <activity
             android:name=".CaregiverMainActivity"
-            android:exported="false" />
+            android:exported="false"
+            />
         <activity
             android:name=".WeeklyMedicationActivity"
             android:exported="false" />
