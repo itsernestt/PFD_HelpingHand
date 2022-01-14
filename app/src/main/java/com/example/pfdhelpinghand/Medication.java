@@ -18,4 +18,5 @@ public class Medication {
     public String getDay(){
         return this.day;
     }
+
 }

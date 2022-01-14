@@ -36,7 +36,8 @@
         <entry key="..\:/Users/nhaak/AndroidStudioProjects/PFD_HelpingHand/app/src/main/res/layout/medication_item.xml" value="0.36626506024096384" />
         <entry key="app/src/main/res/drawable-v24/ic_launcher_foreground.xml" value="0.14895833333333333" />
         <entry key="app/src/main/res/drawable/ic_launcher_background.xml" value="0.14895833333333333" />
-        <entry key="app/src/main/res/layout/activity_caregiver_main.xml" value="0.21344452335294958" />
+        <entry key="app/src/main/res/layout/activity_add_medication_button.xml" value="0.30611442839661807" />
+        <entry key="app/src/main/res/layout/activity_caregiver_main.xml" value="0.16944444444444445" />
         <entry key="app/src/main/res/layout/activity_elderly_settings.xml" value="0.13340691596871088" />
         <entry key="app/src/main/res/layout/activity_help_lost.xml" value="0.1" />
         <entry key="app/src/main/res/layout/activity_login.xml" value="0.2365369678962225" />
@@ -48,6 +49,7 @@
         <entry key="app/src/main/res/layout/activity_sign_up_main.xml" value="0.18614130434782608" />
         <entry key="app/src/main/res/layout/activity_view_caregivers.xml" value="0.12454710144927536" />
         <entry key="app/src/main/res/layout/activity_weekly_medication.xml" value="0.24725391478014502" />
+        <entry key="app/src/main/res/layout/elderly_item.xml" value="0.28853026479404126" />
         <entry key="app/src/main/res/layout/popup_window.xml" value="0.21569325698911973" />
       </map>
     </option>
@@ -57,5 +59,12 @@
   </component>
   <component name="ProjectType">
     <option name="id" value="Android" />
+  </component>
+  <component name="VisualizationToolProject">
+    <option name="state">
+      <ProjectState>
+        <option name="scale" value="0.17487179487179488" />
+      </ProjectState>
+    </option>
   </component>
 </project>
