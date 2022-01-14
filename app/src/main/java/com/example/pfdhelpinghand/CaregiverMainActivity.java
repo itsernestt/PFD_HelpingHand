@@ -154,7 +154,6 @@ public class CaregiverMainActivity extends AppCompatActivity {
                                                                 "Address: " + elderly.getAddress() + "\n" +
                                                                 "Current Location: " + elderly.getCurrentLocation() + "\n");
 
-
                                                     }
                                                     else {
                                                         System.out.print("Current data: null");
