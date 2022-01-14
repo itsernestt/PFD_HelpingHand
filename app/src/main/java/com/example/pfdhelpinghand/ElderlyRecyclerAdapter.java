@@ -5,6 +5,7 @@ import androidx.annotation.NonNull;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 import java.util.ArrayList;
 import android.view.ViewGroup;
@@ -19,22 +20,26 @@ public class ElderlyRecyclerAdapter extends RecyclerView.Adapter<ElderlyRecycler
     }
 
     public class MyViewHolder extends RecyclerView.ViewHolder{
-        TextView eldelyName, elderlyPhone, elderlyMed, elderlyAppt, elderlyLoc;
-        Button viewMed, viewAppt, viewLoc, phonecall;
+        TextView elderlyIndex, eldelyName, elderlyPhone, elderlyMed, elderlyAppt, elderlyLoc;
+        Button viewMed, viewAppt, viewLoc;
+        ImageView phonecall;
 
         public MyViewHolder(final View view)
         {
             super(view);
+            elderlyIndex = view.findViewById(R.id.elderlyItem_index);
             eldelyName = view.findViewById(R.id.elderlyItem_name);
             elderlyPhone = view.findViewById(R.id.elderlyItem_phone);
             elderlyMed = view.findViewById(R.id.elderlyItem_med);
             elderlyAppt = view.findViewById(R.id.elderlyItem_appt);
             elderlyLoc = view.findViewById(R.id.elderlyItem_location);
-
             viewMed = view.findViewById(R.id.elderlyItem_medBut);
             viewAppt = view.findViewById(R.id.elderlyItem_apptBut);
             viewLoc = view.findViewById(R.id.elderlyItem_locationBut);
+
             phonecall = view.findViewById(R.id.elderlyItem_phonecall);
+
+
 
 
         }
@@ -53,25 +58,45 @@ public class ElderlyRecyclerAdapter extends RecyclerView.Adapter<ElderlyRecycler
     //Here can change the text of the text holder
     @Override
     public void onBindViewHolder(@NonNull ElderlyRecyclerAdapter.MyViewHolder holder, int position) {
+
+        holder.elderlyIndex.setText(String.valueOf(position + 1));
+
         String eName = elderlyArrayList.get(position).getFullName();
         holder.eldelyName.setText(eName);
+
 
         String ePhone = elderlyArrayList.get(position).getPhoneNumber();
         holder.elderlyPhone.setText(ePhone);
 
+
         ArrayList<Medication> mList = elderlyArrayList.get(position).getMedList();
 
+
         // ---To do: get the lastest med record according to the current date time---
-        String eMed = mList.get(0).medName + mList.get(0).medDescription;
-        holder.elderlyMed.setText(eMed);
+        if (mList.size() == 0)
+        {
+            holder.elderlyMed.setText("No record found");
+        }
+        else {
+            holder.elderlyMed.setText(mList.get(0).medName + mList.get(0).medDescription);
+        }
 
         ArrayList<Appointment> apptList = elderlyArrayList.get(position).getApptList();
         // ---To do: same as above task---
-        String eAppt = apptList.get(0).apptName + apptList.get(0).location;
-        holder.elderlyAppt.setText(eAppt);
+        if (apptList.size() == 0)
+        {
+            holder.elderlyAppt.setText("No record found");
+        }
+        else{
+            holder.elderlyAppt.setText(apptList.get(0).apptName + apptList.get(0).location);
+        }
+
 
         String eLocation = elderlyArrayList.get(position).getCurrentLocation();
         holder.elderlyLoc.setText(eLocation);
+
+
+
 
 
     }
