@@ -6,6 +6,16 @@
     android:layout_height="match_parent"
     tools:context=".CaregiverMainActivity">
 
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/elderlyRecyclerView"
+        android:layout_width="393dp"
+        android:layout_height="555dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.895" />
+
     <TextView
         android:id="@+id/welcomeBanner"
         android:layout_width="309dp"
@@ -15,21 +25,21 @@
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.725"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.009" />
+        app:layout_constraintVertical_bias="0.005" />
 
     <TextView
         android:id="@+id/caregiverViewElderly"
-        android:layout_width="286dp"
-        android:layout_height="301dp"
+        android:layout_width="321dp"
+        android:layout_height="119dp"
         android:textSize="20sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.263"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.263" />
+        app:layout_constraintVertical_bias="0.111" />
 
     <TextView
         android:id="@+id/caregiverTest"

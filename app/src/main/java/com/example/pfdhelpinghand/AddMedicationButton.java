@@ -9,6 +9,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -38,7 +39,7 @@ public class AddMedicationButton extends AppCompatActivity {
 
         EditText editName = findViewById(R.id.medNameInput);
         EditText editDes = findViewById(R.id.medDescriptionInput);
-        EditText editDay = findViewById(R.id.medDayInput);
+        Spinner editDay = findViewById(R.id.medDayInput);
         addBtn = findViewById(R.id.medAddBtn);
 
         fAuth = FirebaseAuth.getInstance();
@@ -60,9 +61,10 @@ public class AddMedicationButton extends AppCompatActivity {
                     public void onClick(View v) {
                         String name = editName.getText().toString().trim();
                         String des = editDes.getText().toString().trim();
-                        String day = editDay.getText().toString().trim();
+                        String day = editDay.getTag().toString().trim();
 
-                        Medication newMed = new Medication(name, des, day);
+
+                        Medication newMed = new Medication(name, des, day, true);
 
                         mList.add(newMed);
                         docRef.update("medList", mList)

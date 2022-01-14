@@ -19,7 +19,4 @@ public class Medication {
         return this.day;
     }
 
-    public String getDay(){
-        return this.day;
-    }
 }

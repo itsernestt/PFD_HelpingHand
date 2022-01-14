@@ -1,16 +1,15 @@
 package com.example.pfdhelpinghand;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-
+import androidx.recyclerview.widget.DefaultItemAnimator;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import android.app.Dialog;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
-import android.nfc.Tag;
 import android.os.Bundle;
-
 import android.os.Handler;
 import android.text.TextUtils;
 import android.util.Log;
@@ -19,13 +18,8 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
-
-import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -34,10 +28,7 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
-import com.google.firebase.firestore.QuerySnapshot;
-
 import java.util.ArrayList;
-import java.util.List;
 
 
 
@@ -58,6 +49,10 @@ public class CaregiverMainActivity extends AppCompatActivity {
     FloatingActionButton addBut, settingBut, pairupBut;
     Animation openAni, closeAni, rotateForward, rotateBackward;
     boolean isOpen = false;
+
+    //For RecyclerView
+    private RecyclerView recyclerView;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -104,6 +99,10 @@ public class CaregiverMainActivity extends AppCompatActivity {
             }
         });
 
+        //For Recycler View Adapter
+        recyclerView = findViewById(R.id.elderlyRecyclerView);
+
+
 
         // Connect to firestore
         fStore.collection("Caregiver").document(userID)
@@ -147,12 +146,16 @@ public class CaregiverMainActivity extends AppCompatActivity {
 
                                                         elderlyList.add(elderly);
 
-                                                        caregiverViewElderly.setText(
-                                                                "Elderly " + Integer.toString(count) +  ":" + "\n" +
-                                                                "Name: " + elderly.getFullName() + "\n" +
-                                                                "Phone number: " + elderly.getPhoneNumber() + "\n" +
-                                                                "Address: " + elderly.getAddress() + "\n" +
-                                                                "Current Location: " + elderly.getCurrentLocation() + "\n");
+
+
+                                                        ElderlyRecyclerAdapter eAdapter = new ElderlyRecyclerAdapter(elderlyList);
+                                                        caregiverTest.setText(elderlyList.get(0).getFullName());
+                                                        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getApplicationContext());
+                                                        recyclerView.setLayoutManager(layoutManager);
+                                                        recyclerView.setItemAnimator(new DefaultItemAnimator());
+                                                        recyclerView.setAdapter(eAdapter);
+
+
 
 
                                                     }
@@ -199,6 +202,7 @@ public class CaregiverMainActivity extends AppCompatActivity {
 
         return elderly;
     }
+
 
     // For the floating button
     private void animation(){
