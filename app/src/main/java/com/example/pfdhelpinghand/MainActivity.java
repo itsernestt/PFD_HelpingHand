@@ -9,7 +9,6 @@ import android.graphics.PorterDuff;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.CountDownTimer;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
@@ -27,8 +26,6 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
-
-import org.w3c.dom.Document;
 
 public class MainActivity extends AppCompatActivity {
     FirebaseAuth fAuth;
@@ -75,7 +72,7 @@ public class MainActivity extends AppCompatActivity {
         Button medAlarmButton = findViewById(R.id.medAlarmButton);
         medAlarmButton.setOnClickListener(new View.OnClickListener(){
             public void onClick(View v){
-                Intent navigateToMedAlarmPage = new Intent(MainActivity.this,MedicationAlarmActivity.class);
+                Intent navigateToMedAlarmPage = new Intent(MainActivity.this, MedicationAppointmentActivity.class);
                 startActivity(navigateToMedAlarmPage);
             }
 
