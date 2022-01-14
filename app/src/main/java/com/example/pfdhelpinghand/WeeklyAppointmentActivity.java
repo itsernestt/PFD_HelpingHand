@@ -43,6 +43,12 @@ public class WeeklyAppointmentActivity extends AppCompatActivity {
             @Override
             public void onSuccess(DocumentSnapshot documentSnapshot) {
                 elderly = documentSnapshot.toObject(Elderly.class);
+
+                appts = elderly.getApptList();
+                for (Appointment a: appts){
+                    // convert to datetime ? i think
+                    // add to list and sort
+                }
             }
         });
 
@@ -54,6 +60,14 @@ public class WeeklyAppointmentActivity extends AppCompatActivity {
                 startActivity(navigateTo);
             }
         });
-        // TODO: think about datetime format -> string, and data input
+
+        Button backBtn = findViewById(R.id.weeklyApptBackButton);
+        backBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent navigate = new Intent(WeeklyAppointmentActivity.this, MedicationAppointmentActivity.class);
+                startActivity(navigate);
+            }
+        });
     }
 }

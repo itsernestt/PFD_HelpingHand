@@ -1,9 +1,11 @@
 package com.example.pfdhelpinghand;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.format.DateFormat;
 import android.view.View;
@@ -12,15 +14,32 @@ import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.TimePicker;
+import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
+
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.TimeZone;
 
 public class AddAppointment extends AppCompatActivity {
 
-    Button dateBtn, timeBtn;
+    Button dateBtn, createApptBtn;
     TextView dateTV, timeTV;
-    EditText elderlyIDInput, locationInput;
+    EditText elderlyIDInput, locationInput, apptNameInput;
+    FirebaseAuth fAuth;
+    FirebaseUser user;
+    FirebaseFirestore fStore;
+    Elderly elderly;
+    Calendar finalCalendar = Calendar.getInstance();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,6 +51,63 @@ public class AddAppointment extends AppCompatActivity {
         timeTV = findViewById(R.id.timeTV);
         elderlyIDInput = findViewById(R.id.elderlyIDInput);
         locationInput = findViewById(R.id.locationInput);
+        createApptBtn = findViewById(R.id.createApptBtn);
+        apptNameInput = findViewById(R.id.apptNameInput);
+
+        fAuth = FirebaseAuth.getInstance();
+        fStore = FirebaseFirestore.getInstance();
+        user = fAuth.getCurrentUser();
+
+        String userID = user.getUid();
+        DocumentReference docRef = fStore.collection("Elderly").document(userID);
+
+        docRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+            @Override
+            public void onSuccess(DocumentSnapshot documentSnapshot) {
+                elderly = documentSnapshot.toObject(Elderly.class);
+                ArrayList<Appointment> apptList = elderly.getApptList();
+
+                createApptBtn.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        String apptName = apptNameInput.getText().toString().trim();
+                        String location = locationInput.getText().toString().trim();
+
+//                        String date = dateTV.getText().toString().trim();
+//                        String time = timeTV.getText().toString().trim();
+//                        StringBuilder stringBuilder = new StringBuilder();
+//                        stringBuilder.append(date);
+//                        stringBuilder.append(time);
+                        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-mm-dd hh:mm:ss");
+                        Date date1 = finalCalendar.getTime();
+                        String strDate = dateFormat.format(date1);
+
+
+
+                        Appointment newAppt = new Appointment(apptName, location, strDate);
+
+                        apptList.add(newAppt);
+                        docRef.update("apptList", apptList)
+                                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                    @Override
+                                    public void onSuccess(Void unused) {
+                                        Toast.makeText(AddAppointment.this, "Appointment added!", Toast.LENGTH_SHORT).show();
+                                        Intent navigateTo = new Intent(AddAppointment.this, com.example.pfdhelpinghand.WeeklyAppointmentActivity.class);
+                                        startActivity(navigateTo);
+                                    }
+                                })
+                                .addOnFailureListener(new OnFailureListener() {
+                                    @Override
+                                    public void onFailure(@NonNull Exception e) {
+                                        Toast.makeText(AddAppointment.this, "Doesn't work...", Toast.LENGTH_SHORT).show();
+                                        Intent navigateTo = new Intent(AddAppointment.this, com.example.pfdhelpinghand.WeeklyAppointmentActivity.class);
+                                        startActivity(navigateTo);
+                                    }
+                                });
+                    }
+                });
+            }
+        });
 
         dateBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -58,7 +134,9 @@ public class AddAppointment extends AppCompatActivity {
                 calendar1.set(Calendar.YEAR, year);
                 calendar1.set(Calendar.MONTH, month);
                 calendar1.set(Calendar.DATE, day);
-
+                finalCalendar.set(Calendar.YEAR, year);
+                finalCalendar.set(Calendar.MONTH, month);
+                finalCalendar.set(Calendar.DATE, day);
                 CharSequence dateCharSequence = DateFormat.format("EEEE, dd MMM yyyy", calendar1);
                 dateTV.setText(dateCharSequence);
                 handleTime();
@@ -83,6 +161,8 @@ public class AddAppointment extends AppCompatActivity {
                 Calendar calendar1 = Calendar.getInstance();
                 calendar1.set(Calendar.HOUR, hour);
                 calendar1.set(Calendar.MINUTE, minute);
+                finalCalendar.set(Calendar.HOUR, hour);
+                finalCalendar.set(Calendar.MINUTE, minute);
 
                 CharSequence timeCharSequence = DateFormat.format("hh:mm a", calendar1);
                 timeTV.setText(timeCharSequence);
