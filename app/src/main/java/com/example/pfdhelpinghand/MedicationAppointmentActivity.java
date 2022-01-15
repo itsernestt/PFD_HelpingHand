@@ -70,9 +70,6 @@ public class MedicationAppointmentActivity extends AppCompatActivity {
                 String dateString = sdf.format(date);
                 String dateString2 = sdf2.format(date);
 
-
-
-
                 List medications = new ArrayList();
                 List appointments = new ArrayList();
                 meds = elderly.getMedList();
