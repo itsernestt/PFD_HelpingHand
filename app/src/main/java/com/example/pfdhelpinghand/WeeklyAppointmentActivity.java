@@ -1,6 +1,7 @@
 package com.example.pfdhelpinghand;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
@@ -19,6 +20,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Locale;
 
 public class WeeklyAppointmentActivity extends AppCompatActivity {
@@ -49,22 +51,14 @@ public class WeeklyAppointmentActivity extends AppCompatActivity {
                 elderly = documentSnapshot.toObject(Elderly.class);
 
                 appts = elderly.getApptList();
-                for (Appointment a: appts){
-                    // convert to datetime ? i think
-                    // add to list and sort
-                    String dString = a.getTime().toString();
-                    Calendar cal = Calendar.getInstance();
-                    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.ENGLISH);
-                    try {
-                        cal.setTime(sdf.parse(dString));
-                    } catch (ParseException e) {
-                        e.printStackTrace();
-                    }
+                Collections.sort(appts);
 
-
-                }
+                ApptAdapter apptAdapter = new ApptAdapter(appts);
+                apptsRV.setAdapter(apptAdapter);
             }
         });
+
+        apptsRV.setLayoutManager(new LinearLayoutManager(this));
 
         Button addAppt = findViewById(R.id.editApptBtn);
         addAppt.setOnClickListener(new View.OnClickListener() {
