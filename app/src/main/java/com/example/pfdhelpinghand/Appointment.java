@@ -1,23 +1,26 @@
 package com.example.pfdhelpinghand;
 
-public class Appointment {
+import java.sql.Timestamp;
+
+public class Appointment implements Comparable<Appointment>{
     public String apptName;
     public String location;
-    public String day;
+    public com.google.firebase.Timestamp time;
 
     public Appointment(){}
 
-    public Appointment(String apptName, String location, String day) {
+    public Appointment(String apptName, String location, com.google.firebase.Timestamp time) {
         this.apptName = apptName;
         this.location = location;
-        this.day = day;
+        this.time = time;
     }
 
-    public String getDay(){
-        return day;
+    public com.google.firebase.Timestamp getTime(){
+        return time;
     }
 
-
-
-
+    @Override
+    public int compareTo(Appointment o) {
+        return getTime().compareTo(o.getTime());
+    }
 }
