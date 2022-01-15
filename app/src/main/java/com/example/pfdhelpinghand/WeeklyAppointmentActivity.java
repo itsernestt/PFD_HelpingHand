@@ -15,7 +15,11 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Locale;
 
 public class WeeklyAppointmentActivity extends AppCompatActivity {
     FirebaseAuth fAuth;
@@ -48,6 +52,16 @@ public class WeeklyAppointmentActivity extends AppCompatActivity {
                 for (Appointment a: appts){
                     // convert to datetime ? i think
                     // add to list and sort
+                    String dString = a.getTime().toString();
+                    Calendar cal = Calendar.getInstance();
+                    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.ENGLISH);
+                    try {
+                        cal.setTime(sdf.parse(dString));
+                    } catch (ParseException e) {
+                        e.printStackTrace();
+                    }
+
+
                 }
             }
         });

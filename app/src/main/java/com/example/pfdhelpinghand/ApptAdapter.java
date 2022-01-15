@@ -9,6 +9,8 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.List;
 
 public class ApptAdapter extends RecyclerView.Adapter<ApptAdapter.ApptViewHolder> {
@@ -32,8 +34,21 @@ public class ApptAdapter extends RecyclerView.Adapter<ApptAdapter.ApptViewHolder
     @Override
     public void onBindViewHolder(@NonNull ApptViewHolder holder, int position) {
         Appointment currentAppt = (Appointment) appts.get(position);
+
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(currentAppt.getTime().toDate());
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("hh:mm a, dd MMM yyyy");
+        SimpleDateFormat checker = new SimpleDateFormat("dd/MM/yyyy");
+        String temps = checker.format(calendar.getTime());
+
+        if (temps.equals("01/01/2003")){
+            holder.txtApptDay.setText("");
+        }else{
+            String temp = simpleDateFormat.format(calendar.getTime());
+            holder.txtApptDay.setText(temp);
+        }
+
         holder.txtApptName.setText(currentAppt.apptName);
-        holder.txtApptDay.setText(currentAppt.getDay());
         holder.txtApptLocation.setText(currentAppt.location);
     }
 

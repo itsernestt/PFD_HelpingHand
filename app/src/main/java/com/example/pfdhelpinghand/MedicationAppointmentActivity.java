@@ -14,14 +14,19 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.Timestamp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 public class MedicationAppointmentActivity extends AppCompatActivity {
@@ -61,7 +66,9 @@ public class MedicationAppointmentActivity extends AppCompatActivity {
                 elderly = documentSnapshot.toObject(Elderly.class);
                 long date = System.currentTimeMillis();
                 SimpleDateFormat sdf = new SimpleDateFormat("EEE");
+                SimpleDateFormat sdf2 = new SimpleDateFormat("dd MM yyyy");
                 String dateString = sdf.format(date);
+                String dateString2 = sdf2.format(date);
 
 
 
@@ -69,32 +76,55 @@ public class MedicationAppointmentActivity extends AppCompatActivity {
                 List medications = new ArrayList();
                 List appointments = new ArrayList();
                 meds = elderly.getMedList();
-                if (meds.isEmpty()){
-                    Medication m = new Medication("No medications today!","", "", false);
-                    medications.add(m);
-                }else{
-                    for (Medication m:
-                            meds) {
-                        String day = m.getDay();
-                        if (day.equals(dateString)){
-                            medications.add(m);
-                        }
+
+                for (Medication m:
+                        meds) {
+                    String day = m.getDay();
+                    if (day.equals(dateString)){
+                        medications.add(m);
                     }
                 }
+                if (medications.isEmpty()){
+                    Medication m = new Medication("No medications today!","", "", false);
+                    medications.add(m);
+                }
+
 
 
                 appts = elderly.getApptList();
-                if (appts.isEmpty()){
-                    Appointment a = new Appointment("No appointments today!","","");
-                    appointments.add(a);
-                }else{
-                    for (Appointment a:
-                            appts){
-                        if (a.day.equals(dateString)){
-                            appointments.add(a);
-                        }
+                for (Appointment a:appts){
+                    Calendar cal = Calendar.getInstance();
+                    cal.setTime(a.getTime().toDate());
+
+                    String temp = sdf2.format(cal.getTime());
+                    if (dateString2.equals(temp)){
+                        appointments.add(a);
                     }
                 }
+                if (appointments.isEmpty()){
+                    DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+                    try {
+                        Date date1 = dateFormat.parse("01/01/2003");
+                        Appointment a = new Appointment("No appointments today!", "", new Timestamp(date1));
+                        appointments.add(a);
+                    } catch (ParseException e) {
+                        e.printStackTrace();
+                    }
+                }
+
+
+//                appts = elderly.getApptList();
+//                if (appts.isEmpty()){
+//                    Appointment a = new Appointment("No appointments today!","","");
+//                    appointments.add(a);
+//                }else{
+//                    for (Appointment a:
+//                            appts){
+//                        if (a.day.equals(dateString)){
+//                            appointments.add(a);
+//                        }
+//                    }
+//                }
 
                 MedAdapter medAdapter = new MedAdapter(medications);
                 ApptAdapter apptAdapter = new ApptAdapter(appointments);

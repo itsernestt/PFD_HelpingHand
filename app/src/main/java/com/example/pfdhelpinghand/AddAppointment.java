@@ -24,6 +24,7 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -73,18 +74,13 @@ public class AddAppointment extends AppCompatActivity {
                         String apptName = apptNameInput.getText().toString().trim();
                         String location = locationInput.getText().toString().trim();
 
-//                        String date = dateTV.getText().toString().trim();
-//                        String time = timeTV.getText().toString().trim();
-//                        StringBuilder stringBuilder = new StringBuilder();
-//                        stringBuilder.append(date);
-//                        stringBuilder.append(time);
-                        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-mm-dd hh:mm:ss");
-                        Date date1 = finalCalendar.getTime();
-                        String strDate = dateFormat.format(date1);
+//                        Date date1 = finalCalendar.getTime();
+//                        String strDate = dateFormat.format(date1);
+                        com.google.firebase.Timestamp ts = new com.google.firebase.Timestamp(finalCalendar.getTime());
 
 
 
-                        Appointment newAppt = new Appointment(apptName, location, strDate);
+                        Appointment newAppt = new Appointment(apptName, location, ts);
 
                         apptList.add(newAppt);
                         docRef.update("apptList", apptList)
@@ -92,8 +88,8 @@ public class AddAppointment extends AppCompatActivity {
                                     @Override
                                     public void onSuccess(Void unused) {
                                         Toast.makeText(AddAppointment.this, "Appointment added!", Toast.LENGTH_SHORT).show();
-                                        Intent navigateTo = new Intent(AddAppointment.this, com.example.pfdhelpinghand.WeeklyAppointmentActivity.class);
-                                        startActivity(navigateTo);
+//                                        Intent navigateTo = new Intent(AddAppointment.this, com.example.pfdhelpinghand.WeeklyAppointmentActivity.class);
+//                                        startActivity(navigateTo);
                                     }
                                 })
                                 .addOnFailureListener(new OnFailureListener() {
