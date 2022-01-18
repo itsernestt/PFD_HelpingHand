@@ -11,6 +11,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import org.w3c.dom.Text;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.List;
 
 public class MedAdapter extends RecyclerView.Adapter<MedAdapter.MedViewHolder>{
@@ -36,8 +38,20 @@ public class MedAdapter extends RecyclerView.Adapter<MedAdapter.MedViewHolder>{
     @Override
     public void onBindViewHolder(@NonNull MedViewHolder holder, int position) {
         Medication currentMed = (Medication) mMeds.get(position);
+
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(currentMed.getDay().toDate());
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("hh:mm a, EEE");
+        SimpleDateFormat checker = new SimpleDateFormat("dd/MM/yyyy");
+        String temps = checker.format(calendar.getTime());
+
+        if (temps.equals("01/01/2003")){
+            holder.txtMedDate.setText("");
+        }else{
+            String temp = simpleDateFormat.format(calendar.getTime());
+            holder.txtMedDate.setText(temp);
+        }
         holder.txtMedName.setText(currentMed.medName);
-        holder.txtMedDate.setText(currentMed.getDay());
         holder.txtMedInstruct.setText(currentMed.medDescription);
     }
 

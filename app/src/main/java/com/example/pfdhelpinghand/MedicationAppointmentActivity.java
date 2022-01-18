@@ -76,17 +76,23 @@ public class MedicationAppointmentActivity extends AppCompatActivity {
 
                 for (Medication m:
                         meds) {
-                    String day = m.getDay();
-                    if (day.equals(dateString)){
+                    Calendar cal = Calendar.getInstance();
+                    cal.setTime(m.getDay().toDate());
+                    String medDay = sdf.format(cal.getTime());
+                    if (medDay.equals(dateString)){
                         medications.add(m);
                     }
                 }
                 if (medications.isEmpty()){
-                    Medication m = new Medication("No medications today!","", "", false);
-                    medications.add(m);
+                    DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+                    try {
+                        Date date1 = dateFormat.parse("01/01/2003");
+                        Medication m = new Medication("No medications today!","", new Timestamp(date1));
+                        medications.add(m);
+                    } catch (ParseException e) {
+                        e.printStackTrace();
+                    }
                 }
-
-
 
                 appts = elderly.getApptList();
                 for (Appointment a:appts){
@@ -108,20 +114,6 @@ public class MedicationAppointmentActivity extends AppCompatActivity {
                         e.printStackTrace();
                     }
                 }
-
-
-//                appts = elderly.getApptList();
-//                if (appts.isEmpty()){
-//                    Appointment a = new Appointment("No appointments today!","","");
-//                    appointments.add(a);
-//                }else{
-//                    for (Appointment a:
-//                            appts){
-//                        if (a.day.equals(dateString)){
-//                            appointments.add(a);
-//                        }
-//                    }
-//                }
 
                 MedAdapter medAdapter = new MedAdapter(medications);
                 ApptAdapter apptAdapter = new ApptAdapter(appointments);
