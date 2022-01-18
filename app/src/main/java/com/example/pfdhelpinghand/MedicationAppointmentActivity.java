@@ -5,7 +5,9 @@ import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -38,6 +40,7 @@ public class MedicationAppointmentActivity extends AppCompatActivity {
     ArrayList<Appointment> appts;
     RecyclerView medRecyclerView;
     RecyclerView apptRecyclerView;
+    SharedPreferences sharedpreferences;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,6 +57,11 @@ public class MedicationAppointmentActivity extends AppCompatActivity {
         user = fAuth.getCurrentUser();
         meds = new ArrayList<Medication>();
         appts = new ArrayList<Appointment>();
+
+        sharedpreferences = getSharedPreferences("mainView", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedpreferences.edit();
+        editor.putString("main", "false");
+        editor.commit();
 
         String userID = user.getUid();
         medRecyclerView = findViewById(R.id.recyclerView1);
@@ -135,6 +143,9 @@ public class MedicationAppointmentActivity extends AppCompatActivity {
 
         weeklyMedButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
+                SharedPreferences.Editor editor = sharedpreferences.edit();
+                editor.putString("main", "true");
+                editor.commit();
                 Intent navigateTo = new Intent(MedicationAppointmentActivity.this, com.example.pfdhelpinghand.WeeklyMedicationActivity.class);
                 startActivity(navigateTo);
             }
@@ -142,6 +153,9 @@ public class MedicationAppointmentActivity extends AppCompatActivity {
 
         weeklyApptButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
+                SharedPreferences.Editor editor = sharedpreferences.edit();
+                editor.putString("main", "true");
+                editor.commit();
                 Intent navigateTo = new Intent(MedicationAppointmentActivity.this, com.example.pfdhelpinghand.WeeklyAppointmentActivity.class);
                 startActivity(navigateTo);
             }
