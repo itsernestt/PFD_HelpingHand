@@ -29,6 +29,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Locale;
 
 public class AddMedication extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
 
@@ -150,7 +151,7 @@ public class AddMedication extends AppCompatActivity implements AdapterView.OnIt
 
     public void selectTime(){
         Calendar calendar = Calendar.getInstance();
-        int HOUR = calendar.get(Calendar.HOUR);
+        int HOUR = calendar.get(Calendar.HOUR_OF_DAY);
         int MINUTE = calendar.get(Calendar.MINUTE);
 
         boolean is24hr = DateFormat.is24HourFormat(this);
@@ -160,10 +161,10 @@ public class AddMedication extends AppCompatActivity implements AdapterView.OnIt
             public void onTimeSet(TimePicker view, int hour, int minute) {
 
 
-                Calendar calendar1 = Calendar.getInstance();
-                calendar1.set(Calendar.HOUR, hour);
+                Calendar calendar1 = Calendar.getInstance(Locale.ENGLISH);
+                calendar1.set(Calendar.HOUR_OF_DAY, hour);
                 calendar1.set(Calendar.MINUTE, minute);
-                finalCalendar.set(Calendar.HOUR, hour);
+                finalCalendar.set(Calendar.HOUR_OF_DAY, hour);
                 finalCalendar.set(Calendar.MINUTE, minute);
 
                 CharSequence timeCharSequence = DateFormat.format("hh:mm a", calendar1);

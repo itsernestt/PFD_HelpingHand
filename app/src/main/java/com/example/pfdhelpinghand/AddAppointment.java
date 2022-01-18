@@ -29,6 +29,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Locale;
 import java.util.TimeZone;
 
 public class AddAppointment extends AppCompatActivity {
@@ -88,8 +89,8 @@ public class AddAppointment extends AppCompatActivity {
                                     @Override
                                     public void onSuccess(Void unused) {
                                         Toast.makeText(AddAppointment.this, "Appointment added!", Toast.LENGTH_SHORT).show();
-//                                        Intent navigateTo = new Intent(AddAppointment.this, com.example.pfdhelpinghand.WeeklyAppointmentActivity.class);
-//                                        startActivity(navigateTo);
+                                        Intent navigateTo = new Intent(AddAppointment.this, com.example.pfdhelpinghand.WeeklyAppointmentActivity.class);
+                                        startActivity(navigateTo);
                                     }
                                 })
                                 .addOnFailureListener(new OnFailureListener() {
@@ -144,7 +145,7 @@ public class AddAppointment extends AppCompatActivity {
 
     private void handleTime(){
         Calendar calendar = Calendar.getInstance();
-        int HOUR = calendar.get(Calendar.HOUR);
+        int HOUR = calendar.get(Calendar.HOUR_OF_DAY);
         int MINUTE = calendar.get(Calendar.MINUTE);
 
         boolean is24hr = DateFormat.is24HourFormat(this);
@@ -154,10 +155,10 @@ public class AddAppointment extends AppCompatActivity {
             public void onTimeSet(TimePicker view, int hour, int minute) {
 
 
-                Calendar calendar1 = Calendar.getInstance();
-                calendar1.set(Calendar.HOUR, hour);
+                Calendar calendar1 = Calendar.getInstance(Locale.ENGLISH);
+                calendar1.set(Calendar.HOUR_OF_DAY, hour);
                 calendar1.set(Calendar.MINUTE, minute);
-                finalCalendar.set(Calendar.HOUR, hour);
+                finalCalendar.set(Calendar.HOUR_OF_DAY, hour);
                 finalCalendar.set(Calendar.MINUTE, minute);
 
                 CharSequence timeCharSequence = DateFormat.format("hh:mm a", calendar1);

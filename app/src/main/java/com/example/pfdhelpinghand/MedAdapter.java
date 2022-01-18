@@ -1,8 +1,11 @@
 package com.example.pfdhelpinghand;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.Build;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,6 +15,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.gms.tasks.OnFailureListener;
@@ -25,11 +29,13 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.List;
 
 public class MedAdapter extends RecyclerView.Adapter<MedAdapter.MedViewHolder>{
 
 
+    private Context context;
     Elderly elderly;
     List mMeds;
     ArrayList<Medication> meds;
@@ -42,6 +48,7 @@ public class MedAdapter extends RecyclerView.Adapter<MedAdapter.MedViewHolder>{
     public MedAdapter(List mMeds){
         this.mMeds = mMeds;
     }
+    public MedAdapter(Context context){this.context = context;}
 
     @NonNull
     @Override
@@ -60,6 +67,7 @@ public class MedAdapter extends RecyclerView.Adapter<MedAdapter.MedViewHolder>{
                 elderly = documentSnapshot.toObject(Elderly.class);
 
                 meds = elderly.getMedList();
+                Collections.sort(meds);
             }
         });
 
@@ -95,20 +103,31 @@ public class MedAdapter extends RecyclerView.Adapter<MedAdapter.MedViewHolder>{
         holder.deleteBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                meds.remove(holder.getAdapterPosition());
-                docRef.update("medList", meds)
-                        .addOnSuccessListener(new OnSuccessListener<Void>() {
-                            @Override
-                            public void onSuccess(Void unused) {
-                                Log.d("TAG","onSuccess: Medication properly removed");
-                                notifyItemChanged(holder.getAdapterPosition());
-                            }
-                        }).addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Log.e("TAG", "onFailure: " + e.toString());
-                    }
-                });
+                new AlertDialog.Builder(v.getContext())
+                        .setTitle("Delete")
+                        .setMessage("Do you want to delete this medication?")
+                        .setIcon(android.R.drawable.ic_dialog_alert)
+                        .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+
+                            public void onClick(DialogInterface dialog, int whichButton) {
+                                meds.remove(holder.getAdapterPosition());
+
+                                docRef.update("medList", meds)
+                                        .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                            @Override
+                                            public void onSuccess(Void unused) {
+                                                Log.d("TAG","onSuccess: Medication properly removed");
+                                                v.getContext().startActivity(new Intent(v.getContext(), WeeklyMedicationActivity.class));
+                                            }
+                                        }).addOnFailureListener(new OnFailureListener() {
+                                    @Override
+                                    public void onFailure(@NonNull Exception e) {
+                                        Log.e("TAG", "onFailure: " + e.toString());
+                                    }
+                                });
+                            }})
+                        .setNegativeButton(android.R.string.no, null).show();
+
             }
         });
     }
