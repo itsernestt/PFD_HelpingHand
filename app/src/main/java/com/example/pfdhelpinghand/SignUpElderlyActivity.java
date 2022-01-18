@@ -35,7 +35,7 @@ public class SignUpElderlyActivity extends AppCompatActivity {
     FirebaseAuth fAuth;
     FirebaseFirestore fStore;
     String userID;
-    List<EmergencyPerson> eList;
+    ArrayList<EmergencyPerson> eList;
     Elderly elderly;
 
     @Override

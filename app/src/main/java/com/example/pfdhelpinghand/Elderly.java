@@ -13,11 +13,11 @@ public class Elderly extends User{
     protected ArrayList<Appointment> apptList;
     protected ArrayList<String> caretakerList;
 
-    private List<EmergencyPerson> emergencyPersonList;
+    private ArrayList<EmergencyPerson> emergencyPersonList;
 
     public Elderly(){}
 
-    public Elderly(String id, String name, String email, String phoneNum, String pw, String address, String cLocation, List<EmergencyPerson> eList,
+    public Elderly(String id, String name, String email, String phoneNum, String pw, String address, String cLocation, ArrayList<EmergencyPerson> eList,
                    ArrayList<Medication> mList, ArrayList<Appointment> aList, ArrayList<String> cList){
         this.ID = id;
         this.fullName = name;
@@ -48,7 +48,7 @@ public class Elderly extends User{
         this.currentLocation = currentLocation;
     }
 
-    public List<EmergencyPerson> getEmergencyPerson(){
+    public ArrayList<EmergencyPerson> getEmergencyPerson(){
         return emergencyPersonList;
     }
 
