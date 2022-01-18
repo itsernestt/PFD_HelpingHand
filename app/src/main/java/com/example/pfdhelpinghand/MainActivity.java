@@ -89,6 +89,8 @@ public class MainActivity extends AppCompatActivity {
 
 
 
+
+
         Button sosButton = findViewById(R.id.sosButton);
         TextView sosText = findViewById(R.id.sosText);
         sosButton.setOnClickListener(new View.OnClickListener() {
@@ -187,7 +189,10 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-
+    // disable the backbutton after logged in
+    @Override
+    public void onBackPressed() {
+    }
 
     public void logout(View view) {
         FirebaseAuth.getInstance().signOut();

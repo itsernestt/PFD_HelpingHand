@@ -68,6 +68,7 @@ public class CaregiverMainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_caregiver_main);
+
         // Initialise a new firestore instance
         fStore = FirebaseFirestore.getInstance();
 
@@ -119,10 +120,10 @@ public class CaregiverMainActivity extends AppCompatActivity {
         myDialog = new Dialog(this);
 
 
-
-
-
-
+    }
+    //Avoid going backwards
+    @Override
+    public void onBackPressed() {
     }
 
     public void getCaretakerInfo()
@@ -134,6 +135,11 @@ public class CaregiverMainActivity extends AppCompatActivity {
                 caretaker = task.getResult().toObject(Caretaker.class);
 
                 elderlyIDList = caretaker.getElderlyList();
+
+                // Title bar
+
+                getSupportActionBar().setTitle("Welcome, " + caretaker.getFullName());
+
 
                 if (elderlyIDList.size() >= 1)
                 {
