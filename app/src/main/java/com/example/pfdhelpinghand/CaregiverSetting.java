@@ -42,13 +42,21 @@ import java.util.List;
 
 public class CaregiverSetting extends AppCompatActivity {
 
-    Button backBut, logoutBut;
+    Button backBut;
+    FirebaseAuth fAuth;
+    FirebaseFirestore fStore;
+    FirebaseUser user;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_caregiver_setting);
+        fAuth = FirebaseAuth.getInstance();
+        fStore = FirebaseFirestore.getInstance();
+        user = fAuth.getCurrentUser();
+
+
 
         backBut = findViewById(R.id.caregiver_setting_back);
         backBut.setOnClickListener(new View.OnClickListener(){
@@ -60,16 +68,14 @@ public class CaregiverSetting extends AppCompatActivity {
             }
         });
 
-        logoutBut = findViewById(R.id.caregiver_logout);
-        logoutBut.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                FirebaseAuth.getInstance().signOut();
-                startActivity(new Intent(getApplicationContext(), LoginActivity.class));
-                finish();
-            }
-        });
 
+
+    }
+
+    public void logout(View view) {
+        fAuth.signOut();
+        //startActivity(new Intent(CaregiverSetting.this, LoginActivity.class));
+        finish();
     }
 
 }

@@ -96,7 +96,8 @@ public class LoginActivity extends AppCompatActivity {
                         mLoginButton.setVisibility(View.INVISIBLE);
 
                         if (task.isSuccessful()) {
-
+                            mEmail.setText("");
+                            mPassword.setText("");
                             FirebaseUser user = fAuth.getCurrentUser();
                             if (user != null)
                             {
