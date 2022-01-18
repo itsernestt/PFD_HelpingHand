@@ -32,6 +32,13 @@ public class WeeklyAppointmentActivity extends AppCompatActivity {
     RecyclerView apptsRV;
 
     @Override
+    public void onRestart() {
+        super.onRestart();
+        //When BACK BUTTON is pressed, the activity on the stack is restarted
+        //Do what you want on the refresh procedure here
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_weekly_appointment);
