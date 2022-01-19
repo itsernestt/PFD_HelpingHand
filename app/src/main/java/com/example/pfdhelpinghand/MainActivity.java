@@ -11,8 +11,10 @@ import android.os.CountDownTimer;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.ToggleButton;
 
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
@@ -81,14 +83,24 @@ public class MainActivity extends AppCompatActivity {
                 }
             }});
 
-
-
+        ToggleButton sosToggle = findViewById(R.id.toggleButton);
         Button sosButton = findViewById(R.id.sosButton);
         TextView sosText = findViewById(R.id.sosText);
+        int[] seconds = {0};
+        sosToggle.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
+                    seconds[0] = 0;
+                }
+                else
+                    seconds[0] = 5000;
+            }
+        });
+
         sosButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {
                 sosButton.setClickable(false);
-                new CountDownTimer(9000, 1000) {
+                new CountDownTimer(seconds[0], 1000) {
 
                     public void onTick(long millisUntilFinished) {
                         sosText.setText("   " + millisUntilFinished / 1000);

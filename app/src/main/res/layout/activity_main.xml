@@ -21,6 +21,21 @@
         app:layout_constraintVertical_bias="0.468"
         tools:ignore="SpeakableTextPresentCheck" />
 
+
+    <ToggleButton
+        android:id="@+id/toggleButton"
+        android:layout_width="150dp"
+        android:layout_height="40dp"
+        android:checked="true"
+        android:textOff="Non-Emergency"
+        android:textOn="Emergency"
+        android:background="@drawable/my_btn_toggle"
+        app:layout_constraintBottom_toTopOf="@+id/sosButton"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.448" />
+
     <Button
         android:id="@+id/cancelButton"
         android:layout_width="200dp"
