@@ -21,6 +21,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 
@@ -53,55 +54,11 @@ public class WeeklyMedicationActivity extends AppCompatActivity {
             public void onSuccess(DocumentSnapshot documentSnapshot) {
                 elderly = documentSnapshot.toObject(Elderly.class);
                 List medications = new ArrayList();
-                List mon = new ArrayList();
-                List tue = new ArrayList();
-                List wed = new ArrayList();
-                List thu = new ArrayList();
-                List fri = new ArrayList();
-                List sat = new ArrayList();
-                List sun = new ArrayList();
-
 
                 meds = elderly.getMedList();
-                for (Medication m:
-                     meds) {
-                    String day = m.getDay();
+                Collections.sort(meds);
 
-                    switch (day){
-                        case ("Mon"):
-                            mon.add(m);
-                            break;
-                        case ("Tue"):
-                            tue.add(m);
-                            break;
-                        case ("Wed"):
-                            wed.add(m);
-                            break;
-                        case ("Thu"):
-                            thu.add(m);
-                            break;
-                        case ("Fri"):
-                            fri.add(m);
-                            break;
-                        case ("Sat"):
-                            sat.add(m);
-                            break;
-                        case ("Sun"):
-                            sun.add(m);
-                            break;
-                    }
-                }
-
-                medications.addAll(mon);
-                medications.addAll(tue);
-                medications.addAll(wed);
-                medications.addAll(thu);
-                medications.addAll(fri);
-                medications.addAll(sat);
-                medications.addAll(sun);
-                // there has to be a better way of doing this but my mind is running really slow
-
-                MedAdapter medAdapter = new MedAdapter(medications);
+                MedAdapter medAdapter = new MedAdapter(meds);
                 medRV.setAdapter(medAdapter);
             }
         });

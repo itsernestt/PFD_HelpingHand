@@ -1,0 +1,279 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    app:cardBackgroundColor="#FFFFFF"
+    app:cardCornerRadius="5dp"
+    app:cardElevation="5dp"
+    app:cardUseCompatPadding="true">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="16dp">
+
+        <ImageView
+            android:id="@+id/elderly_personPic"
+            android:layout_width="38dp"
+            android:layout_height="38dp"
+            android:background="#FFFFFF"
+            app:srcCompat="@drawable/e_person"
+            app:tint="@color/purple_700" />
+
+
+        <TextView
+            android:id="@+id/elderlyItem_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+
+            android:layout_marginLeft="10dp"
+
+            android:layout_toEndOf="@+id/elderly_personPic"
+            android:layout_toRightOf="@+id/elderly_personPic"
+            android:text="(Elderly name)"
+            android:textColor="@color/black"
+            android:textSize="16sp"
+            android:textStyle="bold"
+
+
+            />
+
+        <TextView
+            android:id="@+id/elderlyItem_phone"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+
+            android:layout_below="@+id/elderlyItem_name"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="2dp"
+            android:layout_toEndOf="@+id/elderly_personPic"
+
+            android:layout_toRightOf="@+id/elderly_personPic"
+
+            android:text="(elderly phone)"
+            android:textColor="#a9a9a9"
+            android:textSize="13sp" />
+
+        <ImageButton
+            android:id="@+id/elderlyItem_phonecall"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="50dp"
+            android:background="#FFFFFF"
+            android:scaleType="fitXY"
+            app:srcCompat="@drawable/e_phonecall" />
+
+        <ImageView
+            android:id="@+id/elderly_medPic"
+            android:layout_width="38dp"
+            android:layout_height="38dp"
+            android:layout_below="@id/elderly_personPic"
+            android:layout_marginTop="40dp"
+            android:background="#FFFFFF"
+            app:srcCompat="@drawable/e_med"
+            app:tint="@color/purple_700"
+
+            />
+
+        <TextView
+            android:id="@+id/elderlyItem_medName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+
+            android:layout_below="@id/elderlyItem_phone"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="40dp"
+            android:layout_toEndOf="@id/elderly_medPic"
+            android:layout_toRightOf="@+id/elderly_medPic"
+
+            android:text="Medication name: "
+            android:textColor="@color/black"
+            android:textSize="16sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/elderlyItem_med"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+
+            android:layout_below="@id/elderlyItem_medName"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="2dp"
+            android:layout_toEndOf="@id/elderly_medPic"
+            android:layout_toRightOf="@+id/elderly_medPic"
+
+            android:text="Next Medication in"
+            android:textColor="@color/black"
+            android:textSize="13sp"
+
+            />
+
+        <ImageButton
+            android:id="@+id/elderlyItem_medBut"
+
+            android:layout_width="42dp"
+            android:layout_height="42dp"
+
+            android:layout_below="@id/elderlyItem_phonecall"
+
+            android:layout_alignBaseline="@id/elderly_medPic"
+            android:layout_alignParentRight="true"
+            android:layout_marginTop="40dp"
+
+            android:layout_marginRight="50dp"
+            android:background="#FFFFFF"
+
+            android:backgroundTint="#FFFFFF"
+
+            android:elevation="3dp"
+            android:scaleType="fitXY"
+            android:src="@drawable/e_medclick"
+            android:textAlignment="center"
+
+            />
+
+        <ImageView
+            android:id="@+id/elderly_apptPic"
+            android:layout_width="38dp"
+            android:layout_height="38dp"
+            app:srcCompat="@drawable/e_appointment"
+            app:tint="@color/purple_700"
+
+            android:layout_below="@id/elderly_medPic"
+            android:layout_marginTop="40dp"
+            android:background="#FFFFFF"
+            />
+
+
+
+        <TextView
+            android:id="@+id/elderlyItem_apptName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Appointment name"
+
+            android:layout_below="@id/elderlyItem_med"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="30dp"
+            android:layout_toEndOf="@id/elderly_apptPic"
+            android:layout_toRightOf="@+id/elderly_apptPic"
+
+            android:textColor="@color/black"
+            android:textSize="16sp"
+            android:textStyle="bold"/>
+
+        <TextView
+            android:id="@+id/elderlyItem_appt"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Next Appointment in"
+
+
+            android:layout_below="@id/elderlyItem_apptName"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="2dp"
+            android:layout_toEndOf="@id/elderly_apptPic"
+            android:layout_toRightOf="@+id/elderly_apptPic"
+
+            android:textColor="@color/black"
+            android:textSize="13sp"/>
+
+
+        <ImageButton
+            android:id="@+id/elderlyItem_apptBut"
+
+            android:layout_width="42dp"
+            android:layout_height="42dp"
+
+            android:layout_below="@id/elderlyItem_medBut"
+
+            android:layout_alignBaseline="@id/elderly_apptPic"
+            android:layout_alignParentRight="true"
+            android:layout_marginTop="40dp"
+
+            android:layout_marginRight="50dp"
+            android:background="#FFFFFF"
+
+            android:elevation="3dp"
+
+            android:backgroundTint="#FFFFFF"
+            android:scaleType="fitXY"
+            android:src="@drawable/e_apptclick"
+            android:textAlignment="center" />
+
+
+
+
+        <ImageView
+            android:id="@+id/elderly_locPic"
+            android:layout_width="38dp"
+            android:layout_height="38dp"
+            app:srcCompat="@drawable/e_location"
+            app:tint="@color/purple_700"
+
+            android:layout_below="@id/elderly_apptPic"
+            android:layout_marginTop="40dp"
+            android:background="#FFFFFF"/>
+
+
+
+        <TextView
+            android:id="@+id/elderlyItem_locName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+
+            android:layout_below="@id/elderlyItem_appt"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="50dp"
+            android:layout_toEndOf="@id/elderly_locPic"
+            android:layout_toRightOf="@+id/elderly_locPic"
+
+            android:textColor="@color/black"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:text="(Location)"/>
+
+
+        <ImageButton
+            android:id="@+id/elderlyItem_locationBut"
+            android:layout_width="42dp"
+            android:layout_height="42dp"
+
+            android:layout_below="@id/elderlyItem_apptBut"
+
+            android:layout_alignBaseline="@id/elderly_locPic"
+            android:layout_alignParentRight="true"
+            android:layout_marginTop="40dp"
+
+            android:layout_marginRight="50dp"
+            android:background="#FFFFFF"
+
+            android:elevation="3dp"
+
+            android:backgroundTint="#FFFFFF"
+            android:scaleType="fitXY"
+            android:src="@drawable/e_locclick"
+            android:textAlignment="center" />
+
+
+        <TextView
+            android:id="@+id/elderlyItem_index"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="(index)"
+            android:textColor="@color/black"
+            android:textSize="10sp"
+            android:textStyle="bold"
+            android:layout_alignParentRight="true"
+
+            />
+
+
+
+    </RelativeLayout>
+
+
+</androidx.cardview.widget.CardView>

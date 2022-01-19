@@ -5,7 +5,9 @@ import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -14,14 +16,19 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.Timestamp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 public class MedicationAppointmentActivity extends AppCompatActivity {
@@ -33,6 +40,7 @@ public class MedicationAppointmentActivity extends AppCompatActivity {
     ArrayList<Appointment> appts;
     RecyclerView medRecyclerView;
     RecyclerView apptRecyclerView;
+    SharedPreferences sharedpreferences;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,6 +58,11 @@ public class MedicationAppointmentActivity extends AppCompatActivity {
         meds = new ArrayList<Medication>();
         appts = new ArrayList<Appointment>();
 
+        sharedpreferences = getSharedPreferences("mainView", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedpreferences.edit();
+        editor.putString("main", "false");
+        editor.commit();
+
         String userID = user.getUid();
         medRecyclerView = findViewById(R.id.recyclerView1);
         apptRecyclerView = findViewById(R.id.recyclerView2);
@@ -61,38 +74,52 @@ public class MedicationAppointmentActivity extends AppCompatActivity {
                 elderly = documentSnapshot.toObject(Elderly.class);
                 long date = System.currentTimeMillis();
                 SimpleDateFormat sdf = new SimpleDateFormat("EEE");
+                SimpleDateFormat sdf2 = new SimpleDateFormat("dd MM yyyy");
                 String dateString = sdf.format(date);
-
-
-
+                String dateString2 = sdf2.format(date);
 
                 List medications = new ArrayList();
                 List appointments = new ArrayList();
                 meds = elderly.getMedList();
-                if (meds.isEmpty()){
-                    Medication m = new Medication("No medications today!","", "", false);
-                    medications.add(m);
-                }else{
-                    for (Medication m:
-                            meds) {
-                        String day = m.getDay();
-                        if (day.equals(dateString)){
-                            medications.add(m);
-                        }
+
+                for (Medication m:
+                        meds) {
+                    Calendar cal = Calendar.getInstance();
+                    cal.setTime(m.getDay().toDate());
+                    String medDay = sdf.format(cal.getTime());
+                    if (medDay.equals(dateString)){
+                        medications.add(m);
+                    }
+                }
+                if (medications.isEmpty()){
+                    DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+                    try {
+                        Date date1 = dateFormat.parse("01/01/2003");
+                        Medication m = new Medication("No medications today!","", new Timestamp(date1));
+                        medications.add(m);
+                    } catch (ParseException e) {
+                        e.printStackTrace();
                     }
                 }
 
-
                 appts = elderly.getApptList();
-                if (appts.isEmpty()){
-                    Appointment a = new Appointment("No appointments today!","","");
-                    appointments.add(a);
-                }else{
-                    for (Appointment a:
-                            appts){
-                        if (a.day.equals(dateString)){
-                            appointments.add(a);
-                        }
+                for (Appointment a:appts){
+                    Calendar cal = Calendar.getInstance();
+                    cal.setTime(a.getTime().toDate());
+
+                    String temp = sdf2.format(cal.getTime());
+                    if (dateString2.equals(temp)){
+                        appointments.add(a);
+                    }
+                }
+                if (appointments.isEmpty()){
+                    DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+                    try {
+                        Date date1 = dateFormat.parse("01/01/2003");
+                        Appointment a = new Appointment("No appointments today!", "", new Timestamp(date1));
+                        appointments.add(a);
+                    } catch (ParseException e) {
+                        e.printStackTrace();
                     }
                 }
 
@@ -116,6 +143,9 @@ public class MedicationAppointmentActivity extends AppCompatActivity {
 
         weeklyMedButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
+                SharedPreferences.Editor editor = sharedpreferences.edit();
+                editor.putString("main", "true");
+                editor.commit();
                 Intent navigateTo = new Intent(MedicationAppointmentActivity.this, com.example.pfdhelpinghand.WeeklyMedicationActivity.class);
                 startActivity(navigateTo);
             }
@@ -123,6 +153,9 @@ public class MedicationAppointmentActivity extends AppCompatActivity {
 
         weeklyApptButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
+                SharedPreferences.Editor editor = sharedpreferences.edit();
+                editor.putString("main", "true");
+                editor.commit();
                 Intent navigateTo = new Intent(MedicationAppointmentActivity.this, com.example.pfdhelpinghand.WeeklyAppointmentActivity.class);
                 startActivity(navigateTo);
             }

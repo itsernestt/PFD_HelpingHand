@@ -40,8 +40,9 @@
         android:layout_marginTop="10dp"
         android:text="Add"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/medDayInput" />
+        app:layout_constraintTop_toBottomOf="@+id/chooseTimeBtn" />
 
     <TextView
         android:id="@+id/editHeader"
@@ -66,5 +67,24 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/medDescriptionInput"
         tools:ignore="SpeakableTextPresentCheck" />
+
+    <Button
+        android:id="@+id/chooseTimeBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="9dp"
+        android:text="Choose time"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/medTimeTV" />
+
+    <TextView
+        android:id="@+id/medTimeTV"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="13dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/medDayInput" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

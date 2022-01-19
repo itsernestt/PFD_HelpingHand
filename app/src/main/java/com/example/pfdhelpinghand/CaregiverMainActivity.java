@@ -1,104 +1,237 @@
 package com.example.pfdhelpinghand;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-
+import androidx.recyclerview.widget.DefaultItemAnimator;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import android.app.Dialog;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
-
 import android.os.Handler;
+import android.service.controls.actions.BooleanAction;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentChange;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 import java.util.List;
 
 
-
 public class CaregiverMainActivity extends AppCompatActivity {
 
     // here
-    TextView welcomeBanner, caregiverViewElderly, caregiverTest;
+    TextView caregiverTest, caregiverViewElderly, caregiverTest2;
     FirebaseUser user;
     FirebaseFirestore fStore;
     Caretaker caretaker;
     Dialog myDialog;
     String userID;
+    ArrayList<String> elderlyIDList;
     ArrayList<Elderly> elderlyList;
+    Elderly elderly;
 
+    //Float button animation
+    FloatingActionButton addBut, settingBut, pairupBut;
+    Animation openAni, closeAni, rotateForward, rotateBackward;
+    boolean isOpen = false;
+
+    //For RecyclerView
+    private RecyclerView recyclerView;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_caregiver_main);
+
         // Initialise a new firestore instance
         fStore = FirebaseFirestore.getInstance();
 
         // Get the current user if he/she has already signed in
         user = FirebaseAuth.getInstance().getCurrentUser();
-        elderlyList = new ArrayList<Elderly>();
-
-        welcomeBanner = findViewById(R.id.welcomeBanner);
-        caregiverViewElderly = findViewById(R.id.caregiverViewElderly);
-        caregiverTest = findViewById(R.id.caregiverTest);
-
         userID = user.getUid();
 
-        DocumentReference docRef = fStore.collection("Caregiver").document(userID);
-        docRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+        // initialise all the lists
+        elderlyIDList = new ArrayList<String>();
+        elderlyList = new ArrayList<Elderly>();
+
+        // Main components on the page
+
+        caregiverTest = findViewById(R.id.caregiverTest);
+        caregiverViewElderly = findViewById(R.id.caregiverViewElderly);
+        addBut = findViewById(R.id.caregiver_addBut);
+        settingBut = findViewById(R.id.caregiver_settingBut);
+        pairupBut = findViewById(R.id.caregiver_pairupBut);
+        caregiverTest2 = findViewById(R.id.caregiverTest2);
+
+        // Animation
+        openAni = AnimationUtils.loadAnimation(this, R.anim.floatbut_open);
+        closeAni = AnimationUtils.loadAnimation(this, R.anim.floatbut_close);
+        rotateForward = AnimationUtils.loadAnimation(this, R.anim.rotate_forward);
+        rotateBackward = AnimationUtils.loadAnimation(this, R.anim.rotate_backward);
+
+        addBut.setOnClickListener(new View.OnClickListener(){
             @Override
-            public void onSuccess(DocumentSnapshot documentSnapshot)
+            public void onClick(View view)
             {
-                caretaker = documentSnapshot.toObject(Caretaker.class);
-                welcomeBanner.setText(caretaker.getFullName());
-                elderlyList = caretaker.getElderlyList();
+                animation();
+            }
+        });
 
-                if (elderlyList.size() >= 1)
+        settingBut.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View view)
+            {
+                startActivity(new Intent(CaregiverMainActivity.this, CaregiverSetting.class));
+            }
+        });
+
+        //For Recycler View Adapter
+        recyclerView = findViewById(R.id.elderlyRecyclerView);
+
+        getCaretakerInfo();
+
+
+        myDialog = new Dialog(this);
+
+
+    }
+    //Avoid going backwards
+    @Override
+    public void onBackPressed() {
+    }
+
+    public void getCaretakerInfo()
+    {
+        fStore.collection("Caregiver").document(userID).get()
+                .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                caretaker = task.getResult().toObject(Caretaker.class);
+
+                elderlyIDList = caretaker.getElderlyList();
+
+                // Title bar
+
+                getSupportActionBar().setTitle("Welcome, " + caretaker.getFullName());
+
+
+                if (elderlyIDList.size() >= 1)
                 {
-                    for (Elderly e : elderlyList)
-                    {
-                        Integer count = elderlyList.indexOf(e) + 1;
 
-                        caregiverViewElderly.setText(caregiverViewElderly.getText() + "\n" +
-                                                        "Elderly " + Integer.toString(count) +  ":" + "\n" +
-                                                        "Name: " + e.getFullName() + "\n" +
-                                                        "Phone number: " + e.getPhoneNumber() + "\n" +
-                                                        "Address: " + e.getAddress() + "\n" +
-                                                        "Current Location: " + e.getCurrentLocation() + "\n");
-                    }
+
+                    fStore.collection("Elderly")
+                            .whereIn("id", elderlyIDList)
+                            .addSnapshotListener(new EventListener<QuerySnapshot>() {
+                                @Override
+                                public void onEvent(@Nullable QuerySnapshot value,
+                                                    @Nullable FirebaseFirestoreException e) {
+
+
+
+                                    for (DocumentChange dc: value.getDocumentChanges())
+                                    {
+
+                                        QueryDocumentSnapshot queryDocumentSnapshot = dc.getDocument();
+
+                                        Integer old_index = dc.getOldIndex();
+                                        Integer new_index = dc.getNewIndex();
+
+                                        //caregiverTest.setText("Old index: " + old_index + "//" + new_index);
+
+                                        elderly = queryDocumentSnapshot.toObject(Elderly.class);
+
+                                        switch (dc.getType())
+                                        {
+                                            case ADDED:
+                                                elderlyList.add(elderly);
+                                                break;
+                                            case MODIFIED:
+                                                elderlyList.set(new_index, elderly);
+                                                break;
+                                        }
+                                    }
+
+                                    ElderlyRecyclerAdapter eAdapter = new ElderlyRecyclerAdapter(elderlyList);
+                                    RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getApplicationContext());
+                                    recyclerView.setLayoutManager(layoutManager);
+                                    recyclerView.setItemAnimator(new DefaultItemAnimator());
+                                    recyclerView.setAdapter(eAdapter);
+                                    eAdapter.notifyDataSetChanged();
+
+                                    Integer size = elderlyList.size();
+                                    //caregiverTest2.setText(Integer.toString(size));
+
+
+                                }
+                            });
                 }
-                else
-                {
-                    caregiverViewElderly.setText("No elderly account linked, please use the pair up button");
-                }
-
-
 
             }
         });
 
-        myDialog = new Dialog(this);
+    }
+
+
+    //Testing!!
+    public void addElderlyRecord()
+    {
+        ArrayList<EmergencyPerson> ePerson = new ArrayList<EmergencyPerson>();
+        ePerson.add(new EmergencyPerson("Chance123", "98284455"));
+        elderlyList.add(new Elderly("12345", "Chen Han", "c@gmail.com","982955865",
+                "12345678", "Clementi", "Clementi mall", ePerson,
+                new ArrayList<Medication>(), new ArrayList<Appointment>(), new ArrayList<String>()));
 
     }
+
+
+    // For the floating button
+    private void animation(){
+        if (isOpen)
+        {
+            addBut.startAnimation(rotateForward);
+            settingBut.startAnimation(closeAni);
+            pairupBut.startAnimation(closeAni);
+            settingBut.setClickable(false);
+            pairupBut.setClickable(false);
+            isOpen=false;
+
+        }
+        else{
+            addBut.startAnimation(rotateBackward);
+            settingBut.startAnimation(openAni);
+            pairupBut.startAnimation(openAni);
+            settingBut.setClickable(true);
+            pairupBut.setClickable(true);
+            isOpen=true;
+        }
+    }
+
 
     private Handler mHandler = new Handler();
     public void ShowPopup(View v) {
@@ -141,22 +274,20 @@ public class CaregiverMainActivity extends AppCompatActivity {
                                 pairUpId.setText("");
                                 pairupMessage.setText("Pair up successfully! ");
 
-                                //Initialise a new elderly object
                                 Elderly elderly = documentSnapshot.toObject(Elderly.class);
 
                                 //Check if the elderly object has already been added
                                 Boolean isContain = false;
-                                String elderlyID = elderly.getID();
-                                for (Elderly e : elderlyList)
+                                for (String e : elderlyIDList)
                                 {
-                                    if (e.getID().equals(elderlyID))
+                                    if (e.equals(elderId))
                                     {
                                         isContain = true;
                                     }
                                 }
                                 if (!isContain)
                                 {
-                                    elderlyList.add(elderly);
+                                    elderlyIDList.add(elderId);
                                 }
                                 else{
                                     pairupMessage.setText("The elderly has already been added!");
@@ -185,7 +316,7 @@ public class CaregiverMainActivity extends AppCompatActivity {
 
 
                                 // Updates the elderly on the firestore
-                                fStore.collection("Elderly").document(elderlyID)
+                                fStore.collection("Elderly").document(elderId)
                                         .set(elderly)
                                         .addOnSuccessListener(new OnSuccessListener<Void>() {
                                             @Override
@@ -226,11 +357,7 @@ public class CaregiverMainActivity extends AppCompatActivity {
         myDialog.show();
     }
 
-    public void logout(View view) {
-        FirebaseAuth.getInstance().signOut();
-        startActivity(new Intent(getApplicationContext(), LoginActivity.class));
-        finish();
-    }
+
 
 
     private Runnable mRefreshPage = new Runnable() {

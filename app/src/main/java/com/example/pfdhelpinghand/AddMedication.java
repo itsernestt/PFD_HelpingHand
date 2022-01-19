@@ -3,8 +3,10 @@ package com.example.pfdhelpinghand;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.TimePickerDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.format.DateFormat;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
@@ -12,11 +14,13 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
-import android.widget.Switch;
+import android.widget.TextView;
+import android.widget.TimePicker;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.Timestamp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
@@ -24,25 +28,34 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Locale;
 
 public class AddMedication extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
 
-    Button addBtn;
+    Button addBtn, timeBtn;
+    TextView timeTV;
+    EditText editName, editDes;
+    Spinner editDay;
     String day;
     FirebaseAuth fAuth;
     FirebaseUser user;
     FirebaseFirestore fStore;
     Elderly elderly;
+    Calendar finalCalendar = Calendar.getInstance();
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_add_medication_button);
+        setContentView(R.layout.activity_add_medication);
 
-        EditText editName = findViewById(R.id.medNameInput);
-        EditText editDes = findViewById(R.id.medDescriptionInput);
-        Spinner editDay = findViewById(R.id.medDayInput);
+        editName = findViewById(R.id.medNameInput);
+        editDes = findViewById(R.id.medDescriptionInput);
+        timeTV = findViewById(R.id.medTimeTV);
+        editDay = findViewById(R.id.medDayInput);
         addBtn = findViewById(R.id.medAddBtn);
+        timeBtn = findViewById(R.id.chooseTimeBtn);
         ArrayAdapter<CharSequence>adapter=ArrayAdapter.createFromResource(this, R.array.days,
                 android.R.layout.simple_spinner_item);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -63,14 +76,20 @@ public class AddMedication extends AppCompatActivity implements AdapterView.OnIt
                 elderly = documentSnapshot.toObject(Elderly.class);
                 ArrayList<Medication> mList = elderly.getMedList();
 
+                timeBtn.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) { selectTime();}
+                });
+
                 addBtn.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         String name = editName.getText().toString().trim();
                         String des = editDes.getText().toString().trim();
+                        Timestamp ts = new Timestamp(finalCalendar.getTime());
 
 
-                        Medication newMed = new Medication(name, des, day, false);
+                        Medication newMed = new Medication(name, des, ts);
 
                         mList.add(newMed);
                         docRef.update("medList", mList)
@@ -102,25 +121,25 @@ public class AddMedication extends AppCompatActivity implements AdapterView.OnIt
         String selectedDay = parent.getItemAtPosition(position).toString();
         switch (selectedDay){
             case "Monday":
-                day = "Mon";
+                finalCalendar.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY);
                 break;
             case "Tuesday":
-                day = "Tue";
+                finalCalendar.set(Calendar.DAY_OF_WEEK, Calendar.TUESDAY);
                 break;
             case "Wednesday":
-                day = "Wed";
+                finalCalendar.set(Calendar.DAY_OF_WEEK, Calendar.WEDNESDAY);
                 break;
             case "Thursday":
-                day = "Thu";
+                finalCalendar.set(Calendar.DAY_OF_WEEK, Calendar.THURSDAY);
                 break;
             case "Friday":
-                day = "Fri";
+                finalCalendar.set(Calendar.DAY_OF_WEEK, Calendar.FRIDAY);
                 break;
             case "Saturday":
-                day = "Sat";
+                finalCalendar.set(Calendar.DAY_OF_WEEK, Calendar.SATURDAY);
                 break;
             case "Sunday":
-                day = "Sun";
+                finalCalendar.set(Calendar.DAY_OF_WEEK, Calendar.SUNDAY);
                 break;
         }
     }
@@ -128,5 +147,31 @@ public class AddMedication extends AppCompatActivity implements AdapterView.OnIt
     @Override
     public void onNothingSelected(AdapterView<?> parent) {
 
+    }
+
+    public void selectTime(){
+        Calendar calendar = Calendar.getInstance();
+        int HOUR = calendar.get(Calendar.HOUR_OF_DAY);
+        int MINUTE = calendar.get(Calendar.MINUTE);
+
+        boolean is24hr = DateFormat.is24HourFormat(this);
+
+        TimePickerDialog timePickerDialog = new TimePickerDialog(this, new TimePickerDialog.OnTimeSetListener() {
+            @Override
+            public void onTimeSet(TimePicker view, int hour, int minute) {
+
+
+                Calendar calendar1 = Calendar.getInstance(Locale.ENGLISH);
+                calendar1.set(Calendar.HOUR_OF_DAY, hour);
+                calendar1.set(Calendar.MINUTE, minute);
+                finalCalendar.set(Calendar.HOUR_OF_DAY, hour);
+                finalCalendar.set(Calendar.MINUTE, minute);
+
+                CharSequence timeCharSequence = DateFormat.format("hh:mm a", calendar1);
+                timeTV.setText(timeCharSequence);
+            }
+        },HOUR, MINUTE, is24hr);
+
+        timePickerDialog.show();
     }
 }

@@ -1,21 +1,26 @@
 package com.example.pfdhelpinghand;
 
-public class Medication {
+import com.google.firebase.Timestamp;
+
+public class Medication implements Comparable<Medication>{
     public String medName;
     public String medDescription;
-    public String day;
-    public boolean weekly;
+    public Timestamp day;
 
     public Medication(){}
 
-    public Medication(String name, String des, String day, Boolean weekly){
+    public Medication(String name, String des, Timestamp day){
         this.medDescription = des;
         this.medName = name;
         this.day = day;
-        this.weekly = weekly;
     }
 
-    public String getDay(){
-        return this.day;
+    public Timestamp getDay(){
+        return day;
+    }
+
+    @Override
+    public int compareTo(Medication m){
+        return getDay().compareTo(m.getDay());
     }
 }

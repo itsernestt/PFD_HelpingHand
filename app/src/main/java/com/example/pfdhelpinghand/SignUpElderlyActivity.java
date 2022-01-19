@@ -35,7 +35,7 @@ public class SignUpElderlyActivity extends AppCompatActivity {
     FirebaseAuth fAuth;
     FirebaseFirestore fStore;
     String userID;
-    List<EmergencyPerson> eList;
+    ArrayList<EmergencyPerson> eList;
     Elderly elderly;
 
     @Override
@@ -157,7 +157,7 @@ public class SignUpElderlyActivity extends AppCompatActivity {
                             eList.add(new EmergencyPerson(contactName, contactPhone));
 
                             ArrayList<Medication> mList = new ArrayList<Medication>();
-                            elderly = new Elderly(userID, userFullName, email, phone, password, address, "", eList, mList, new ArrayList<Appointment>(), new ArrayList<String>() );
+                            elderly = new Elderly(userID, userFullName, email, phone, password, address,"", eList, mList, new ArrayList<Appointment>(), new ArrayList<String>() );
 
 
 

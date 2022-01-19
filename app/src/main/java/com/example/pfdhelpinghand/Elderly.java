@@ -6,25 +6,25 @@ import java.util.List;
 
 public class Elderly extends User{
 
-    private String elderlyAddress;
+    private String address;
     private String currentLocation;
 
     protected ArrayList<Medication> medList;
     protected ArrayList<Appointment> apptList;
     protected ArrayList<String> caretakerList;
 
-    private List<EmergencyPerson> emergencyPersonList;
+    private ArrayList<EmergencyPerson> emergencyPersonList;
 
     public Elderly(){}
 
-    public Elderly(String id, String name, String email, String phoneNum, String pw, String address, String cLocation, List<EmergencyPerson> eList,
+    public Elderly(String id, String name, String email, String phoneNum, String pw, String address, String cLocation, ArrayList<EmergencyPerson> eList,
                    ArrayList<Medication> mList, ArrayList<Appointment> aList, ArrayList<String> cList){
         this.ID = id;
         this.fullName = name;
         this.email = email;
         this.phoneNumber = phoneNum;
         this.password = pw;
-        this.elderlyAddress = address;
+        this.address = address;
         this.currentLocation = cLocation;
         this.emergencyPersonList = eList;
         this.medList = mList;
@@ -33,11 +33,11 @@ public class Elderly extends User{
     }
 
     public String getAddress(){
-        return elderlyAddress;
+        return address;
     }
     public void setElderlyAddress(String elderlyAddress) {
 
-        this.elderlyAddress = elderlyAddress;
+        this.address = elderlyAddress;
     }
 
     public String getCurrentLocation(){
@@ -48,7 +48,7 @@ public class Elderly extends User{
         this.currentLocation = currentLocation;
     }
 
-    public List<EmergencyPerson> getEmergencyPerson(){
+    public ArrayList<EmergencyPerson> getEmergencyPerson(){
         return emergencyPersonList;
     }
 

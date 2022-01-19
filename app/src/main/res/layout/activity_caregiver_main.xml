@@ -4,60 +4,68 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".CaregiverMainActivity">
+    tools:context=".CaregiverMainActivity"
+    android:orientation="vertical">
 
-    <TextView
-        android:id="@+id/welcomeBanner"
-        android:layout_width="309dp"
-        android:layout_height="52dp"
-        android:text="Welcome, (username)"
-        android:textSize="24sp"
-        android:textStyle="bold"
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/elderlyRecyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.009" />
+        app:layout_constraintVertical_bias="0.0" />
 
-    <Button
-        android:id="@+id/showPopupButton"
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/caregiver_pairupBut"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="297dp"
-        android:layout_marginEnd="21dp"
+        android:layout_marginBottom="12dp"
+        android:backgroundTint="#FF5722"
+        android:clickable="true"
+        android:focusable="true"
         android:onClick="ShowPopup"
-        android:text="Pair up"
-        app:layout_constraintBottom_toTopOf="@+id/logoutButton"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.965" />
+        android:visibility="invisible"
+        app:layout_constraintBottom_toTopOf="@+id/caregiver_settingBut"
+        app:layout_constraintEnd_toEndOf="@+id/caregiver_settingBut"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@+id/caregiver_settingBut"
+        app:srcCompat="@drawable/ic_pairup"
+        app:tint="@color/white" />
 
-    <Button
-        android:id="@+id/logoutButton"
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/caregiver_addBut"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:onClick="logout"
-        android:text="Log Out"
+        android:backgroundTint="@color/purple_500"
+        android:clickable="true"
+        android:focusable="true"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.948"
+        app:layout_constraintHorizontal_bias="0.954"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.931" />
+        app:layout_constraintVertical_bias="0.939"
+        app:srcCompat="@drawable/ic_baseline_add_24"
+        app:tint="@color/white" />
 
-    <TextView
-        android:id="@+id/caregiverViewElderly"
-        android:layout_width="297dp"
-        android:layout_height="387dp"
-        android:textSize="20sp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.263"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.263" />
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/caregiver_settingBut"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="4dp"
+        android:backgroundTint="#FF5722"
+        android:clickable="true"
+        android:focusable="true"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toTopOf="@+id/caregiver_addBut"
+        app:layout_constraintEnd_toEndOf="@+id/caregiver_addBut"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@+id/caregiver_addBut"
+        app:srcCompat="@drawable/ic_setting"
+        app:tint="@color/white" />
 
     <TextView
         android:id="@+id/caregiverTest"
@@ -65,9 +73,33 @@
         android:layout_height="wrap_content"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintHorizontal_bias="0.045"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/caregiverViewElderly"
-        app:layout_constraintVertical_bias="0.235" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.972" />
+
+    <TextView
+        android:id="@+id/caregiverViewElderly"
+        android:layout_width="77dp"
+        android:layout_height="33dp"
+        android:textColor="@color/black"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.1" />
+
+    <TextView
+        android:id="@+id/caregiverTest2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.526"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.974" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
