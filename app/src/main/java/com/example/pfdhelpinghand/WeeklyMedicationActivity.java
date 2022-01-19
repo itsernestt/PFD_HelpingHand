@@ -4,7 +4,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -32,6 +34,8 @@ public class WeeklyMedicationActivity extends AppCompatActivity {
     Elderly elderly;
     ArrayList<Medication> meds;
     RecyclerView medRV;
+    SharedPreferences sharedPreferences;
+    DocumentReference docRef;
 
 
     @Override
@@ -45,10 +49,17 @@ public class WeeklyMedicationActivity extends AppCompatActivity {
         meds = new ArrayList<Medication>();
 
         medRV = findViewById(R.id.allMedsRV);
-        String userID = user.getUid();
+        sharedPreferences = getSharedPreferences("CaretakerValues", Context.MODE_PRIVATE);
+        String userID = sharedPreferences.getString("elderlyID", "UfDuCIuLDqUo3niFg73o5jK3Jml2");
 
+        sharedPreferences = getSharedPreferences("usertype", Context.MODE_PRIVATE);
+        String type = sharedPreferences.getString("type", "Elderly");
+        if (type.equals("Elderly")){
+            docRef = fStore.collection("Elderly").document(user.getUid());
+        }else{
+            docRef = fStore.collection("Elderly").document(userID);
 
-        DocumentReference docRef = fStore.collection("Elderly").document(userID);
+        }
         docRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
             @Override
             public void onSuccess(DocumentSnapshot documentSnapshot) {
@@ -71,11 +82,23 @@ public class WeeklyMedicationActivity extends AppCompatActivity {
 
         weeklyMedBackButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                Intent navigateToPreviousPage = new Intent(WeeklyMedicationActivity.this, MedicationAppointmentActivity.class);
-                startActivity(navigateToPreviousPage);
+                sharedPreferences = getSharedPreferences("usertype", Context.MODE_PRIVATE);
+                String temp = sharedPreferences.getString("type", "Elderly");
+                if (temp.equals("Elderly")){
+                    Intent navigateToPreviousPage = new Intent(WeeklyMedicationActivity.this, MedicationAppointmentActivity.class);
+                    startActivity(navigateToPreviousPage);
+                }else{
+                    Intent navigateToPreviousPage = new Intent(WeeklyMedicationActivity.this, CaregiverMainActivity.class);
+                    startActivity(navigateToPreviousPage);
+                }
+
             }
         });
-
+        sharedPreferences = getSharedPreferences("usertype", Context.MODE_PRIVATE);
+        String temp = sharedPreferences.getString("type", "Elderly");
+        if (temp.equals("Elderly")){
+            editButton.setVisibility(View.GONE);
+        }
         editButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

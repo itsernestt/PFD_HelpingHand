@@ -7,7 +7,9 @@ import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import android.app.Dialog;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
@@ -54,6 +56,8 @@ public class CaregiverMainActivity extends AppCompatActivity {
     ArrayList<String> elderlyIDList;
     ArrayList<Elderly> elderlyList;
     Elderly elderly;
+    SharedPreferences sharedPreferences;
+
 
     //Float button animation
     FloatingActionButton addBut, settingBut, pairupBut;
@@ -68,6 +72,11 @@ public class CaregiverMainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_caregiver_main);
+
+        sharedPreferences = getSharedPreferences("CaretakerValues", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString("elderlyID", "");
+        editor.commit();
 
         // Initialise a new firestore instance
         fStore = FirebaseFirestore.getInstance();
@@ -153,7 +162,6 @@ public class CaregiverMainActivity extends AppCompatActivity {
                                                     @Nullable FirebaseFirestoreException e) {
 
 
-
                                     for (DocumentChange dc: value.getDocumentChanges())
                                     {
 
@@ -176,6 +184,7 @@ public class CaregiverMainActivity extends AppCompatActivity {
                                                 break;
                                         }
                                     }
+
 
                                     ElderlyRecyclerAdapter eAdapter = new ElderlyRecyclerAdapter(elderlyList);
                                     RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getApplicationContext());
