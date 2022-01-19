@@ -40,11 +40,13 @@ public class MedAdapter extends RecyclerView.Adapter<MedAdapter.MedViewHolder>{
     List mMeds;
     ArrayList<Medication> meds;
     SharedPreferences sharedPreferences;
+
+
     FirebaseAuth fAuth = FirebaseAuth.getInstance();
     FirebaseFirestore fStore = FirebaseFirestore.getInstance();
     FirebaseUser user = fAuth.getCurrentUser();
-    String userID = user.getUid();
-    DocumentReference docRef = fStore.collection("Elderly").document(userID);
+    String userID;
+    String usertype;
     public MedAdapter(List mMeds){
         this.mMeds = mMeds;
     }
@@ -55,12 +57,29 @@ public class MedAdapter extends RecyclerView.Adapter<MedAdapter.MedViewHolder>{
     public MedViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         Context context = parent.getContext();
         LayoutInflater inflater = LayoutInflater.from(context);
-        sharedPreferences = context.getSharedPreferences("mainView", Context.MODE_PRIVATE);
+
 
 
         meds = new ArrayList<Medication>();
 
 
+
+
+
+        sharedPreferences = context.getSharedPreferences("CaretakerValues", Context.MODE_PRIVATE);
+
+        userID = sharedPreferences.getString("elderlyID", "UfDuCIuLDqUo3niFg73o5jK3Jml2");
+
+        sharedPreferences = context.getSharedPreferences("usertype", Context.MODE_PRIVATE);
+        usertype = sharedPreferences.getString("type", "Elderly");
+        DocumentReference docRef = fStore.collection("Elderly").document(user.getUid());
+        if (usertype.equals("Elderly")){
+            docRef = fStore.collection("Elderly").document(user.getUid());
+        }else{
+            docRef = fStore.collection("Elderly").document(userID);
+        }
+
+        sharedPreferences = context.getSharedPreferences("mainView", Context.MODE_PRIVATE);
         docRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
             @Override
             public void onSuccess(DocumentSnapshot documentSnapshot) {
@@ -86,6 +105,7 @@ public class MedAdapter extends RecyclerView.Adapter<MedAdapter.MedViewHolder>{
         SimpleDateFormat checker = new SimpleDateFormat("dd/MM/yyyy");
         String temps = checker.format(calendar.getTime());
 
+
         if (temps.equals("01/01/2003")){
             holder.txtMedDate.setText("");
             holder.deleteBtn.setVisibility(View.GONE);
@@ -99,37 +119,43 @@ public class MedAdapter extends RecyclerView.Adapter<MedAdapter.MedViewHolder>{
         }
         holder.txtMedName.setText(currentMed.medName);
         holder.txtMedInstruct.setText(currentMed.medDescription);
-        holder.deleteBtn.setId(position+1);
-        holder.deleteBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                new AlertDialog.Builder(v.getContext())
-                        .setTitle("Delete")
-                        .setMessage("Do you want to delete this medication?")
-                        .setIcon(android.R.drawable.ic_dialog_alert)
-                        .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
 
-                            public void onClick(DialogInterface dialog, int whichButton) {
-                                meds.remove(holder.getAdapterPosition());
 
-                                docRef.update("medList", meds)
-                                        .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                            @Override
-                                            public void onSuccess(Void unused) {
-                                                Log.d("TAG","onSuccess: Medication properly removed");
-                                                v.getContext().startActivity(new Intent(v.getContext(), WeeklyMedicationActivity.class));
-                                            }
-                                        }).addOnFailureListener(new OnFailureListener() {
-                                    @Override
-                                    public void onFailure(@NonNull Exception e) {
-                                        Log.e("TAG", "onFailure: " + e.toString());
-                                    }
-                                });
-                            }})
-                        .setNegativeButton(android.R.string.no, null).show();
+        if (!usertype.equals("Elderly")){
+            holder.deleteBtn.setId(position+1);
+            holder.deleteBtn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    new AlertDialog.Builder(v.getContext())
+                            .setTitle("Delete")
+                            .setMessage("Do you want to delete this medication?")
+                            .setIcon(android.R.drawable.ic_dialog_alert)
+                            .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
 
-            }
-        });
+                                public void onClick(DialogInterface dialog, int whichButton) {
+                                    meds.remove(holder.getAdapterPosition());
+
+                                    DocumentReference docRef = fStore.collection("Elderly").document(userID);
+                                    docRef.update("medList", meds)
+                                            .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                @Override
+                                                public void onSuccess(Void unused) {
+                                                    Log.d("TAG","onSuccess: Medication properly removed");
+                                                    v.getContext().startActivity(new Intent(v.getContext(), WeeklyMedicationActivity.class));
+                                                }
+                                            }).addOnFailureListener(new OnFailureListener() {
+                                        @Override
+                                        public void onFailure(@NonNull Exception e) {
+                                            Log.e("TAG", "onFailure: " + e.toString());
+                                        }
+                                    });
+                                }})
+                            .setNegativeButton(android.R.string.no, null).show();
+                }
+            });
+        } else{
+            holder.deleteBtn.setVisibility(View.GONE);
+        }
     }
 
 

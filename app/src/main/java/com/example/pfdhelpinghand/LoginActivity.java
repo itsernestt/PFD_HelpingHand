@@ -4,7 +4,9 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
@@ -31,12 +33,13 @@ public class LoginActivity extends AppCompatActivity {
     FirebaseFirestore fStore;
     String userID;
     FirebaseUser user;
+    SharedPreferences sharedPreferences;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-
+        sharedPreferences = getSharedPreferences("usertype", Context.MODE_PRIVATE);
         fAuth = FirebaseAuth.getInstance();
         user = fAuth.getCurrentUser();
 
@@ -50,10 +53,17 @@ public class LoginActivity extends AppCompatActivity {
 
                 if (user_type.equals("caregiver"))
                 {
+                    SharedPreferences.Editor editor = sharedPreferences.edit();
+                    editor.putString("type", "Caregiver");
+                    editor.commit();
                     startActivity(new Intent(getApplicationContext(), CaregiverMainActivity.class));
+
                 }
                 else if (user_type.equals("elderly"))
                 {
+                    SharedPreferences.Editor editor = sharedPreferences.edit();
+                    editor.putString("type", "Elderly");
+                    editor.commit();
                     startActivity(new Intent(getApplicationContext(), MainActivity.class));
                 }
         }
@@ -109,10 +119,17 @@ public class LoginActivity extends AppCompatActivity {
 
                                 if (user_type.equals("caregiver"))
                                 {
+                                    SharedPreferences.Editor editor = sharedPreferences.edit();
+                                    editor.putString("type", "Caregiver");
+                                    editor.commit();
                                     startActivity(new Intent(getApplicationContext(), CaregiverMainActivity.class));
+
                                 }
                                 else if (user_type.equals("elderly"))
                                 {
+                                    SharedPreferences.Editor editor = sharedPreferences.edit();
+                                    editor.putString("type", "Elderly");
+                                    editor.commit();
                                     startActivity(new Intent(getApplicationContext(), MainActivity.class));
                                 }
 

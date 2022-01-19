@@ -4,7 +4,9 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.TimePickerDialog;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.format.DateFormat;
 import android.util.Log;
@@ -37,12 +39,12 @@ public class AddMedication extends AppCompatActivity implements AdapterView.OnIt
     TextView timeTV;
     EditText editName, editDes;
     Spinner editDay;
-    String day;
     FirebaseAuth fAuth;
     FirebaseUser user;
     FirebaseFirestore fStore;
     Elderly elderly;
     Calendar finalCalendar = Calendar.getInstance();
+    SharedPreferences sharedPreferences;
 
 
     @Override
@@ -62,11 +64,14 @@ public class AddMedication extends AppCompatActivity implements AdapterView.OnIt
         editDay.setAdapter(adapter);
         editDay.setOnItemSelectedListener(this);
 
+        sharedPreferences = getSharedPreferences("CaretakerValues", Context.MODE_PRIVATE);
+        String userID = sharedPreferences.getString("elderlyID", "UfDuCIuLDqUo3niFg73o5jK3Jml2");
+
         fAuth = FirebaseAuth.getInstance();
         fStore = FirebaseFirestore.getInstance();
         user = fAuth.getCurrentUser();
 
-        String userID = user.getUid();
+
         DocumentReference docRef = fStore.collection("Elderly").document(userID);
         Log.d("TAG", String.valueOf(docRef));
 
