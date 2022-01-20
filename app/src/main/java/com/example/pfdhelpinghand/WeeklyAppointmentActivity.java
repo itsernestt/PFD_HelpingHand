@@ -4,7 +4,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -30,6 +32,8 @@ public class WeeklyAppointmentActivity extends AppCompatActivity {
     Elderly elderly;
     ArrayList<Appointment> appts;
     RecyclerView apptsRV;
+    SharedPreferences sharedPreferences;
+    DocumentReference docRef;
 
     @Override
     public void onRestart() {
@@ -49,7 +53,20 @@ public class WeeklyAppointmentActivity extends AppCompatActivity {
         appts = new ArrayList<Appointment>();
 
         apptsRV = findViewById(R.id.allApptsRV);
-        String userID = user.getUid();
+        String userID;
+
+        sharedPreferences = getSharedPreferences("usertype", Context.MODE_PRIVATE);
+        String type = sharedPreferences.getString("type", "Elderly");
+
+        if (type.equals("Elderly")) {
+            userID = user.getUid();
+            docRef = fStore.collection("Elderly").document(userID);
+        } else {
+            sharedPreferences = getSharedPreferences("CaretakerValues", Context.MODE_PRIVATE);
+            userID = sharedPreferences.getString("elderlyID", "UfDuCIuLDqUo3niFg73o5jK3Jml2");
+            docRef = fStore.collection("Elderly").document(userID);
+        }
+
 
         DocumentReference docRef = fStore.collection("Elderly").document(userID);
         docRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
@@ -67,22 +84,38 @@ public class WeeklyAppointmentActivity extends AppCompatActivity {
 
         apptsRV.setLayoutManager(new LinearLayoutManager(this));
 
-        Button addAppt = findViewById(R.id.editApptBtn);
-        addAppt.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent navigateTo = new Intent(WeeklyAppointmentActivity.this, AddAppointment.class);
-                startActivity(navigateTo);
-            }
-        });
+
 
         Button backBtn = findViewById(R.id.weeklyApptBackButton);
         backBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent navigate = new Intent(WeeklyAppointmentActivity.this, MedicationAppointmentActivity.class);
+                sharedPreferences = getSharedPreferences("usertype", Context.MODE_PRIVATE);
+                String temp = sharedPreferences.getString("type", "Elderly");
+                if (temp.equals("Elderly")) {
+                    Intent navigateToPreviousPage = new Intent(WeeklyAppointmentActivity.this, MedicationAppointmentActivity.class);
+                    startActivity(navigateToPreviousPage);
+                } else {
+                    Intent navigate = new Intent(WeeklyAppointmentActivity.this, CaregiverMainActivity.class);
+                    startActivity(navigate);
+                }
+            }
+        });
+
+        Button addAppt = findViewById(R.id.editApptBtn);
+
+        sharedPreferences = getSharedPreferences("usertype", Context.MODE_PRIVATE);
+        String temp = sharedPreferences.getString("type", "Elderly");
+        if (temp.equals("Elderly")){
+            addAppt.setVisibility(View.GONE);
+        }
+        addAppt.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent navigate = new Intent(WeeklyAppointmentActivity.this, AddAppointment.class);
                 startActivity(navigate);
             }
         });
+
     }
 }

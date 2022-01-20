@@ -58,10 +58,6 @@ public class MedicationAppointmentActivity extends AppCompatActivity {
         meds = new ArrayList<Medication>();
         appts = new ArrayList<Appointment>();
 
-        sharedpreferences = getSharedPreferences("mainView", Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedpreferences.edit();
-        editor.putString("main", "false");
-        editor.commit();
 
         String userID = user.getUid();
         medRecyclerView = findViewById(R.id.recyclerView1);
@@ -143,9 +139,6 @@ public class MedicationAppointmentActivity extends AppCompatActivity {
 
         weeklyMedButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                SharedPreferences.Editor editor = sharedpreferences.edit();
-                editor.putString("main", "true");
-                editor.commit();
                 Intent navigateTo = new Intent(MedicationAppointmentActivity.this, com.example.pfdhelpinghand.WeeklyMedicationActivity.class);
                 startActivity(navigateTo);
             }
@@ -153,9 +146,6 @@ public class MedicationAppointmentActivity extends AppCompatActivity {
 
         weeklyApptButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                SharedPreferences.Editor editor = sharedpreferences.edit();
-                editor.putString("main", "true");
-                editor.commit();
                 Intent navigateTo = new Intent(MedicationAppointmentActivity.this, com.example.pfdhelpinghand.WeeklyAppointmentActivity.class);
                 startActivity(navigateTo);
             }
