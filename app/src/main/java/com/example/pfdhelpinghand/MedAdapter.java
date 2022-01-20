@@ -58,28 +58,22 @@ public class MedAdapter extends RecyclerView.Adapter<MedAdapter.MedViewHolder>{
         Context context = parent.getContext();
         LayoutInflater inflater = LayoutInflater.from(context);
 
-
-
         meds = new ArrayList<Medication>();
 
 
-
-
-
-        sharedPreferences = context.getSharedPreferences("CaretakerValues", Context.MODE_PRIVATE);
-
-        userID = sharedPreferences.getString("elderlyID", "UfDuCIuLDqUo3niFg73o5jK3Jml2");
-
         sharedPreferences = context.getSharedPreferences("usertype", Context.MODE_PRIVATE);
         usertype = sharedPreferences.getString("type", "Elderly");
-        DocumentReference docRef = fStore.collection("Elderly").document(user.getUid());
+
+        DocumentReference docRef;
+
         if (usertype.equals("Elderly")){
             docRef = fStore.collection("Elderly").document(user.getUid());
         }else{
+            sharedPreferences = context.getSharedPreferences("CaretakerValues", Context.MODE_PRIVATE);
+            userID = sharedPreferences.getString("elderlyID", "UfDuCIuLDqUo3niFg73o5jK3Jml2");
             docRef = fStore.collection("Elderly").document(userID);
         }
 
-        sharedPreferences = context.getSharedPreferences("mainView", Context.MODE_PRIVATE);
         docRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
             @Override
             public void onSuccess(DocumentSnapshot documentSnapshot) {
@@ -113,10 +107,7 @@ public class MedAdapter extends RecyclerView.Adapter<MedAdapter.MedViewHolder>{
             String temp = simpleDateFormat.format(calendar.getTime());
             holder.txtMedDate.setText(temp);
         }
-        String isWeekly = sharedPreferences.getString("main", "false");
-        if (isWeekly == "false"){
-            holder.deleteBtn.setVisibility(View.GONE);
-        }
+
         holder.txtMedName.setText(currentMed.medName);
         holder.txtMedInstruct.setText(currentMed.medDescription);
 

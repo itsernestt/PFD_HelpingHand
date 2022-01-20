@@ -5,7 +5,9 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.format.DateFormat;
 import android.view.View;
@@ -42,6 +44,7 @@ public class AddAppointment extends AppCompatActivity {
     FirebaseFirestore fStore;
     Elderly elderly;
     Calendar finalCalendar = Calendar.getInstance();
+    SharedPreferences sharedPreferences;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,7 +63,8 @@ public class AddAppointment extends AppCompatActivity {
         fStore = FirebaseFirestore.getInstance();
         user = fAuth.getCurrentUser();
 
-        String userID = user.getUid();
+        sharedPreferences = getSharedPreferences("CaretakerValues", Context.MODE_PRIVATE);
+        String userID = sharedPreferences.getString("elderlyID", "UfDuCIuLDqUo3niFg73o5jK3Jml2");
         DocumentReference docRef = fStore.collection("Elderly").document(userID);
 
         docRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {

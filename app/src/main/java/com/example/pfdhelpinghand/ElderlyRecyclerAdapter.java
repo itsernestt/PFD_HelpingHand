@@ -153,9 +153,33 @@ public class ElderlyRecyclerAdapter extends RecyclerView.Adapter<ElderlyRecycler
         if (apptList.size() == 0)
         {
             holder.elderlyApptName.setText("No record found");
+            holder.viewAppt.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+                    String temp = elderlyArrayList.get(holder.getAdapterPosition()).ID;
+                    SharedPreferences.Editor editor = sharedPreferences.edit();
+                    editor.putString("elderlyID", temp);
+                    editor.commit();
+                    Intent navigateTo = new Intent(v.getContext(), WeeklyAppointmentActivity.class);
+                    v.getContext().startActivity(navigateTo);
+                }
+            });
         }
         else{
             holder.elderlyApptName.setText(apptList.get(0).apptName + apptList.get(0).location);
+            holder.viewAppt.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+                    String temp = elderlyArrayList.get(holder.getAdapterPosition()).ID;
+                    SharedPreferences.Editor editor = sharedPreferences.edit();
+                    editor.putString("elderlyID", temp);
+                    editor.commit();
+                    Intent navigateTo = new Intent(v.getContext(), WeeklyAppointmentActivity.class);
+                    v.getContext().startActivity(navigateTo);
+                }
+            });
         }
 
 
