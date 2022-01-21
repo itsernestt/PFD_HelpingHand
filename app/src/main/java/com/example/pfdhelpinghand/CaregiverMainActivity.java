@@ -14,7 +14,6 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.os.Handler;
-import android.service.controls.actions.BooleanAction;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
@@ -22,6 +21,7 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -36,12 +36,10 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
-import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
-import java.util.List;
 
 
 public class CaregiverMainActivity extends AppCompatActivity {
@@ -244,16 +242,20 @@ public class CaregiverMainActivity extends AppCompatActivity {
 
     private Handler mHandler = new Handler();
     public void ShowPopup(View v) {
-        TextView closeBut, pairupMessage;
-        EditText pairUpId;
+        TextView closeBut, foundMessage, pairupMessage;
+        ProgressBar progressBar;
+        EditText pairupEmail;
         Button pairUpBut;
 
         myDialog.setContentView(R.layout.activity_pop_up_window);
 
         closeBut = (TextView) myDialog.findViewById(R.id.closePopupButton);
         pairUpBut = myDialog.findViewById(R.id.pairupButton);
-        pairUpId = myDialog.findViewById(R.id.pairupId);
-        pairupMessage = myDialog.findViewById(R.id.popupMessage);
+        pairupEmail = myDialog.findViewById(R.id.pairupEmail);
+        foundMessage = myDialog.findViewById(R.id.elderlyFoundMessage);
+        pairupMessage = myDialog.findViewById(R.id.elderlyPairupMessage);
+        progressBar = myDialog.findViewById(R.id.pairupProgressbar);
+
 
         closeBut.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -265,105 +267,85 @@ public class CaregiverMainActivity extends AppCompatActivity {
         pairUpBut.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String elderId = pairUpId.getText().toString().trim();
-                if (TextUtils.isEmpty(elderId))
-                {
-                    pairUpId.setError("Please do not leave it blank");
+                String elderlyEmail = pairupEmail.getText().toString().trim();
+                if (TextUtils.isEmpty(elderlyEmail)) {
+                    pairupEmail.setError("Please do not leave it blank");
                     return;
                 }
 
                 // Searching on the elderly document by inputting the elderlyID
-                DocumentReference docRef = fStore.collection("Elderly").document(elderId);
-                docRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-                    @Override
-                    public void onSuccess (DocumentSnapshot documentSnapshot) {
-                            if (documentSnapshot.exists()) {
-                                //1. Update the elderlyList in the caregiver side
-                                // reset the pairup text input
-                                pairUpId.setText("");
-                                pairupMessage.setText("Pair up successfully! ");
+                fStore.collection("Elderly")
+                        .whereEqualTo("email", elderlyEmail)
+                        .addSnapshotListener(new EventListener<QuerySnapshot>() {
+                            @Override
+                            public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots,
+                                                @Nullable FirebaseFirestoreException e) {
+                                if (e != null) {
+                                    Log.w("TAG", "listen:error", e);
+                                    return;
+                                } else {
+                                    for (DocumentChange dc : queryDocumentSnapshots.getDocumentChanges()) {
+                                        Elderly elderlyPaired = dc.getDocument().toObject(Elderly.class);
+                                        ArrayList<String> caregiverList = elderlyPaired.getCaretakerList();
+                                        String elderlyPairedID = elderlyPaired.getID();
 
-                                Elderly elderly = documentSnapshot.toObject(Elderly.class);
+                                        if (!caregiverList.contains(userID)) {
+                                            pairupEmail.setText("");
+                                            foundMessage.setText("Account found! ");
+                                            //1.  If found, add the elderly id into the list
+                                            elderlyIDList.add(elderlyPairedID);
 
-                                //Check if the elderly object has already been added
-                                Boolean isContain = false;
-                                for (String e : elderlyIDList)
-                                {
-                                    if (e.equals(elderId))
-                                    {
-                                        isContain = true;
+                                            // 2. Update the caregiverList at the elderly side
+                                            elderlyPaired.addCaretaker(userID);
+
+                                            // 3. waiting for elderly to confirm the pairing
+                                            progressBar.setVisibility(View.VISIBLE);
+                                            pairupMessage.setVisibility(View.VISIBLE);
+
+
+                                            switch (dc.getType()) {
+                                                case MODIFIED:
+                                                    // 3. Updates the elderly on the fire store
+                                                    fStore.collection("Elderly").document(elderlyPairedID)
+                                                            .set(elderlyPaired)
+                                                            .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                                @Override
+                                                                public void onSuccess(Void aVoid) {
+                                                                    Log.d("TAG", "onSuccess: Caregiver user updated for" + userID);
+                                                                }
+                                                            });
+
+                                                    // Updates the caregiver on the firestore
+                                                    fStore.collection("Caregiver").document(userID)
+                                                            .set(caretaker)
+                                                            .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                                @Override
+                                                                public void onSuccess(Void aVoid) {
+                                                                    Log.d("TAG", "onSuccess: Caregiver user updated for" + userID);
+
+                                                                    // Add a two second delay before refreshing the page just to show the connection result
+                                                                    mHandler.postDelayed(mRefreshPage, 2000);
+                                                                }
+                                                            });
+                                                    break;
+                                            }
+
+
+                                        } else {
+                                            // If the elderly has been added already
+                                            pairupEmail.setText("");
+                                            foundMessage.setText("Elderly has already been added!");
+                                        }
+
                                     }
                                 }
-                                if (!isContain)
-                                {
-                                    elderlyIDList.add(elderId);
-                                }
-                                else{
-                                    pairupMessage.setText("The elderly has already been added!");
-                                }
+                            }
+                        });
 
-                                // 2. Update the caregiverList at the elderly side
-                                Boolean isContainCaregiver = false;
-                                String caregiverID = caretaker.getID();
-                                ArrayList<String> caregiverList = elderly.getCaretakerList();
-                                for (String c : caregiverList)
-                                {
-                                    if (c.equals(caregiverID))
-                                    {
-                                        isContainCaregiver = true;
-                                    }
-                                }
-                                if (!isContainCaregiver)
-                                {
-                                    elderly.addCaretaker(caregiverID);
-
-                                }
-                                else{
-                                    pairupMessage.setText(pairupMessage.getText() + "\n" +
-                                                        "The care-taker has been updated on the elderly too!");
-                                }
-
-
-                                // Updates the elderly on the firestore
-                                fStore.collection("Elderly").document(elderId)
-                                        .set(elderly)
-                                        .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                            @Override
-                                            public void onSuccess(Void aVoid) {
-                                                Log.d("TAG","onSuccess: Caregiver user updated for" + userID);
-
-                                            }
-                                        });
-
-                                // Updates the caregiver on the firestore
-                                fStore.collection("Caregiver").document(userID)
-                                        .set(caretaker)
-                                        .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                            @Override
-                                            public void onSuccess(Void aVoid) {
-                                                Log.d("TAG","onSuccess: Caregiver user updated for" + userID);
-
-                                                // Add a two second delay before refreshing the page just to show the connection result
-                                                mHandler.postDelayed(mRefreshPage, 2000);
-                                            }
-                                        });
-
-
-
-                            } else {
-                                Log.d("TAG", "No such document");
-                                pairupMessage.setText("Not found!");
-                                pairUpId.setText("");
-                            };
-
-
-                        }
-                    });
+                myDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                myDialog.show();
             }
         });
-
-        myDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-        myDialog.show();
     }
 
 

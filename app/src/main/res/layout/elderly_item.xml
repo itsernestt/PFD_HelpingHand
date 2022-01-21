@@ -4,7 +4,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    app:cardBackgroundColor="#FFFFFF"
+    android:paddingTop="16dp"
+    android:paddingBottom="16dp"
+    app:cardBackgroundColor="#C1F5FB"
     app:cardCornerRadius="5dp"
     app:cardElevation="5dp"
     app:cardUseCompatPadding="true">
@@ -12,7 +14,9 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="16dp">
+        android:clipToPadding="true"
+        android:padding="16dp"
+        android:paddingBottom="16dp">
 
         <ImageView
             android:id="@+id/elderly_personPic"
@@ -62,7 +66,9 @@
             android:layout_height="36dp"
             android:layout_alignParentRight="true"
             android:layout_marginRight="50dp"
+            android:adjustViewBounds="false"
             android:background="#FFFFFF"
+            android:elevation="5dp"
             android:scaleType="fitXY"
             app:srcCompat="@drawable/e_phonecall" />
 
@@ -139,47 +145,45 @@
             android:id="@+id/elderly_apptPic"
             android:layout_width="38dp"
             android:layout_height="38dp"
-            app:srcCompat="@drawable/e_appointment"
-            app:tint="@color/purple_700"
-
             android:layout_below="@id/elderly_medPic"
             android:layout_marginTop="40dp"
-            android:background="#FFFFFF"
-            />
 
+            android:background="#FFFFFF"
+            app:srcCompat="@drawable/e_appointment"
+            app:tint="@color/purple_700" />
 
 
         <TextView
             android:id="@+id/elderlyItem_apptName"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Appointment name"
-
             android:layout_below="@id/elderlyItem_med"
+
             android:layout_marginLeft="10dp"
             android:layout_marginTop="30dp"
             android:layout_toEndOf="@id/elderly_apptPic"
             android:layout_toRightOf="@+id/elderly_apptPic"
+            android:text="Appointment name"
 
             android:textColor="@color/black"
             android:textSize="16sp"
-            android:textStyle="bold"/>
+            android:textStyle="bold" />
 
         <TextView
             android:id="@+id/elderlyItem_appt"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Next Appointment in"
-
-
             android:layout_below="@id/elderlyItem_apptName"
+
+
             android:layout_marginLeft="10dp"
             android:layout_marginTop="2dp"
             android:layout_toEndOf="@id/elderly_apptPic"
             android:layout_toRightOf="@+id/elderly_apptPic"
+            android:text="Next Appointment in"
 
             android:textColor="@color/black"
-            android:textSize="13sp"/>
+            android:textSize="13sp" />
 
 
         <ImageButton
@@ -197,27 +201,24 @@
             android:layout_marginRight="50dp"
             android:background="#FFFFFF"
 
-            android:elevation="3dp"
-
             android:backgroundTint="#FFFFFF"
+
+            android:elevation="3dp"
             android:scaleType="fitXY"
             android:src="@drawable/e_apptclick"
             android:textAlignment="center" />
-
-
 
 
         <ImageView
             android:id="@+id/elderly_locPic"
             android:layout_width="38dp"
             android:layout_height="38dp"
-            app:srcCompat="@drawable/e_location"
-            app:tint="@color/purple_700"
-
             android:layout_below="@id/elderly_apptPic"
             android:layout_marginTop="40dp"
-            android:background="#FFFFFF"/>
 
+            android:background="#FFFFFF"
+            app:srcCompat="@drawable/e_location"
+            app:tint="@color/purple_700" />
 
 
         <TextView
@@ -231,10 +232,10 @@
             android:layout_toEndOf="@id/elderly_locPic"
             android:layout_toRightOf="@+id/elderly_locPic"
 
+            android:text="(Location)"
             android:textColor="@color/black"
             android:textSize="16sp"
-            android:textStyle="bold"
-            android:text="(Location)"/>
+            android:textStyle="bold" />
 
 
         <ImageButton
@@ -251,9 +252,9 @@
             android:layout_marginRight="50dp"
             android:background="#FFFFFF"
 
-            android:elevation="3dp"
-
             android:backgroundTint="#FFFFFF"
+
+            android:elevation="3dp"
             android:scaleType="fitXY"
             android:src="@drawable/e_locclick"
             android:textAlignment="center" />
@@ -263,14 +264,13 @@
             android:id="@+id/elderlyItem_index"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
             android:text="(index)"
             android:textColor="@color/black"
-            android:textSize="10sp"
+            android:textSize="13sp"
             android:textStyle="bold"
-            android:layout_alignParentRight="true"
 
             />
-
 
 
     </RelativeLayout>
