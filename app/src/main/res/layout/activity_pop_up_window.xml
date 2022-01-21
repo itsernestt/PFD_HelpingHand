@@ -32,8 +32,10 @@
             android:layout_height="51dp"
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="5dp"
-            android:text="MANUALLY PAIR UP WITH AN ELDERLY ACCOUNT"
+            android:fontFamily="@font/roboto_medium"
+            android:text="MANUALLY PAIRRING "
             android:textColor="@color/white"
+            android:textSize="20sp"
             android:textStyle="bold" />
     </LinearLayout>
 
@@ -54,6 +56,8 @@
                 android:id="@+id/pairupEmail"
                 android:layout_width="wrap_content"
                 android:layout_height="40dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
                 android:layout_weight="0.8"
                 android:background="@color/white"
                 android:ems="10"
@@ -99,5 +103,14 @@
         android:textAlignment="center"
         android:textColor="#000000"
         android:visibility="invisible" />
+
+    <Button
+        android:id="@+id/viewPairUpHistoryBut"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="20dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginRight="20dp"
+        android:text="View History"/>
 
 </LinearLayout>
