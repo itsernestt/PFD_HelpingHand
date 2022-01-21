@@ -1,5 +1,7 @@
 package com.example.pfdhelpinghand;
 
+import static android.content.ContentValues.TAG;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -14,7 +16,6 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.os.Handler;
-import android.service.controls.actions.BooleanAction;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
@@ -22,9 +23,11 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -36,17 +39,16 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
-import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 
 public class CaregiverMainActivity extends AppCompatActivity {
 
-    // here
     TextView caregiverTest, caregiverViewElderly, caregiverTest2;
     FirebaseUser user;
     FirebaseFirestore fStore;
@@ -57,7 +59,6 @@ public class CaregiverMainActivity extends AppCompatActivity {
     ArrayList<Elderly> elderlyList;
     Elderly elderly;
     SharedPreferences sharedPreferences;
-
 
     //Float button animation
     FloatingActionButton addBut, settingBut, pairupBut;
@@ -78,7 +79,7 @@ public class CaregiverMainActivity extends AppCompatActivity {
         editor.putString("elderlyID", "");
         editor.commit();
 
-        // Initialise a new firestore instance
+        // Initialise a new fire store instance
         fStore = FirebaseFirestore.getInstance();
 
         // Get the current user if he/she has already signed in
@@ -152,8 +153,6 @@ public class CaregiverMainActivity extends AppCompatActivity {
 
                 if (elderlyIDList.size() >= 1)
                 {
-
-
                     fStore.collection("Elderly")
                             .whereIn("id", elderlyIDList)
                             .addSnapshotListener(new EventListener<QuerySnapshot>() {
@@ -186,21 +185,21 @@ public class CaregiverMainActivity extends AppCompatActivity {
                                     }
 
 
+
                                     ElderlyRecyclerAdapter eAdapter = new ElderlyRecyclerAdapter(elderlyList);
                                     RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getApplicationContext());
                                     recyclerView.setLayoutManager(layoutManager);
                                     recyclerView.setItemAnimator(new DefaultItemAnimator());
                                     recyclerView.setAdapter(eAdapter);
                                     eAdapter.notifyDataSetChanged();
-
                                     Integer size = elderlyList.size();
-                                    //caregiverTest2.setText(Integer.toString(size));
+
+
 
 
                                 }
                             });
                 }
-
             }
         });
 
@@ -217,7 +216,6 @@ public class CaregiverMainActivity extends AppCompatActivity {
                 new ArrayList<Medication>(), new ArrayList<Appointment>(), new ArrayList<String>()));
 
     }
-
 
     // For the floating button
     private void animation(){
@@ -242,18 +240,27 @@ public class CaregiverMainActivity extends AppCompatActivity {
     }
 
 
+
     private Handler mHandler = new Handler();
     public void ShowPopup(View v) {
-        TextView closeBut, pairupMessage;
-        EditText pairUpId;
+        TextView closeBut, foundMessage, pairupMessage;
+        ProgressBar progressBar;
+        EditText pairupEmail;
         Button pairUpBut;
 
         myDialog.setContentView(R.layout.activity_pop_up_window);
 
+        myDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        myDialog.show();
+
+
         closeBut = (TextView) myDialog.findViewById(R.id.closePopupButton);
         pairUpBut = myDialog.findViewById(R.id.pairupButton);
-        pairUpId = myDialog.findViewById(R.id.pairupId);
-        pairupMessage = myDialog.findViewById(R.id.popupMessage);
+        pairupEmail = myDialog.findViewById(R.id.pairupEmail);
+        foundMessage = myDialog.findViewById(R.id.elderlyFoundMessage);
+        pairupMessage = myDialog.findViewById(R.id.elderlyPairupMessage);
+        progressBar = myDialog.findViewById(R.id.pairupProgressbar);
+
 
         closeBut.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -262,111 +269,215 @@ public class CaregiverMainActivity extends AppCompatActivity {
             }
         });
 
+
         pairUpBut.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String elderId = pairUpId.getText().toString().trim();
-                if (TextUtils.isEmpty(elderId))
-                {
-                    pairUpId.setError("Please do not leave it blank");
+                String elderlyEmail = pairupEmail.getText().toString().trim();
+                if (TextUtils.isEmpty(elderlyEmail)) {
+                    pairupEmail.setError("Please do not leave it blank");
                     return;
                 }
 
                 // Searching on the elderly document by inputting the elderlyID
-                DocumentReference docRef = fStore.collection("Elderly").document(elderId);
-                docRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-                    @Override
-                    public void onSuccess (DocumentSnapshot documentSnapshot) {
-                            if (documentSnapshot.exists()) {
-                                //1. Update the elderlyList in the caregiver side
-                                // reset the pairup text input
-                                pairUpId.setText("");
-                                pairupMessage.setText("Pair up successfully! ");
+                fStore.collection("Elderly")
+                        .whereEqualTo("email", elderlyEmail)
+                        .get()
+                        .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                            @Override
+                            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                if (task.isSuccessful()) {
 
-                                Elderly elderly = documentSnapshot.toObject(Elderly.class);
+                                    for (QueryDocumentSnapshot document : task.getResult()) {
 
-                                //Check if the elderly object has already been added
-                                Boolean isContain = false;
-                                for (String e : elderlyIDList)
-                                {
-                                    if (e.equals(elderId))
-                                    {
-                                        isContain = true;
+                                        Elderly elderlyPaired = document.toObject(Elderly.class);
+                                        ArrayList<String> caregiverList = elderlyPaired.getCaretakerList();
+                                        String elderlyPairedID = elderlyPaired.getID();
+
+                                        if (caregiverList.contains(userID))
+                                        {
+
+                                            pairupEmail.setError("This account has already connected");
+                                            return;
+                                        }
+                                        else {
+
+                                            pairupEmail.setText("");
+                                            foundMessage.setText("Account found! ");
+
+
+
+                                            // waiting for elderly to confirm the pairing
+                                            progressBar.setVisibility(View.VISIBLE);
+                                            pairupMessage.setVisibility(View.VISIBLE);
+
+                                            Map<String, Object> pairingRequest = new HashMap<>();
+                                            pairingRequest.put("senderID", userID);
+                                            pairingRequest.put("receiverID", elderlyPairedID);
+                                            pairingRequest.put("isPairUpSuccess", false);
+
+
+                                            fStore.collection("PairingRequest")
+                                                    .document(userID)
+                                                    .set(pairingRequest)
+                                                    .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                        @Override
+                                                        public void onSuccess(Void aVoid) {
+                                                            Log.d(TAG, "DocumentSnapshot successfully written!");
+                                                        }
+                                                    })
+                                                    .addOnFailureListener(new OnFailureListener() {
+                                                        @Override
+                                                        public void onFailure(@NonNull Exception e) {
+                                                            Log.w(TAG, "Error writing document", e);
+                                                        }
+                                                    });
+
+
+                                            fStore.collection("PairingRequest").document(userID)
+                                                    .addSnapshotListener(new EventListener<DocumentSnapshot>() {
+                                                        @Override
+                                                        public void onEvent(@Nullable DocumentSnapshot snapshot,
+                                                                            @Nullable FirebaseFirestoreException e) {
+                                                            if (e != null) {
+                                                                Log.w(TAG, "listen:error", e);
+                                                                return;
+                                                            }
+
+                                                            if (snapshot != null && snapshot.exists()) {
+                                                                Boolean pairedUp = snapshot.getBoolean("isPairUpSuccess");
+                                                                if (pairedUp)
+                                                                {
+
+                                                                    pairupMessage.setText("Paired up successfully!");
+                                                                    progressBar.setVisibility(View.INVISIBLE);
+                                                                    //1.  If found, add the elderly id into the list
+                                                                    caretaker.assignElderly(elderlyPairedID);
+                                                                    elderlyIDList = caretaker.getElderlyList();
+
+                                                                    // 2. Update the caregiverList at the elderly side
+                                                                    elderlyPaired.addCaretaker(userID);
+
+
+                                                                    // 4. Updates the elderly on the fire store
+                                                                    fStore.collection("Elderly").document(elderlyPairedID)
+                                                                            .set(elderlyPaired)
+                                                                            .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                                                @Override
+                                                                                public void onSuccess(Void aVoid) {
+                                                                                    Log.d("TAG", "onSuccess: Caregiver user updated for" + userID);
+                                                                                }
+                                                                            });
+
+                                                                    // Updates the caregiver on the firestore
+                                                                    fStore.collection("Caregiver").document(userID)
+                                                                            .set(caretaker)
+                                                                            .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                                                @Override
+                                                                                public void onSuccess(Void aVoid) {
+                                                                                    Log.d("TAG", "onSuccess: Caregiver user updated for" + userID);
+
+                                                                                    // Add a two second delay before refreshing the page just to show the connection result
+                                                                                    mHandler.postDelayed(mRefreshPage, 2500);
+                                                                                }
+                                                                            });
+                                                                }
+                                                            } else {
+                                                                Log.d(TAG, "Current data: null");
+                                                            }
+
+
+                                                        }
+                                                    });
+                                        }
+
                                     }
                                 }
-                                if (!isContain)
-                                {
-                                    elderlyIDList.add(elderId);
-                                }
-                                else{
-                                    pairupMessage.setText("The elderly has already been added!");
-                                }
 
-                                // 2. Update the caregiverList at the elderly side
-                                Boolean isContainCaregiver = false;
-                                String caregiverID = caretaker.getID();
-                                ArrayList<String> caregiverList = elderly.getCaretakerList();
-                                for (String c : caregiverList)
-                                {
-                                    if (c.equals(caregiverID))
-                                    {
-                                        isContainCaregiver = true;
+                            }
+                        });
+
+/*
+
+                        .addSnapshotListener(new EventListener<QuerySnapshot>() {
+                            @Override
+                            public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots,
+                                                @Nullable FirebaseFirestoreException e) {
+                                if (e != null) {
+                                    Log.w("TAG", "listen:error", e);
+                                    return;
+                                } else {
+                                    for (DocumentChange dc : queryDocumentSnapshots.getDocumentChanges()) {
+                                        Elderly elderlyPaired = dc.getDocument().toObject(Elderly.class);
+                                        ArrayList<String> caregiverList = elderlyPaired.getCaretakerList();
+                                        String elderlyPairedID = elderlyPaired.getID();
+
+                                        if (!caregiverList.contains(userID)) {
+                                            pairupEmail.setText("");
+                                            foundMessage.setText("Account found! ");
+                                            //1.  If found, add the elderly id into the list
+                                            elderlyIDList.add(elderlyPairedID);
+
+                                            // 2. Update the caregiverList at the elderly side
+                                            elderlyPaired.addCaretaker(userID);
+
+                                            // 3. waiting for elderly to confirm the pairing
+                                            progressBar.setVisibility(View.VISIBLE);
+                                            pairupMessage.setVisibility(View.VISIBLE);
+
+
+                                            switch (dc.getType()) {
+                                                case MODIFIED:
+                                                    // 3. Updates the elderly on the fire store
+                                                    fStore.collection("Elderly").document(elderlyPairedID)
+                                                            .set(elderlyPaired)
+                                                            .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                                @Override
+                                                                public void onSuccess(Void aVoid) {
+                                                                    Log.d("TAG", "onSuccess: Caregiver user updated for" + userID);
+                                                                }
+                                                            });
+
+                                                    // Updates the caregiver on the firestore
+                                                    fStore.collection("Caregiver").document(userID)
+                                                            .set(caretaker)
+                                                            .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                                @Override
+                                                                public void onSuccess(Void aVoid) {
+                                                                    Log.d("TAG", "onSuccess: Caregiver user updated for" + userID);
+
+                                                                    // Add a two second delay before refreshing the page just to show the connection result
+                                                                    mHandler.postDelayed(mRefreshPage, 2000);
+                                                                }
+                                                            });
+                                                    break;
+                                            }
+
+
+                                        }
+
                                     }
                                 }
-                                if (!isContainCaregiver)
-                                {
-                                    elderly.addCaretaker(caregiverID);
-
-                                }
-                                else{
-                                    pairupMessage.setText(pairupMessage.getText() + "\n" +
-                                                        "The care-taker has been updated on the elderly too!");
-                                }
-
-
-                                // Updates the elderly on the firestore
-                                fStore.collection("Elderly").document(elderId)
-                                        .set(elderly)
-                                        .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                            @Override
-                                            public void onSuccess(Void aVoid) {
-                                                Log.d("TAG","onSuccess: Caregiver user updated for" + userID);
-
-                                            }
-                                        });
-
-                                // Updates the caregiver on the firestore
-                                fStore.collection("Caregiver").document(userID)
-                                        .set(caretaker)
-                                        .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                            @Override
-                                            public void onSuccess(Void aVoid) {
-                                                Log.d("TAG","onSuccess: Caregiver user updated for" + userID);
-
-                                                // Add a two second delay before refreshing the page just to show the connection result
-                                                mHandler.postDelayed(mRefreshPage, 2000);
-                                            }
-                                        });
+                            }
+                        });
 
 
 
-                            } else {
-                                Log.d("TAG", "No such document");
-                                pairupMessage.setText("Not found!");
-                                pairUpId.setText("");
-                            };
 
 
-                        }
-                    });
+
+
+ */
+
             }
+
+
         });
 
-        myDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-        myDialog.show();
+
+
+
     }
-
-
 
 
     private Runnable mRefreshPage = new Runnable() {
