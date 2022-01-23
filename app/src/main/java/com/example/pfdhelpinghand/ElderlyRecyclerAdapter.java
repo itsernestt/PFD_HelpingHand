@@ -18,7 +18,8 @@ import java.util.List;
 
 import android.view.ViewGroup;
 import androidx.recyclerview.widget.RecyclerView;
-
+import androidx.recyclerview.widget.DefaultItemAnimator;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -94,8 +95,12 @@ public class ElderlyRecyclerAdapter extends RecyclerView.Adapter<ElderlyRecycler
                 elderlyList = caretaker.getElderlyList();
             }
         });
+
+
         sharedPreferences = parent.getContext().getSharedPreferences("CaretakerValues", Context.MODE_PRIVATE);
+
         View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.elderly_item, parent, false);
+
         return new MyViewHolder(itemView);
     }
 

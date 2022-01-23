@@ -1,14 +1,23 @@
 package com.example.pfdhelpinghand;
 //ernest
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
+import static android.content.ContentValues.TAG;
 
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.DefaultItemAnimator;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import android.app.Dialog;
 import android.content.Intent;
+import android.graphics.Color;
 import android.graphics.PorterDuff;
+import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.CountDownTimer;
+
+import android.os.Handler;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
@@ -18,6 +27,7 @@ import android.widget.Toast;
 import android.widget.ToggleButton;
 
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -25,15 +35,30 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.database.annotations.Nullable;
+import com.google.firebase.firestore.DocumentChange;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
+
+
+import java.util.ArrayList;
+import java.util.Iterator;
 
 public class MainActivity extends AppCompatActivity {
     FirebaseAuth fAuth;
     FirebaseUser user;
     FirebaseFirestore fStore;
     Elderly elderly;
+    Dialog pairUpDialog;
+
+    ArrayList<PairUpRequest> requests = new ArrayList<PairUpRequest>();
+    TextView welcomeBanner;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,14 +70,95 @@ public class MainActivity extends AppCompatActivity {
         fStore = FirebaseFirestore.getInstance();
         user = fAuth.getCurrentUser();
 
+        welcomeBanner = findViewById(R.id.elderlyWelcomeBanner);
+
         String userID = user.getUid();
+
+        FloatingActionButton viewPairUp = findViewById(R.id.floatingButtonElderly);
+        viewPairUp.setVisibility(View.INVISIBLE);
+
+
         DocumentReference docRef = fStore.collection("Elderly").document(userID);
+
+
         docRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
             @Override
             public void onSuccess(DocumentSnapshot documentSnapshot) {
                 elderly = documentSnapshot.toObject(Elderly.class);
+
+                fStore.collection("PairingRequest")
+                        .whereEqualTo("receiverEmail", elderly.getEmail())
+                        .addSnapshotListener(new EventListener<QuerySnapshot>() {
+                            @Override
+                            public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots,
+                                                @Nullable FirebaseFirestoreException e) {
+                                if (e != null) {
+                                    Log.w(TAG, "listen:error", e);
+                                    return;
+                                }
+
+
+                                for (DocumentChange dc: queryDocumentSnapshots.getDocumentChanges())
+                                {
+                                    DocumentSnapshot snapshot = dc.getDocument();
+                                    String documentID = snapshot.getId();
+                                    String senderEmail = snapshot.getString("senderEmail");
+                                    String receiverEmail = snapshot.getString("receiverEmail");
+                                    Boolean isPaired = snapshot.getBoolean("isPairUpSuccess");
+
+
+                                    PairUpRequest request = new PairUpRequest(documentID, senderEmail, receiverEmail, isPaired);
+
+                                    if (!request.getPairUpSuccess())
+                                    {
+                                        requests.add(request);
+                                        welcomeBanner.setText(welcomeBanner.getText() + Integer.toString(requests.size()) + "  ");
+
+                                    }
+
+
+                                    if (request.getPairUpSuccess())
+                                    {
+                                        Iterator<PairUpRequest> itr = requests.iterator();
+                                        while (itr.hasNext())
+                                        {
+                                            PairUpRequest r = itr.next();
+                                            if (request.getDocumentID().equals(r.getDocumentID()))
+                                            {
+                                                itr.remove();
+                                            }
+                                        }
+                                        welcomeBanner.setText(welcomeBanner.getText() + Integer.toString(requests.size()) + "  ");
+
+
+                                    }
+
+
+                                    if (requests.size() > 0)
+                                    {
+                                        viewPairUp.setVisibility(View.VISIBLE);
+
+                                    }
+                                    else{
+                                        viewPairUp.setVisibility(View.INVISIBLE);
+                                    }
+
+                                }
+
+
+
+
+
+
+                            }
+
+                });
+
+
             }
         });
+
+
 
         Button settingsButton = findViewById(R.id.settingsBtn);
         settingsButton.setOnClickListener(new View.OnClickListener(){
@@ -196,6 +302,22 @@ public class MainActivity extends AppCompatActivity {
         });
 
 
+        pairUpDialog = new Dialog(this);
+
+        viewPairUp.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                ShowPairUpRequest(view);
+            }
+
+        });
+
+
+
+
+
+
+
 
     }
 
@@ -209,4 +331,64 @@ public class MainActivity extends AppCompatActivity {
         startActivity(new Intent(getApplicationContext(), LoginActivity.class));
         finish();
     }
+
+    // For elderly to view incoming requests
+    public void ShowPairUpRequest(View v)
+    {
+
+        TextView closePairUpDialog;
+        RecyclerView recyclerView;
+
+
+        pairUpDialog.setContentView(R.layout.activity_pop_up_window3);
+
+
+
+        closePairUpDialog = (TextView) pairUpDialog.findViewById(R.id.closePairingPopup);
+        recyclerView = (RecyclerView) pairUpDialog.findViewById(R.id.pairUpRequestRecyclerView);
+
+
+        closePairUpDialog.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                pairUpDialog.dismiss();
+            }
+        });
+
+
+        ElderlyPairingRequestAdapter adapter = new ElderlyPairingRequestAdapter(requests);
+
+        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(pairUpDialog.getContext());
+        recyclerView.setLayoutManager(layoutManager);
+
+        recyclerView.setAdapter(adapter);
+
+        pairUpDialog.show();
+
+
+    }
+
+    //Testing!!!
+    public ArrayList<Elderly> addElderlyRecord()
+    {
+        ArrayList<EmergencyPerson> ePerson = new ArrayList<EmergencyPerson>();
+        ePerson.add(new EmergencyPerson("Chance123", "98284455"));
+        ArrayList<Elderly> eList = new ArrayList<Elderly>();
+        eList.add(new Elderly("12345", "Chen Han", "c@gmail.com","982955865",
+                "12345678", "Clementi", "Clementi mall", ePerson,
+                new ArrayList<Medication>(), new ArrayList<Appointment>(), new ArrayList<String>()));
+        return eList;
+    }
+
+    private Handler mHandler = new Handler();
+
+    private Runnable mRefreshPage = new Runnable() {
+        public void run() {
+            // do what you need to do here after the delay
+            overridePendingTransition(0, 0);
+            startActivity(getIntent());
+            overridePendingTransition(0, 0);
+        }
+    };
+
 }

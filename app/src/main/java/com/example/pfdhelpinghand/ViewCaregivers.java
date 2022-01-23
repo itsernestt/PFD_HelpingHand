@@ -1,5 +1,6 @@
 package com.example.pfdhelpinghand;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import androidx.annotation.NonNull;
@@ -28,7 +29,10 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -71,19 +75,22 @@ public class ViewCaregivers extends AppCompatActivity {
 
                 if (caretakerList.size() >= 1){
                     viewCaregiverInfo.setText("");
-                    for (String c : caretakerList)
-                    {
+                    fStore.collection("Caregiver")
+                            .whereIn("id", caretakerList)
+                            .addSnapshotListener(new EventListener<QuerySnapshot>() {
+                                @Override
+                                public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots,
+                                                    @Nullable FirebaseFirestoreException e) {
+                                    for (DocumentSnapshot snapshot: queryDocumentSnapshots)
+                                    {
+                                        Caretaker caretaker = snapshot.toObject(Caretaker.class);
+                                        viewCaregiverInfo.setText(viewCaregiverInfo.getText() + "\n" + caretaker.getFullName() + " " + caretaker.getPhoneNumber());
+                                    }
 
-                        DocumentReference docRef2 = fStore.collection("Caregiver").document(c);
-                        docRef2.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-                            @Override
-                            public void onSuccess(DocumentSnapshot documentSnapshot) {
-                                Caretaker caretaker = documentSnapshot.toObject(Caretaker.class);
-                                viewCaregiverInfo.setText(viewCaregiverInfo.getText() + "\n" + caretaker.getFullName() + " " + caretaker.getPhoneNumber());
-                            }
-                        });
+                                }
+                            });
 
-                    }
+
                 }
             }
         });
