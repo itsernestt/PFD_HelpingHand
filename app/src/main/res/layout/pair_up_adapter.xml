@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    app:cardBackgroundColor="#C1F5FB"
+    app:cardCornerRadius="5dp"
+    app:cardElevation="5dp"
+    app:cardUseCompatPadding="true"
+    android:layout_marginTop="10dp">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <TextView
+            android:id="@+id/pairupAdapter_caregiverEmail"
+            android:layout_width="match_parent"
+            android:layout_height="35dp"
+            android:fontFamily="@font/roboto_medium"
+            android:text="testing@gmail.com"
+            android:textAlignment="center"
+
+            android:textSize="20sp" />
+
+        <Button
+            android:id="@+id/pairupAdapter_accept"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/pairupAdapter_caregiverEmail"
+            android:layout_alignParentLeft="true"
+            android:layout_marginLeft="50dp"
+            android:text="Accept" />
+
+        <Button
+            android:id="@+id/pairupAdapter_reject"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/pairupAdapter_caregiverEmail"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="50dp"
+            android:backgroundTint="@android:color/holo_red_dark"
+            android:text="Reject" />
+
+    </RelativeLayout>
+
+</androidx.cardview.widget.CardView>
+
+
+
+
+

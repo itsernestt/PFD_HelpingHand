@@ -209,6 +209,8 @@ public class CaregiverMainActivity extends AppCompatActivity {
                                                     }
                                                 }
 
+
+
                                                 ElderlyRecyclerAdapter eAdapter = new ElderlyRecyclerAdapter(elderlyList);
                                                 RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getApplicationContext());
                                                 recyclerView.setLayoutManager(layoutManager);
@@ -216,6 +218,9 @@ public class CaregiverMainActivity extends AppCompatActivity {
                                                 recyclerView.setAdapter(eAdapter);
                                                 eAdapter.notifyDataSetChanged();
                                                 Integer size = elderlyList.size();
+
+
+
 
                                             }
                                         });
