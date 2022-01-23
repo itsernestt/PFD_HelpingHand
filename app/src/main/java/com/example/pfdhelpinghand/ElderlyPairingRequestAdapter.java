@@ -170,6 +170,27 @@ public class ElderlyPairingRequestAdapter extends RecyclerView.Adapter<ElderlyPa
             }
         });
 
+        holder.reject.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                fStore.collection("PairingRequest")
+                        .document(pairUpRequests.get(position).getDocumentID())
+                        .delete()
+                        .addOnSuccessListener(new OnSuccessListener<Void>() {
+                            @Override
+                            public void onSuccess(Void aVoid) {
+                                Log.d(TAG, "DocumentSnapshot successfully deleted!");
+                            }
+                        })
+                        .addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                Log.w(TAG, "Error deleting document", e);
+                            }
+                        });
+            }
+        });
+
 
 
 

@@ -77,16 +77,15 @@ public class ViewCaregivers extends AppCompatActivity {
                     viewCaregiverInfo.setText("");
                     fStore.collection("Caregiver")
                             .whereIn("id", caretakerList)
-                            .addSnapshotListener(new EventListener<QuerySnapshot>() {
+                            .get()
+                            .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
                                 @Override
-                                public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots,
-                                                    @Nullable FirebaseFirestoreException e) {
+                                public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
                                     for (DocumentSnapshot snapshot: queryDocumentSnapshots)
                                     {
                                         Caretaker caretaker = snapshot.toObject(Caretaker.class);
                                         viewCaregiverInfo.setText(viewCaregiverInfo.getText() + "\n" + caretaker.getFullName() + " " + caretaker.getPhoneNumber());
                                     }
-
                                 }
                             });
 

@@ -109,39 +109,65 @@ public class MainActivity extends AppCompatActivity {
 
                                     PairUpRequest request = new PairUpRequest(documentID, senderEmail, receiverEmail, isPaired);
 
-                                    if (!request.getPairUpSuccess())
-                                    {
-                                        requests.add(request);
-                                        welcomeBanner.setText(welcomeBanner.getText() + Integer.toString(requests.size()) + "  ");
-
-                                    }
-
-
-                                    if (request.getPairUpSuccess())
-                                    {
-                                        Iterator<PairUpRequest> itr = requests.iterator();
-                                        while (itr.hasNext())
-                                        {
-                                            PairUpRequest r = itr.next();
-                                            if (request.getDocumentID().equals(r.getDocumentID()))
+                                    switch (dc.getType()){
+                                        case ADDED:
+                                        case MODIFIED:
+                                            if (!request.getPairUpSuccess())
                                             {
-                                                itr.remove();
+                                                requests.add(request);
                                             }
-                                        }
-                                        welcomeBanner.setText(welcomeBanner.getText() + Integer.toString(requests.size()) + "  ");
+                                            else{
+                                                Iterator<PairUpRequest> itr = requests.iterator();
+                                                while (itr.hasNext())
+                                                {
+                                                    PairUpRequest r = itr.next();
+                                                    if (request.getDocumentID().equals(r.getDocumentID()))
+                                                    {
+                                                        itr.remove();
+                                                    }
+                                                }
+                                            }
+                                            welcomeBanner.setText(welcomeBanner.getText() + Integer.toString(requests.size()) + "  ");
+
+                                            if (requests.size() > 0)
+                                            {
+                                                viewPairUp.setVisibility(View.VISIBLE);
+
+                                            }
+                                            else{
+                                                viewPairUp.setVisibility(View.INVISIBLE);
+                                            }
+
+                                            return;
+                                        case REMOVED:
+                                            Iterator<PairUpRequest> itr = requests.iterator();
+                                            while (itr.hasNext())
+                                            {
+                                                PairUpRequest r = itr.next();
+                                                if (request.getDocumentID().equals(r.getDocumentID()))
+                                                {
+                                                    itr.remove();
+                                                }
+                                            }
+
+                                            if (requests.size() > 0)
+                                            {
+                                                viewPairUp.setVisibility(View.VISIBLE);
+
+                                            }
+                                            else{
+                                                viewPairUp.setVisibility(View.INVISIBLE);
+                                            }
+
+                                            Toast.makeText(MainActivity.this, "Rejected the request for: " + senderEmail, Toast.LENGTH_SHORT).show();
+                                            mHandler.postDelayed(mRefreshPage, 1000);
+
+
 
 
                                     }
 
 
-                                    if (requests.size() > 0)
-                                    {
-                                        viewPairUp.setVisibility(View.VISIBLE);
-
-                                    }
-                                    else{
-                                        viewPairUp.setVisibility(View.INVISIBLE);
-                                    }
 
                                 }
 
