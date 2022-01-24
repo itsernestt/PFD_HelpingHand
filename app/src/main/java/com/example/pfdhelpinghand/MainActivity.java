@@ -234,7 +234,7 @@ public class MainActivity extends AppCompatActivity {
                     seconds[0] = 5000;
             }
         });
-
+        //final
         sosButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {
                 sosButton.setClickable(false);
@@ -252,8 +252,11 @@ public class MainActivity extends AppCompatActivity {
                         sosText.setText("SOS");
                         sosButton.setClickable(true);
                         Intent callIntent = new Intent(Intent.ACTION_CALL);
+                        //ArrayList<EmergencyPerson> emergencyPeople = elderly.getEmergencyPerson();
+                        DocumentReference number = fStore.collection("Contact Phone").document(userID);
                         //startActivity(callIntent);
-                        Toast.makeText(getApplicationContext(), "Calling person, please wait", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getApplicationContext(), "Calling "+number+", please wait", Toast.LENGTH_SHORT).show();
+                        //Toast.makeText(getApplicationContext(), emergencyPeople.get(0).getFullName(), Toast.LENGTH_SHORT).show();
 
                     }
 
