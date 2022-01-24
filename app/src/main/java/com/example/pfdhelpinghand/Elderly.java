@@ -13,7 +13,7 @@ public class Elderly extends User{
     protected ArrayList<Appointment> apptList;
     protected ArrayList<String> caretakerList;
 
-    private ArrayList<EmergencyPerson> emergencyPersonList;
+    protected ArrayList<EmergencyPerson> emergencyPerson;
 
     public Elderly(){}
 
@@ -26,7 +26,7 @@ public class Elderly extends User{
         this.password = pw;
         this.address = address;
         this.currentLocation = cLocation;
-        this.emergencyPersonList = eList;
+        this.emergencyPerson = eList;
         this.medList = mList;
         this.apptList = aList;
         this.caretakerList = cList;
@@ -49,11 +49,11 @@ public class Elderly extends User{
     }
 
     public ArrayList<EmergencyPerson> getEmergencyPerson(){
-        return emergencyPersonList;
+        return emergencyPerson;
     }
 
     public void addEmergencyPerson(EmergencyPerson e){
-        this.emergencyPersonList.add(e);
+        this.emergencyPerson.add(e);
     }
 
     public ArrayList<Medication> getMedList() {

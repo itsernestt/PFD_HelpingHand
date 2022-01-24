@@ -57,6 +57,8 @@ public class MainActivity extends AppCompatActivity {
     Dialog pairUpDialog;
 
     ArrayList<PairUpRequest> requests = new ArrayList<PairUpRequest>();
+    ArrayList<EmergencyPerson> emergencyPeople;
+
     TextView welcomeBanner;
 
 
@@ -85,6 +87,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onSuccess(DocumentSnapshot documentSnapshot) {
                 elderly = documentSnapshot.toObject(Elderly.class);
+                emergencyPeople =  elderly.getEmergencyPerson();
 
                 fStore.collection("PairingRequest")
                         .whereEqualTo("receiverEmail", elderly.getEmail())
@@ -252,11 +255,10 @@ public class MainActivity extends AppCompatActivity {
                         sosText.setText("SOS");
                         sosButton.setClickable(true);
                         Intent callIntent = new Intent(Intent.ACTION_CALL);
-                        //ArrayList<EmergencyPerson> emergencyPeople = elderly.getEmergencyPerson();
-                        DocumentReference number = fStore.collection("Contact Phone").document(userID);
+
                         //startActivity(callIntent);
-                        Toast.makeText(getApplicationContext(), "Calling "+number+", please wait", Toast.LENGTH_SHORT).show();
-                        //Toast.makeText(getApplicationContext(), emergencyPeople.get(0).getFullName(), Toast.LENGTH_SHORT).show();
+                        //Toast.makeText(getApplicationContext(), "Calling "+number+", please wait", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getApplicationContext(), emergencyPeople.get(0).getPhoneNumber(), Toast.LENGTH_SHORT).show();
 
                     }
 
