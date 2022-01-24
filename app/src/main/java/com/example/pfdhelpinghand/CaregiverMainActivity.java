@@ -42,19 +42,23 @@ import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
+import java.text.DateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
 
 public class CaregiverMainActivity extends AppCompatActivity {
 
-    TextView caregiverTest, caregiverViewElderly, caregiverTest2;
+    TextView caregiverTest, caregiverViewElderly, caregiverTest2, viewDateTime;
     FirebaseUser user;
     FirebaseFirestore fStore;
     Caretaker caretaker;
     Dialog myDialog;
     Dialog myDialog2;
+
 
     String userID;
     ArrayList<String> elderlyIDList;
@@ -93,13 +97,39 @@ public class CaregiverMainActivity extends AppCompatActivity {
         elderlyList = new ArrayList<Elderly>();
 
         // Main components on the page
-
         caregiverTest = findViewById(R.id.caregiverTest);
-        caregiverViewElderly = findViewById(R.id.caregiverViewElderly);
         addBut = findViewById(R.id.caregiver_addBut);
         settingBut = findViewById(R.id.caregiver_settingBut);
         pairupBut = findViewById(R.id.caregiver_pairupBut);
-        caregiverTest2 = findViewById(R.id.caregiverTest2);
+        
+        //Display time
+        viewDateTime = findViewById(R.id.caregiver_time);
+        Thread thread = new Thread(){
+            @Override
+            public void run()
+            {
+                try {
+                    while (!isInterrupted())
+                    {
+                        Thread.sleep(1000);
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                String datetimeFormat = "MM/dd/yy hh:mm a";
+                                Date date = Calendar.getInstance().getTime();
+                                viewDateTime.setText(String.format(DateFormat.getDateTimeInstance().format(date), datetimeFormat));
+                            }
+                        });
+                    }
+                }
+                catch (Exception e)
+                {
+                    viewDateTime.setText(R.string.app_name);
+                }
+            }
+        };
+        thread.start();
+        
 
         // Animation
         openAni = AnimationUtils.loadAnimation(this, R.anim.floatbut_open);
@@ -161,6 +191,7 @@ public class CaregiverMainActivity extends AppCompatActivity {
                             // Title bar
 
                             getSupportActionBar().setTitle("Welcome, " + caretaker.getFullName());
+
 
 
 
