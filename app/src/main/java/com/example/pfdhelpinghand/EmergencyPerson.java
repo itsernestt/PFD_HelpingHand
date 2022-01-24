@@ -5,6 +5,9 @@ public class EmergencyPerson {
     protected String fullName;
     protected String phoneNumber;
 
+    public EmergencyPerson(){
+    }
+
 
     public EmergencyPerson(String name, String phone)
     {
