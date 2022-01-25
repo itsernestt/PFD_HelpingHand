@@ -101,6 +101,9 @@ public class CaregiverMainActivity extends AppCompatActivity {
         addBut = findViewById(R.id.caregiver_addBut);
         settingBut = findViewById(R.id.caregiver_settingBut);
         pairupBut = findViewById(R.id.caregiver_pairupBut);
+
+        Date dateTest = Calendar.getInstance().getTime();
+
         
         //Display time
         viewDateTime = findViewById(R.id.caregiver_time);
@@ -129,6 +132,9 @@ public class CaregiverMainActivity extends AppCompatActivity {
             }
         };
         thread.start();
+
+
+
         
 
         // Animation
