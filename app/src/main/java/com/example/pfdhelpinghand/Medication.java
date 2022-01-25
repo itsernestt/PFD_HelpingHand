@@ -7,6 +7,7 @@ public class Medication implements Comparable<Medication>{
     public String medDescription;
     public Timestamp day;
 
+
     public Medication(){}
 
     public Medication(String name, String des, Timestamp day){
@@ -23,4 +24,8 @@ public class Medication implements Comparable<Medication>{
     public int compareTo(Medication m){
         return getDay().compareTo(m.getDay());
     }
+
+
+
+
 }
