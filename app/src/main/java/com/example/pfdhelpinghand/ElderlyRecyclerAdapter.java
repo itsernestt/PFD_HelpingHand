@@ -151,16 +151,18 @@ public class ElderlyRecyclerAdapter extends RecyclerView.Adapter<ElderlyRecycler
         }
         else {
 
+            Collections.sort(mList, new Comparator<Medication>() {
+                public int compare(Medication m1, Medication m2) {
+                    return m1.getDay().compareTo(m2.getDay());
+                };
+            });
+
             holder.elderlyMedName.setText(mList.get(0).medName);
             holder.elderlyMedTime.setTextColor(Color.RED);
             holder.elderlyMedTime.setTypeface(null, Typeface.BOLD);
 
 
-            Collections.sort(mList, new Comparator<Medication>() {
-                        public int compare(Medication m1, Medication m2) {
-                            return m1.getDay().compareTo(m2.getDay());
-                        };
-            });
+
 
 
 
@@ -236,6 +238,13 @@ public class ElderlyRecyclerAdapter extends RecyclerView.Adapter<ElderlyRecycler
         }
         else{
 
+
+            Collections.sort(apptList, new Comparator<Appointment>() {
+                public int compare(Appointment a1, Appointment a2) {
+                    return a1.getTime().compareTo(a2.getTime());
+                };
+            });
+            
             holder.elderlyApptName.setText(apptList.get(0).apptName);
             holder.elderlyApptLoc.setText(apptList.get(0).location);
 
@@ -243,11 +252,7 @@ public class ElderlyRecyclerAdapter extends RecyclerView.Adapter<ElderlyRecycler
             holder.elderlyApptTime.setTypeface(null, Typeface.BOLD);
 
 
-            Collections.sort(apptList, new Comparator<Appointment>() {
-                public int compare(Appointment a1, Appointment a2) {
-                    return a1.getTime().compareTo(a2.getTime());
-                };
-            });
+
 
 
 
