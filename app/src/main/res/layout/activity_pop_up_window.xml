@@ -61,8 +61,10 @@
                 android:layout_weight="0.8"
                 android:background="@color/white"
                 android:ems="10"
-                android:hint="  Enter email"
+                android:hint="Enter email"
                 android:inputType="textPersonName"
+                android:paddingLeft="10dp"
+                android:paddingRight="10dp"
                 android:textColor="@color/black" />
 
         </LinearLayout>

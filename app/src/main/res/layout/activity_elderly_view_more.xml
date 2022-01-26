@@ -208,7 +208,7 @@
 
 
             <TextView
-                android:id="@+id/viewMore_text9"
+                android:id="@+id/viewMore_emergencyPhone"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/viewMore_text6"
@@ -223,6 +223,24 @@
                 android:textSize="14sp"
 
                 />
+
+
+            <ImageButton
+                android:id="@+id/viewMore_emergencyPersonCall"
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                android:layout_below="@+id/viewMore_text5"
+                android:layout_alignParentRight="true"
+                android:layout_marginRight="100dp"
+                android:layout_marginTop="10dp"
+                android:adjustViewBounds="false"
+
+                android:background="@null"
+                android:elevation="5dp"
+                android:scaleType="fitXY"
+                app:srcCompat="@drawable/e_phonecall"
+                app:tint="@android:color/black" />
+
 
             <LinearLayout
                 android:id="@+id/viewMore_buttons"

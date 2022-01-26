@@ -1,16 +1,21 @@
 package com.example.pfdhelpinghand;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -25,13 +30,19 @@ public class ElderlyViewMore extends AppCompatActivity {
     FirebaseUser user;
     FirebaseFirestore fStore;
     Elderly elderly;
-    ArrayList<Appointment> appts;
-    RecyclerView apptsRV;
+    Caretaker caretaker;
+
     SharedPreferences sharedPreferences;
-    DocumentReference docRef;
+    String userID;
+    String elderlyID;
 
-    TextView elderlyName;
+    ArrayList<EmergencyPerson> emerList;
+    ArrayList<String> elderlyArrayList;
+    ArrayList<String> caretakerList;
 
+    TextView elderlyName, elderlyPhone, elderlyEmail, elderlyAddress, emergencyName, emergencyPhone;
+    Button medReport, apptReport, delete;
+    ImageButton callBut;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,24 +52,59 @@ public class ElderlyViewMore extends AppCompatActivity {
         fAuth = FirebaseAuth.getInstance();
         fStore = FirebaseFirestore.getInstance();
         user = fAuth.getCurrentUser();
+        userID = user.getUid();
 
-        String userID;
 
         sharedPreferences = getSharedPreferences("CaretakerValues", Context.MODE_PRIVATE);
-        userID = sharedPreferences.getString("elderlyID", "Elderly");
+        elderlyID = sharedPreferences.getString("elderlyID", "Elderly");
 
         //Set textviews
         elderlyName = findViewById(R.id.viewMore_elderlyName);
+        elderlyPhone = findViewById(R.id.viewMore_elderlyPhone);
+        elderlyEmail = findViewById(R.id.viewMore_elderlyEmail);
+        elderlyAddress = findViewById(R.id.viewMore_elderlyAddress);
+        emergencyName = findViewById(R.id.viewMore_emergencyName);
+        emergencyPhone = findViewById(R.id.viewMore_emergencyPhone);
 
-        fStore.collection("Elderly").document(userID)
+        //Set buttons
+        medReport = findViewById(R.id.viewMore_medReport);
+        apptReport = findViewById(R.id.viewMore_apptReport);
+        delete = findViewById(R.id.viewMore_deleteButton);
+
+        //Set image button
+        callBut = findViewById(R.id.viewMore_emergencyPersonCall);
+
+        //Get elderly object
+        fStore.collection("Elderly").document(elderlyID)
                 .get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
             @Override
             public void onSuccess(DocumentSnapshot documentSnapshot) {
                 elderly = documentSnapshot.toObject(Elderly.class);
                 elderlyName.setText(elderly.getFullName());
+                elderlyPhone.setText(elderly.getPhoneNumber());
+                elderlyEmail.setText(elderly.getEmail());
+                elderlyAddress.setText(elderly.getAddress());
+                caretakerList = elderly.getCaretakerList();
+
+                emerList = elderly.getEmergencyPerson();
+                emergencyName.setText(emerList.get(0).getFullName());
+                emergencyPhone.setText(emerList.get(0).getPhoneNumber());
 
             }
         });
+
+        //Get caretaker object
+        fStore.collection("Caregiver").document(userID)
+                .get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+            @Override
+            public void onSuccess(DocumentSnapshot documentSnapshot) {
+                caretaker = documentSnapshot.toObject(Caretaker.class);
+                elderlyArrayList = caretaker.getElderlyList();
+
+            }
+        });
+
+
 
 
         Button backBtn = findViewById(R.id.viewMore_backBut);
@@ -67,6 +113,58 @@ public class ElderlyViewMore extends AppCompatActivity {
             public void onClick(View v) {
                     Intent navigate = new Intent(ElderlyViewMore.this, CaregiverMainActivity.class);
                     startActivity(navigate);
+
+            }
+        });
+
+        delete.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                new AlertDialog.Builder(v.getContext())
+                        .setTitle("Delete")
+                        .setMessage("Do you want to delete this elderly account paired??")
+                        .setIcon(android.R.drawable.ic_dialog_alert)
+                        .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+
+                            public void onClick(DialogInterface dialog, int whichButton) {
+
+                                caretakerList.remove(userID);
+                                elderlyArrayList.remove(elderlyID);
+
+                                DocumentReference docRef = fStore.collection("Elderly").document(elderlyID);
+                                DocumentReference docRef2 = fStore.collection("Caregiver").document(userID);
+                                docRef.update("caretakerList", caretakerList)
+                                        .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                            @Override
+                                            public void onSuccess(Void unused) {
+
+                                                docRef2.update("elderlyList", elderlyArrayList)
+                                                        .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                            @Override
+                                                            public void onSuccess(Void unused) {
+                                                                Log.d("TAG","onSuccess: Elderly properly removed");
+                                                                v.getContext().startActivity(new Intent(v.getContext(), CaregiverMainActivity.class));
+                                                            }
+
+                                                        }).addOnFailureListener(new OnFailureListener() {
+                                                    @Override
+                                                    public void onFailure(@NonNull Exception e) {
+                                                        Log.e("TAG", "onFailure: " + e.toString());
+                                                    }
+                                                });
+                                            }
+
+                                        }).addOnFailureListener(new OnFailureListener() {
+                                    @Override
+                                    public void onFailure(@NonNull Exception e) {
+                                        Log.e("TAG", "onFailure: " + e.toString());
+                                    }
+                                });
+
+
+                            }})
+                        .setNegativeButton(android.R.string.no, null).show();
 
             }
         });
