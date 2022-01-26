@@ -57,7 +57,6 @@
             android:layout_toRightOf="@+id/elderly_personPic"
 
             android:text="(elderly phone)"
-            android:textColor="#a9a9a9"
             android:textSize="13sp" />
 
         <ImageButton

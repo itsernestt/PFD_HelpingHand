@@ -2,12 +2,6 @@ package com.example.pfdhelpinghand;
 
 import static android.content.ContentValues.TAG;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.DefaultItemAnimator;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
@@ -25,6 +19,13 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.DefaultItemAnimator;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -191,38 +192,28 @@ public class CaregiverMainActivity extends AppCompatActivity {
                             return;
                         }
 
+
                         if (documentSnapshot != null && documentSnapshot.exists()) {
                             caretaker = documentSnapshot.toObject(Caretaker.class);
                             elderlyIDList = caretaker.getElderlyList();
                             // Title bar
-
                             getSupportActionBar().setTitle("Welcome, " + caretaker.getFullName());
 
 
-
-
-                /*
-                .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                caretaker = task.getResult().toObject(Caretaker.class);
-
-                elderlyIDList = caretaker.getElderlyList();
-
-                // Title bar
-
-                getSupportActionBar().setTitle("Welcome, " + caretaker.getFullName());
-
-                 */
-
-
                             if (elderlyIDList.size() >= 1) {
+
+
                                 fStore.collection("Elderly")
                                         .whereIn("id", elderlyIDList)
                                         .addSnapshotListener(new EventListener<QuerySnapshot>() {
                                             @Override
                                             public void onEvent(@Nullable QuerySnapshot value,
                                                                 @Nullable FirebaseFirestoreException e) {
+
+                                                if (e != null) {
+                                                    Log.w(TAG, "listen:error", e);
+                                                    return;
+                                                }
 
 
                                                 for (DocumentChange dc : value.getDocumentChanges()) {
@@ -262,7 +253,14 @@ public class CaregiverMainActivity extends AppCompatActivity {
                                             }
                                         });
                             }
+
+
+
+
+
                         }
+
+
                     }
         });
 
