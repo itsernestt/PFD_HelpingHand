@@ -6,15 +6,14 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
@@ -25,13 +24,12 @@ public class ElderlyViewMore extends AppCompatActivity {
     FirebaseUser user;
     FirebaseFirestore fStore;
     Elderly elderly;
-    ArrayList<Appointment> appts;
-    RecyclerView apptsRV;
     SharedPreferences sharedPreferences;
-    DocumentReference docRef;
 
-    TextView elderlyName;
-
+    ArrayList<EmergencyPerson> emerList;
+    TextView elderlyName, elderlyPhone, elderlyEmail, elderlyAddress, emergencyName, emergencyPhone;
+    Button medReport, apptReport, delete;
+    ImageButton callBut;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,6 +47,19 @@ public class ElderlyViewMore extends AppCompatActivity {
 
         //Set textviews
         elderlyName = findViewById(R.id.viewMore_elderlyName);
+        elderlyPhone = findViewById(R.id.viewMore_elderlyPhone);
+        elderlyEmail = findViewById(R.id.viewMore_elderlyEmail);
+        elderlyAddress = findViewById(R.id.viewMore_elderlyAddress);
+        emergencyName = findViewById(R.id.viewMore_emergencyName);
+        emergencyPhone = findViewById(R.id.viewMore_emergencyPhone);
+
+        //Set buttons
+        medReport = findViewById(R.id.viewMore_medReport);
+        apptReport = findViewById(R.id.viewMore_apptReport);
+        callBut = findViewById(R.id.viewMore_emergencyPersonCall);
+
+        //Set image button
+
 
         fStore.collection("Elderly").document(userID)
                 .get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
@@ -56,6 +67,13 @@ public class ElderlyViewMore extends AppCompatActivity {
             public void onSuccess(DocumentSnapshot documentSnapshot) {
                 elderly = documentSnapshot.toObject(Elderly.class);
                 elderlyName.setText(elderly.getFullName());
+                elderlyPhone.setText(elderly.getPhoneNumber());
+                elderlyEmail.setText(elderly.getEmail());
+                elderlyAddress.setText(elderly.getAddress());
+
+                emerList = elderly.getEmergencyPerson();
+                emergencyName.setText(emerList.get(0).getFullName());
+                emergencyPhone.setText(emerList.get(0).getPhoneNumber());
 
             }
         });
