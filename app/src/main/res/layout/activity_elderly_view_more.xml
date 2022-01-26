@@ -1,0 +1,287 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ElderlyViewMore">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <Button
+            android:id="@+id/viewMore_backBut"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="5dp"
+            android:text="Back"
+            android:textColor="#000000"
+            app:backgroundTint="#00FFFFFF"
+            app:strokeColor="#000000"
+            app:strokeWidth="2dp" />
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+
+
+            <TextView
+                android:id="@+id/viewMore_text1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="40dp"
+                android:text="Elderly Name: "
+
+                android:textColor="@color/black"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:layout_marginTop="20dp"
+                />
+
+            <TextView
+                android:id="@+id/viewMore_elderlyName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="20dp"
+                android:layout_toEndOf="@+id/viewMore_text1"
+                android:layout_toRightOf="@+id/viewMore_text1"
+                android:text=""
+
+                android:textColor="@color/black"
+                android:textSize="16sp"
+                android:layout_marginTop="20dp"
+                />
+
+
+
+            <TextView
+                android:id="@+id/viewMore_text2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="40dp"
+                android:text="Phone number: "
+
+                android:layout_below="@id/viewMore_text1"
+
+                android:textColor="@color/black"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:layout_marginTop="20dp"
+                />
+
+            <TextView
+                android:id="@+id/viewMore_elderlyPhone"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="20dp"
+
+                android:layout_below="@id/viewMore_elderlyName"
+                android:layout_toEndOf="@+id/viewMore_text2"
+                android:layout_toRightOf="@+id/viewMore_text2"
+                android:text=""
+
+                android:textColor="@color/black"
+                android:textSize="16sp"
+                android:layout_marginTop="20dp"
+
+                />
+
+
+            <TextView
+                android:id="@+id/viewMore_text3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="40dp"
+                android:text="Email: "
+
+                android:layout_below="@id/viewMore_text2"
+
+                android:textColor="@color/black"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:layout_marginTop="20dp"
+                />
+
+            <TextView
+                android:id="@+id/viewMore_elderlyEmail"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="20dp"
+
+                android:layout_below="@id/viewMore_elderlyPhone"
+                android:layout_toEndOf="@+id/viewMore_text3"
+                android:layout_toRightOf="@+id/viewMore_text3"
+                android:text=""
+
+                android:textColor="@color/black"
+                android:textSize="16sp"
+                android:layout_marginTop="20dp"
+
+                />
+
+            <TextView
+                android:id="@+id/viewMore_text4"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="40dp"
+                android:text="Address: "
+
+                android:layout_below="@id/viewMore_text3"
+
+                android:textColor="@color/black"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:layout_marginTop="20dp"
+                />
+
+            <TextView
+                android:id="@+id/viewMore_elderlyAddress"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="20dp"
+
+                android:layout_below="@id/viewMore_elderlyEmail"
+                android:layout_toEndOf="@+id/viewMore_text4"
+                android:layout_toRightOf="@+id/viewMore_text4"
+                android:text=""
+
+                android:textColor="@color/black"
+                android:textSize="16sp"
+                android:layout_marginTop="20dp"
+
+                />
+
+            <TextView
+                android:id="@+id/viewMore_text5"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="40dp"
+                android:text="Emergency Contact Person (main) "
+
+                android:layout_below="@id/viewMore_text4"
+
+                android:textColor="@color/black"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:layout_marginTop="20dp"
+                />
+
+            <TextView
+                android:id="@+id/viewMore_text6"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="40dp"
+                android:text="Name: "
+
+                android:layout_below="@id/viewMore_text5"
+
+                android:textColor="@color/black"
+                android:textSize="14sp"
+                android:layout_marginTop="10dp"
+                />
+
+
+            <TextView
+                android:id="@+id/viewMore_emergencyName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="20dp"
+
+                android:layout_below="@id/viewMore_text5"
+                android:layout_toEndOf="@+id/viewMore_text6"
+                android:layout_toRightOf="@+id/viewMore_text6"
+                android:text=""
+
+                android:textColor="@color/black"
+                android:textSize="14sp"
+                android:layout_marginTop="10dp"
+
+                />
+
+            <TextView
+                android:id="@+id/viewMore_text7"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="40dp"
+                android:text="Phone number: "
+
+                android:layout_below="@id/viewMore_text6"
+
+                android:textColor="@color/black"
+                android:textSize="14sp"
+                android:layout_marginTop="10dp"
+                />
+
+
+            <TextView
+                android:id="@+id/viewMore_text9"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="20dp"
+
+                android:layout_below="@id/viewMore_text6"
+                android:layout_toEndOf="@+id/viewMore_text7"
+                android:layout_toRightOf="@+id/viewMore_text7"
+                android:text=""
+
+                android:textColor="@color/black"
+                android:textSize="14sp"
+                android:layout_marginTop="10dp"
+
+                />
+
+            <LinearLayout
+                android:id="@+id/viewMore_buttons"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_below="@+id/viewMore_text7"
+                android:layout_marginTop="100dp"
+                android:layout_marginLeft="50dp"
+
+                >
+
+
+
+                <Button
+                    android:id="@+id/viewMore_medReport"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Med Report" />
+
+                <Button
+                    android:id="@+id/viewMore_apptReport"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_marginLeft="50dp"
+                    android:text="Appt Report"
+                    />
+
+            </LinearLayout>
+
+            <Button
+                android:id="@+id/viewMore_deleteButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginLeft="50dp"
+                android:text="Delete"
+                android:layout_below="@+id/viewMore_buttons"
+                android:layout_marginTop="50dp"
+                android:backgroundTint="@android:color/holo_red_dark"
+                android:layout_centerHorizontal="true"
+                />
+
+
+
+        </RelativeLayout>
+    </LinearLayout>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

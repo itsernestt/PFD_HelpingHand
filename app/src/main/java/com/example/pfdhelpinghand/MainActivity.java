@@ -188,15 +188,9 @@ public class MainActivity extends AppCompatActivity {
                                             mHandler.postDelayed(mRefreshPage, 1000);
 
 
-
-
                                     }
 
-
-
                                 }
-
-
 
 
 
@@ -286,6 +280,8 @@ public class MainActivity extends AppCompatActivity {
                         //startActivity(callIntent);
                         //Toast.makeText(getApplicationContext(), "Calling "+number+", please wait", Toast.LENGTH_SHORT).show();
                         Toast.makeText(getApplicationContext(), emergencyPeople.get(0).getPhoneNumber(), Toast.LENGTH_SHORT).show();
+
+
 
                     }
 
