@@ -7,11 +7,15 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
+import android.app.Activity;
 import android.app.Dialog;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.ColorDrawable;
+import android.media.AudioAttributes;
+import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.CountDownTimer;
@@ -46,6 +50,7 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 
@@ -58,8 +63,11 @@ public class MainActivity extends AppCompatActivity {
 
     ArrayList<PairUpRequest> requests = new ArrayList<PairUpRequest>();
     ArrayList<EmergencyPerson> emergencyPeople;
+    String currentLocation;
 
     TextView welcomeBanner;
+
+    String soundUrl = "https://www.youtube.com/watch?v=4YKpBYo61Cs";
 
 
     @Override
@@ -81,6 +89,20 @@ public class MainActivity extends AppCompatActivity {
 
 
         DocumentReference docRef = fStore.collection("Elderly").document(userID);
+
+        MediaPlayer mediaPlayer = new MediaPlayer();
+        mediaPlayer.setAudioAttributes(new AudioAttributes.Builder().setContentType(AudioAttributes.CONTENT_TYPE_MUSIC).setUsage(AudioAttributes.USAGE_MEDIA).build());
+        try {
+            mediaPlayer.setDataSource(soundUrl);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        try {
+            mediaPlayer.prepare();
+            Toast.makeText(getApplicationContext(), "Prepare completed", Toast.LENGTH_SHORT).show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
 
         docRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
@@ -219,11 +241,12 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 switch (v.getId()){
                     case R.id.cancelButton:
-                        Toast.makeText(getApplicationContext(), "Restarting to cancel SOS functions", Toast.LENGTH_SHORT).show();
-                        MagicAppRestart.doRestart(MainActivity.this);
+                        Toast.makeText(getApplicationContext(), "Cancelling SOS", Toast.LENGTH_SHORT).show();
+                        //MagicAppRestart.doRestart(MainActivity.this);
+                        mHandler.postDelayed(mRefreshPage, 0);
                 }
             }});
-
+        TextView sosOverlay = findViewById(R.id.sosButtonOverlay);
         ToggleButton sosToggle = findViewById(R.id.toggleButton);
         Button sosButton = findViewById(R.id.sosButton);
         TextView sosText = findViewById(R.id.sosText);
@@ -232,15 +255,18 @@ public class MainActivity extends AppCompatActivity {
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (isChecked) {
                     seconds[0] = 0;
+                    //sosOverlay.setVisibility(View.INVISIBLE);
+                    mHandler.postDelayed(mRefreshPage, 0);
                 }
                 else
                     seconds[0] = 5000;
-            }
+                    sosOverlay.setVisibility(View.VISIBLE);
+                }
         });
-        //final
         sosButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {
                 sosButton.setClickable(false);
+                mediaPlayer.start();
                 new CountDownTimer(seconds[0], 1000) {
 
                     public void onTick(long millisUntilFinished) {
@@ -357,11 +383,11 @@ public class MainActivity extends AppCompatActivity {
     public void onBackPressed() {
     }
 
-    public void logout(View view) {
-        FirebaseAuth.getInstance().signOut();
-        startActivity(new Intent(getApplicationContext(), LoginActivity.class));
-        finish();
-    }
+    //public void logout(View view) {
+        //FirebaseAuth.getInstance().signOut();
+        //startActivity(new Intent(getApplicationContext(), LoginActivity.class));
+        //finish();
+    //}
 
     // For elderly to view incoming requests
     public void ShowPairUpRequest(View v)
