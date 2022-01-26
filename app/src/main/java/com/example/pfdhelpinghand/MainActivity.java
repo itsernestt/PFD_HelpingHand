@@ -3,23 +3,19 @@ package com.example.pfdhelpinghand;
 
 import static android.content.ContentValues.TAG;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.DefaultItemAnimator;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
-import android.app.Activity;
+import android.Manifest;
 import android.app.Dialog;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
-import android.graphics.drawable.ColorDrawable;
+import android.location.Location;
 import android.media.AudioAttributes;
 import android.media.MediaPlayer;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
-
 import android.os.Handler;
 import android.util.Log;
 import android.view.MotionEvent;
@@ -30,15 +26,19 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.database.annotations.Nullable;
 import com.google.firebase.firestore.DocumentChange;
 import com.google.firebase.firestore.DocumentReference;
@@ -46,15 +46,16 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
-
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity  {
+    public static final int DEFAULT_UPDATE_INTERVAL = 5;
+    private static final int PERMISSIONS_FINE_LOCATION = 99;
+
     FirebaseAuth fAuth;
     FirebaseUser user;
     FirebaseFirestore fStore;
@@ -65,13 +66,20 @@ public class MainActivity extends AppCompatActivity {
     ArrayList<EmergencyPerson> emergencyPeople;
     String currentLocation;
 
-    TextView welcomeBanner;
+    TextView test1, test2, test3, test4;
 
     String soundUrl = "https://www.youtube.com/watch?v=4YKpBYo61Cs";
+
+    //Main component for location tracking
+    FusedLocationProviderClient fusedLocationProviderClient;
+
+    //A config file for all setting related to FuredLocationProviderClient
+    LocationRequest locationRequest;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         Button cancelButton = findViewById(R.id.cancelButton);
@@ -80,7 +88,22 @@ public class MainActivity extends AppCompatActivity {
         fStore = FirebaseFirestore.getInstance();
         user = fAuth.getCurrentUser();
 
-        welcomeBanner = findViewById(R.id.elderlyWelcomeBanner);
+        //Testing location tracking
+        test1 = findViewById(R.id.elderlyTest1);
+        test2 = findViewById(R.id.elderlyTest2);
+        test3 = findViewById(R.id.elderlyTest3);
+        test4 = findViewById(R.id.elderlyTest4);
+
+        //Set all properties for LocationRequest
+        locationRequest = new LocationRequest();
+
+        //How long do we want to update the location?
+        locationRequest.setInterval(30000);
+        locationRequest.setFastestInterval(5000);
+
+        locationRequest.setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
+
+
 
         String userID = user.getUid();
 
@@ -152,7 +175,6 @@ public class MainActivity extends AppCompatActivity {
                                                     }
                                                 }
                                             }
-                                            welcomeBanner.setText(welcomeBanner.getText() + Integer.toString(requests.size()) + "  ");
 
                                             if (requests.size() > 0)
                                             {
@@ -370,10 +392,67 @@ public class MainActivity extends AppCompatActivity {
 
 
 
+    updateGPS();
 
 
+    }// end of on create method
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        switch (requestCode)
+        {
+            case PERMISSIONS_FINE_LOCATION:
+                if (grantResults[0] == PackageManager.PERMISSION_GRANTED){
+                    updateGPS();
+                }
+                else
+                {
+                    Toast.makeText(this, "This app required permission to be granted for location", Toast.LENGTH_SHORT).show();
+                    finish();
+                }
+        }
+    }
+
+    //Location tracking
+    private void updateGPS()
+    {
+        //https://www.youtube.com/watch?v=_CdZ3xURK-c&ab_channel=ProgrammingwithProfessorSluiter
+        //get permission from the user to track GPS
+        // get the current location from the fused client
+        //update the UI
+
+        fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(MainActivity.this);
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED)
+        {
+          //user provides the permission
+              fusedLocationProviderClient.getLastLocation().addOnSuccessListener(this, new OnSuccessListener<Location>() {
+                  @Override
+                  public void onSuccess(Location location) {
+                    // we got permission
+                      test1.setText("Lat: " + String.valueOf(location.getLatitude()));
+                      test2.setText("Long: " + location.getLongitude());
+                      test3.setText("Accuracy: " + location.getAccuracy());
+
+
+
+
+                  }
+              });
+        }
+        else{
+            // permission not given yet.
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
+            {
+                requestPermissions(new String[] {Manifest.permission.ACCESS_FINE_LOCATION}, PERMISSIONS_FINE_LOCATION);
+            }
+
+        }
 
     }
+
+
+
 
     // disable the backbutton after logged in
     @Override
@@ -445,5 +524,7 @@ public class MainActivity extends AppCompatActivity {
             overridePendingTransition(0, 0);
         }
     };
+
+
 
 }
