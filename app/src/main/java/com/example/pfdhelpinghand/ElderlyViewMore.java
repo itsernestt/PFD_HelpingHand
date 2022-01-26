@@ -42,22 +42,20 @@ public class ElderlyViewMore extends AppCompatActivity {
         fStore = FirebaseFirestore.getInstance();
         user = fAuth.getCurrentUser();
 
-        apptsRV = findViewById(R.id.allApptsRV);
         String userID;
 
-
-        sharedPreferences = getSharedPreferences("usertype", Context.MODE_PRIVATE);
-        String type = sharedPreferences.getString("type", "Elderly");
+        sharedPreferences = getSharedPreferences("CaretakerValues", Context.MODE_PRIVATE);
+        userID = sharedPreferences.getString("elderlyID", "Elderly");
 
         //Set textviews
         elderlyName = findViewById(R.id.viewMore_elderlyName);
 
-
-        docRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+        fStore.collection("Elderly").document(userID)
+                .get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
             @Override
             public void onSuccess(DocumentSnapshot documentSnapshot) {
                 elderly = documentSnapshot.toObject(Elderly.class);
-                //elderlyName.setText(elderly.getFullName());
+                elderlyName.setText(elderly.getFullName());
 
             }
         });
