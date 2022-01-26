@@ -57,7 +57,7 @@ public class ElderlyRecyclerAdapter extends RecyclerView.Adapter<ElderlyRecycler
 
     public class MyViewHolder extends RecyclerView.ViewHolder{
         TextView elderlyIndex, elderlyApptLoc, eldelyName, elderlyPhone, elderlyMedName, elderlyMedTime, elderlyApptName, elderlyApptTime, elderlyLoc;
-        ImageButton viewMed, viewAppt, viewLoc, phonecall;
+        ImageButton viewMed, viewAppt, viewLoc, phonecall, viewMore;
 
 
 
@@ -86,6 +86,7 @@ public class ElderlyRecyclerAdapter extends RecyclerView.Adapter<ElderlyRecycler
             viewAppt = view.findViewById(R.id.elderlyItem_apptBut);
             viewLoc = view.findViewById(R.id.elderlyItem_locationBut);
             phonecall = view.findViewById(R.id.elderlyItem_phonecall);
+            viewMore = view.findViewById(R.id.elderlyItem_viewMore);
 
 
 
@@ -200,10 +201,6 @@ public class ElderlyRecyclerAdapter extends RecyclerView.Adapter<ElderlyRecycler
 
 
 
-
-
-
-
             holder.viewMed.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -311,6 +308,20 @@ public class ElderlyRecyclerAdapter extends RecyclerView.Adapter<ElderlyRecycler
 
         String eLocation = elderlyArrayList.get(position).getCurrentLocation();
         holder.elderlyLoc.setText(eLocation);
+
+
+        holder.viewMore.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                String temp = elderlyArrayList.get(holder.getAdapterPosition()).ID;
+                SharedPreferences.Editor editor = sharedPreferences.edit();
+                editor.putString("elderlyID", temp);
+                editor.commit();
+                Intent navigateTo = new Intent(v.getContext(), ElderlyViewMore.class);
+                v.getContext().startActivity(navigateTo);
+            }
+        });
 
 
 
