@@ -162,10 +162,6 @@ public class ElderlyRecyclerAdapter extends RecyclerView.Adapter<ElderlyRecycler
             holder.elderlyMedTime.setTypeface(null, Typeface.BOLD);
 
 
-
-
-
-
             Calendar start_calendar = Calendar.getInstance();
 
             Timestamp timestamp = mList.get(0).getDay();

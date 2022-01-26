@@ -116,8 +116,8 @@ public class ApptAdapter extends RecyclerView.Adapter<ApptAdapter.ApptViewHolder
                                             .addOnCompleteListener(new OnCompleteListener<Void>() {
                                                 @Override
                                                 public void onComplete(@NonNull Task<Void> task) {
-                                                    Log.d("TAG","onSuccess: Medication properly removed");
-                                                    v.getContext().startActivity(new Intent(v.getContext(), WeeklyMedicationActivity.class));
+                                                    Log.d("TAG","onSuccess: Appointment properly removed");
+                                                    v.getContext().startActivity(new Intent(v.getContext(), WeeklyAppointmentActivity.class));
                                                 }
                                             }).addOnFailureListener(new OnFailureListener() {
                                         @Override
