@@ -77,6 +77,7 @@ public class MainActivity extends AppCompatActivity {
     ArrayList<EmergencyPerson> emergencyPeople;
     ElderlyLocation currentLocation;
     String locationAddress;
+    String locationURL;
 
     TextView test1, test2, test3, test4;
     Switch trackingSwitch;
@@ -379,7 +380,8 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
 
                 Uri gmmIntentUri =
-                        Uri.parse("geo:0,0?q=535 Clementi R, Singapore 599489");
+                        //Uri.parse("geo:0,0?q=535 Clementi R, Singapore 599489");
+                        Uri.parse(locationURL);
 
                 Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
                 mapIntent.setPackage("com.google.android.apps.maps");
@@ -453,6 +455,7 @@ public class MainActivity extends AppCompatActivity {
         currentLocation.setLat(location.getLatitude());
         currentLocation.setLng(location.getLongitude());
         currentLocation.setTime(seconds);
+        locationURL = String.format("geo:%1$f,%2$f", location.getLatitude(), location.getLongitude());
 
 
 
@@ -462,6 +465,7 @@ public class MainActivity extends AppCompatActivity {
             List<Address> addressList = geocoder.getFromLocation(location.getLatitude(), location.getLongitude(), 1);
             test4.setText(addressList.get(0).getAddressLine(0));
             locationAddress = addressList.get(0).getAddressLine(0);
+
         }
         catch (Exception e)
         {
