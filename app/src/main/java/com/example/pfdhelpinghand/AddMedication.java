@@ -3,6 +3,7 @@ package com.example.pfdhelpinghand;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -14,6 +15,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -32,19 +34,20 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Locale;
+import java.util.TimeZone;
 
-public class AddMedication extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
+public class AddMedication extends AppCompatActivity {
 
     Button addBtn, timeBtn;
-    TextView timeTV;
+    TextView timeTV, dateTV;
     EditText editName, editDes;
-    Spinner editDay;
     FirebaseAuth fAuth;
     FirebaseUser user;
     FirebaseFirestore fStore;
     Elderly elderly;
     Calendar finalCalendar = Calendar.getInstance();
     SharedPreferences sharedPreferences;
+    boolean timeset = false;
 
 
     @Override
@@ -55,14 +58,11 @@ public class AddMedication extends AppCompatActivity implements AdapterView.OnIt
         editName = findViewById(R.id.medNameInput);
         editDes = findViewById(R.id.medDescriptionInput);
         timeTV = findViewById(R.id.medTimeTV);
-        editDay = findViewById(R.id.medDayInput);
+        dateTV = findViewById(R.id.datetimeTV);
+
         addBtn = findViewById(R.id.medAddBtn);
         timeBtn = findViewById(R.id.chooseTimeBtn);
-        ArrayAdapter<CharSequence>adapter=ArrayAdapter.createFromResource(this, R.array.days,
-                android.R.layout.simple_spinner_item);
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        editDay.setAdapter(adapter);
-        editDay.setOnItemSelectedListener(this);
+
 
         sharedPreferences = getSharedPreferences("CaretakerValues", Context.MODE_PRIVATE);
         String userID = sharedPreferences.getString("elderlyID", "UfDuCIuLDqUo3niFg73o5jK3Jml2");
@@ -83,7 +83,7 @@ public class AddMedication extends AppCompatActivity implements AdapterView.OnIt
 
                 timeBtn.setOnClickListener(new View.OnClickListener() {
                     @Override
-                    public void onClick(View v) { selectTime();}
+                    public void onClick(View v) { selectDate();}
                 });
 
                 addBtn.setOnClickListener(new View.OnClickListener() {
@@ -93,65 +93,66 @@ public class AddMedication extends AppCompatActivity implements AdapterView.OnIt
                         String des = editDes.getText().toString().trim();
                         Timestamp ts = new Timestamp(finalCalendar.getTime());
 
+                        Calendar currentTime = Calendar.getInstance();
 
-                        Medication newMed = new Medication(name, des, ts);
+                        float x = currentTime.compareTo(finalCalendar);
 
-                        mList.add(newMed);
-                        docRef.update("medList", mList)
-                                .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                    @Override
-                                    public void onSuccess(Void aVoid) {
-                                        Toast.makeText(AddMedication.this, "Medication added!", Toast.LENGTH_SHORT).show();
-                                        Intent navigateTo = new Intent(AddMedication.this, com.example.pfdhelpinghand.WeeklyMedicationActivity.class);
-                                        startActivity(navigateTo);
-                                    }
-                                })
-                        .addOnFailureListener(new OnFailureListener() {
-                            @Override
-                            public void onFailure(@NonNull Exception e) {
-                                Toast.makeText(AddMedication.this, "Doesn't work...", Toast.LENGTH_SHORT).show();
-                                Intent navigateTo = new Intent(AddMedication.this, com.example.pfdhelpinghand.WeeklyMedicationActivity.class);
-                                startActivity(navigateTo);
-                            }
-                        });
+                        if (x>0 || !timeset){
+                            Toast.makeText(AddMedication.this, "Pick a future value for date and time!", Toast.LENGTH_SHORT).show();
+                        }else{
+                            Medication newMed = new Medication(name, des, ts);
 
+                            mList.add(newMed);
+                            docRef.update("medList", mList)
+                                    .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                        @Override
+                                        public void onSuccess(Void aVoid) {
+                                            Toast.makeText(AddMedication.this, "Medication added!", Toast.LENGTH_SHORT).show();
+                                            Intent navigateTo = new Intent(AddMedication.this, com.example.pfdhelpinghand.WeeklyMedicationActivity.class);
+                                            startActivity(navigateTo);
+                                        }
+                                    })
+                                    .addOnFailureListener(new OnFailureListener() {
+                                        @Override
+                                        public void onFailure(@NonNull Exception e) {
+                                            Toast.makeText(AddMedication.this, "Doesn't work...", Toast.LENGTH_SHORT).show();
+                                            Intent navigateTo = new Intent(AddMedication.this, com.example.pfdhelpinghand.WeeklyMedicationActivity.class);
+                                            startActivity(navigateTo);
+                                        }
+                                    });
+                        }
                     }
                 });
             }
         });
     }
 
-    @Override
-    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-        String selectedDay = parent.getItemAtPosition(position).toString();
-        switch (selectedDay){
-            case "Monday":
-                finalCalendar.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY);
-                break;
-            case "Tuesday":
-                finalCalendar.set(Calendar.DAY_OF_WEEK, Calendar.TUESDAY);
-                break;
-            case "Wednesday":
-                finalCalendar.set(Calendar.DAY_OF_WEEK, Calendar.WEDNESDAY);
-                break;
-            case "Thursday":
-                finalCalendar.set(Calendar.DAY_OF_WEEK, Calendar.THURSDAY);
-                break;
-            case "Friday":
-                finalCalendar.set(Calendar.DAY_OF_WEEK, Calendar.FRIDAY);
-                break;
-            case "Saturday":
-                finalCalendar.set(Calendar.DAY_OF_WEEK, Calendar.SATURDAY);
-                break;
-            case "Sunday":
-                finalCalendar.set(Calendar.DAY_OF_WEEK, Calendar.SUNDAY);
-                break;
-        }
-    }
+    private void selectDate(){
 
-    @Override
-    public void onNothingSelected(AdapterView<?> parent) {
+        Calendar calendar = Calendar.getInstance(TimeZone.getDefault());
 
+        int YEAR = calendar.get(Calendar.YEAR);
+        int MONTH = calendar.get(Calendar.MONTH);
+        int DATE = calendar.get(Calendar.DATE);
+
+        DatePickerDialog datePickerDialog = new DatePickerDialog(this, new DatePickerDialog.OnDateSetListener() {
+            @Override
+            public void onDateSet(DatePicker view, int year, int month, int day) {
+
+                Calendar calendar1 = Calendar.getInstance();
+                calendar1.set(Calendar.YEAR, year);
+                calendar1.set(Calendar.MONTH, month);
+                calendar1.set(Calendar.DATE, day);
+                finalCalendar.set(Calendar.YEAR, year);
+                finalCalendar.set(Calendar.MONTH, month);
+                finalCalendar.set(Calendar.DATE, day);
+                CharSequence dateCharSequence = DateFormat.format("EEEE, dd MMM yyyy", calendar1);
+                dateTV.setText(dateCharSequence);
+                selectTime();
+            }
+        }, YEAR, MONTH, DATE);
+
+        datePickerDialog.show();
     }
 
     public void selectTime(){
@@ -174,6 +175,7 @@ public class AddMedication extends AppCompatActivity implements AdapterView.OnIt
 
                 CharSequence timeCharSequence = DateFormat.format("hh:mm a", calendar1);
                 timeTV.setText(timeCharSequence);
+                timeset = true;
             }
         },HOUR, MINUTE, is24hr);
 

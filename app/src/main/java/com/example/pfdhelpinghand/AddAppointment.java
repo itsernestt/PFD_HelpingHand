@@ -38,13 +38,14 @@ public class AddAppointment extends AppCompatActivity {
 
     Button dateBtn, createApptBtn;
     TextView dateTV, timeTV;
-    EditText elderlyIDInput, locationInput, apptNameInput;
+    EditText locationInput, apptNameInput;
     FirebaseAuth fAuth;
     FirebaseUser user;
     FirebaseFirestore fStore;
     Elderly elderly;
     Calendar finalCalendar = Calendar.getInstance();
     SharedPreferences sharedPreferences;
+    boolean timeset = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,7 +55,6 @@ public class AddAppointment extends AppCompatActivity {
         dateBtn = findViewById(R.id.dateBtn);
         dateTV = findViewById(R.id.dateTV);
         timeTV = findViewById(R.id.timeTV);
-        elderlyIDInput = findViewById(R.id.elderlyIDInput);
         locationInput = findViewById(R.id.locationInput);
         createApptBtn = findViewById(R.id.createApptBtn);
         apptNameInput = findViewById(R.id.apptNameInput);
@@ -82,29 +82,32 @@ public class AddAppointment extends AppCompatActivity {
 //                        Date date1 = finalCalendar.getTime();
 //                        String strDate = dateFormat.format(date1);
                         com.google.firebase.Timestamp ts = new com.google.firebase.Timestamp(finalCalendar.getTime());
+                        Calendar currentTime = Calendar.getInstance();
+                        float x = currentTime.compareTo(finalCalendar);
+                        if (x>0 || !timeset){
+                            Toast.makeText(AddAppointment.this, "Pick a future value for date and time!", Toast.LENGTH_SHORT).show();
+                        }else{
+                            Appointment newAppt = new Appointment(apptName, location, ts);
 
-
-
-                        Appointment newAppt = new Appointment(apptName, location, ts);
-
-                        apptList.add(newAppt);
-                        docRef.update("apptList", apptList)
-                                .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                    @Override
-                                    public void onSuccess(Void unused) {
-                                        Toast.makeText(AddAppointment.this, "Appointment added!", Toast.LENGTH_SHORT).show();
-                                        Intent navigateTo = new Intent(AddAppointment.this, com.example.pfdhelpinghand.WeeklyAppointmentActivity.class);
-                                        startActivity(navigateTo);
-                                    }
-                                })
-                                .addOnFailureListener(new OnFailureListener() {
-                                    @Override
-                                    public void onFailure(@NonNull Exception e) {
-                                        Toast.makeText(AddAppointment.this, "Doesn't work...", Toast.LENGTH_SHORT).show();
-                                        Intent navigateTo = new Intent(AddAppointment.this, com.example.pfdhelpinghand.WeeklyAppointmentActivity.class);
-                                        startActivity(navigateTo);
-                                    }
-                                });
+                            apptList.add(newAppt);
+                            docRef.update("apptList", apptList)
+                                    .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                        @Override
+                                        public void onSuccess(Void unused) {
+                                            Toast.makeText(AddAppointment.this, "Appointment added!", Toast.LENGTH_SHORT).show();
+                                            Intent navigateTo = new Intent(AddAppointment.this, com.example.pfdhelpinghand.WeeklyAppointmentActivity.class);
+                                            startActivity(navigateTo);
+                                        }
+                                    })
+                                    .addOnFailureListener(new OnFailureListener() {
+                                        @Override
+                                        public void onFailure(@NonNull Exception e) {
+                                            Toast.makeText(AddAppointment.this, "Doesn't work...", Toast.LENGTH_SHORT).show();
+                                            Intent navigateTo = new Intent(AddAppointment.this, com.example.pfdhelpinghand.WeeklyAppointmentActivity.class);
+                                            startActivity(navigateTo);
+                                        }
+                                    });
+                        }
                     }
                 });
             }
@@ -167,6 +170,7 @@ public class AddAppointment extends AppCompatActivity {
 
                 CharSequence timeCharSequence = DateFormat.format("hh:mm a", calendar1);
                 timeTV.setText(timeCharSequence);
+                timeset = true;
             }
         },HOUR, MINUTE, is24hr);
 
