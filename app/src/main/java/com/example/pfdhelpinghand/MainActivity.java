@@ -9,6 +9,8 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
+import android.location.Address;
+import android.location.Geocoder;
 import android.location.Location;
 import android.media.AudioAttributes;
 import android.media.MediaPlayer;
@@ -22,6 +24,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CompoundButton;
+import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
@@ -33,7 +36,9 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -51,8 +56,9 @@ import com.google.firebase.firestore.QuerySnapshot;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 
-public class MainActivity extends AppCompatActivity  {
+public class MainActivity extends AppCompatActivity {
     public static final int DEFAULT_UPDATE_INTERVAL = 5;
     private static final int PERMISSIONS_FINE_LOCATION = 99;
 
@@ -67,6 +73,7 @@ public class MainActivity extends AppCompatActivity  {
     String currentLocation;
 
     TextView test1, test2, test3, test4;
+    Switch trackingSwitch;
 
     String soundUrl = "https://www.youtube.com/watch?v=4YKpBYo61Cs";
 
@@ -75,6 +82,7 @@ public class MainActivity extends AppCompatActivity  {
 
     //A config file for all setting related to FuredLocationProviderClient
     LocationRequest locationRequest;
+    LocationCallback locationCallBack;
 
 
     @Override
@@ -93,15 +101,40 @@ public class MainActivity extends AppCompatActivity  {
         test2 = findViewById(R.id.elderlyTest2);
         test3 = findViewById(R.id.elderlyTest3);
         test4 = findViewById(R.id.elderlyTest4);
+        trackingSwitch = findViewById(R.id.elderlyTrackingSwitch);
 
         //Set all properties for LocationRequest
         locationRequest = new LocationRequest();
 
         //How long do we want to update the location?
-        locationRequest.setInterval(30000);
-        locationRequest.setFastestInterval(5000);
+        locationRequest.setInterval(3000);
+        locationRequest.setFastestInterval(1000);
 
-        locationRequest.setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
+        locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+
+        //triggered whenever the update interval is met
+        locationCallBack = new LocationCallback() {
+
+            @Override
+            public void onLocationResult(LocationResult locationResult) {
+                super.onLocationResult(locationResult);
+                Location location = locationResult.getLastLocation();
+                updateUIValues(location);
+            }
+        };
+
+        trackingSwitch.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (trackingSwitch.isChecked()) {
+                    //turn on
+                    startLocationUpdate();
+                } else {
+                    //turn off tracking
+                    stopLocationUpdate();
+                }
+            }
+        });
 
 
 
@@ -128,11 +161,12 @@ public class MainActivity extends AppCompatActivity  {
         }
 
 
+
         docRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
             @Override
             public void onSuccess(DocumentSnapshot documentSnapshot) {
                 elderly = documentSnapshot.toObject(Elderly.class);
-                emergencyPeople =  elderly.getEmergencyPerson();
+                emergencyPeople = elderly.getEmergencyPerson();
 
                 fStore.collection("PairingRequest")
                         .whereEqualTo("receiverEmail", elderly.getEmail())
@@ -146,8 +180,7 @@ public class MainActivity extends AppCompatActivity  {
                                 }
 
 
-                                for (DocumentChange dc: queryDocumentSnapshots.getDocumentChanges())
-                                {
+                                for (DocumentChange dc : queryDocumentSnapshots.getDocumentChanges()) {
                                     DocumentSnapshot snapshot = dc.getDocument();
                                     String documentID = snapshot.getId();
                                     String senderEmail = snapshot.getString("senderEmail");
@@ -157,52 +190,42 @@ public class MainActivity extends AppCompatActivity  {
 
                                     PairUpRequest request = new PairUpRequest(documentID, senderEmail, receiverEmail, isPaired);
 
-                                    switch (dc.getType()){
+                                    switch (dc.getType()) {
                                         case ADDED:
                                         case MODIFIED:
-                                            if (!request.getPairUpSuccess())
-                                            {
+                                            if (!request.getPairUpSuccess()) {
                                                 requests.add(request);
-                                            }
-                                            else{
+                                            } else {
                                                 Iterator<PairUpRequest> itr = requests.iterator();
-                                                while (itr.hasNext())
-                                                {
+                                                while (itr.hasNext()) {
                                                     PairUpRequest r = itr.next();
-                                                    if (request.getDocumentID().equals(r.getDocumentID()))
-                                                    {
+                                                    if (request.getDocumentID().equals(r.getDocumentID())) {
                                                         itr.remove();
                                                     }
                                                 }
                                             }
 
-                                            if (requests.size() > 0)
-                                            {
+                                            if (requests.size() > 0) {
                                                 viewPairUp.setVisibility(View.VISIBLE);
 
-                                            }
-                                            else{
+                                            } else {
                                                 viewPairUp.setVisibility(View.INVISIBLE);
                                             }
 
                                             return;
                                         case REMOVED:
                                             Iterator<PairUpRequest> itr = requests.iterator();
-                                            while (itr.hasNext())
-                                            {
+                                            while (itr.hasNext()) {
                                                 PairUpRequest r = itr.next();
-                                                if (request.getDocumentID().equals(r.getDocumentID()))
-                                                {
+                                                if (request.getDocumentID().equals(r.getDocumentID())) {
                                                     itr.remove();
                                                 }
                                             }
 
-                                            if (requests.size() > 0)
-                                            {
+                                            if (requests.size() > 0) {
                                                 viewPairUp.setVisibility(View.VISIBLE);
 
-                                            }
-                                            else{
+                                            } else {
                                                 viewPairUp.setVisibility(View.INVISIBLE);
                                             }
 
@@ -215,38 +238,35 @@ public class MainActivity extends AppCompatActivity  {
                                 }
 
 
-
-
                             }
 
-                });
+                        });
 
 
             }
         });
 
 
-
         Button settingsButton = findViewById(R.id.settingsBtn);
-        settingsButton.setOnClickListener(new View.OnClickListener(){
-            public void onClick(View v){
+        settingsButton.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
                 Intent navigateToSettings = new Intent(MainActivity.this, ElderlySettingsActivity.class);
                 startActivity(navigateToSettings);
             }
         });
 
         Button lostButton = findViewById(R.id.lostButton);
-        lostButton.setOnClickListener(new View.OnClickListener(){
-            public void onClick(View v){
-                Intent navigateToLostPage = new Intent(MainActivity.this,HelpLostActivity.class);
+        lostButton.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                Intent navigateToLostPage = new Intent(MainActivity.this, HelpLostActivity.class);
                 startActivity(navigateToLostPage);
             }
 
         });
 
         Button medAlarmButton = findViewById(R.id.medAlarmButton);
-        medAlarmButton.setOnClickListener(new View.OnClickListener(){
-            public void onClick(View v){
+        medAlarmButton.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
                 Intent navigateToMedAlarmPage = new Intent(MainActivity.this, MedicationAppointmentActivity.class);
                 startActivity(navigateToMedAlarmPage);
             }
@@ -255,13 +275,14 @@ public class MainActivity extends AppCompatActivity  {
 
         cancelButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                switch (v.getId()){
+                switch (v.getId()) {
                     case R.id.cancelButton:
                         Toast.makeText(getApplicationContext(), "Cancelling SOS", Toast.LENGTH_SHORT).show();
                         //MagicAppRestart.doRestart(MainActivity.this);
                         mHandler.postDelayed(mRefreshPage, 0);
                 }
-            }});
+            }
+        });
         TextView sosOverlay = findViewById(R.id.sosButtonOverlay);
         ToggleButton sosToggle = findViewById(R.id.toggleButton);
         Button sosButton = findViewById(R.id.sosButton);
@@ -273,70 +294,69 @@ public class MainActivity extends AppCompatActivity  {
                     seconds[0] = 0;
                     //sosOverlay.setVisibility(View.INVISIBLE);
                     mHandler.postDelayed(mRefreshPage, 0);
-                }
-                else
+                } else
                     seconds[0] = 5000;
-                    sosOverlay.setVisibility(View.VISIBLE);
-                    sosText.setTextColor(Color.BLACK);
-                }
+                sosOverlay.setVisibility(View.VISIBLE);
+                sosText.setTextColor(Color.BLACK);
+            }
         });
         sosButton.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View view) {
-                sosButton.setClickable(false);
-                mediaPlayer.start();
-                new CountDownTimer(seconds[0], 1000) {
+                                         public void onClick(View view) {
+                                             sosButton.setClickable(false);
+                                             mediaPlayer.start();
+                                             new CountDownTimer(seconds[0], 1000) {
 
-                    public void onTick(long millisUntilFinished) {
-                        sosText.setText("   " + millisUntilFinished / 1000);
-                    }
+                                                 public void onTick(long millisUntilFinished) {
+                                                     sosText.setText("   " + millisUntilFinished / 1000);
+                                                 }
 
-                    public void onClick(View view){
-                        cancel();
-                    }
+                                                 public void onClick(View view) {
+                                                     cancel();
+                                                 }
 
-                    public void onFinish() {
-                        sosText.setText("SOS");
-                        sosButton.setClickable(true);
-                        Intent callIntent = new Intent(Intent.ACTION_CALL);
+                                                 public void onFinish() {
+                                                     sosText.setText("SOS");
+                                                     sosButton.setClickable(true);
+                                                     Intent callIntent = new Intent(Intent.ACTION_CALL);
 
-                        //startActivity(callIntent);
-                        //Toast.makeText(getApplicationContext(), "Calling "+number+", please wait", Toast.LENGTH_SHORT).show();
-                        Toast.makeText(getApplicationContext(), emergencyPeople.get(0).getPhoneNumber(), Toast.LENGTH_SHORT).show();
-
-
-
-                    }
-
-                }.start();
+                                                     //startActivity(callIntent);
+                                                     //Toast.makeText(getApplicationContext(), "Calling "+number+", please wait", Toast.LENGTH_SHORT).show();
+                                                     Toast.makeText(getApplicationContext(), emergencyPeople.get(0).getPhoneNumber(), Toast.LENGTH_SHORT).show();
 
 
-                switch (view.getId()){
-                    case R.id.sosButton:
-                        Toast.makeText(getApplicationContext(), "SOS Button activated", Toast.LENGTH_SHORT).show();
+                                                 }
 
-                }
-            }
-            public void buttonEffect(View button){
-                button.setOnTouchListener(new View.OnTouchListener() {
+                                             }.start();
 
-                    public boolean onTouch(View v, MotionEvent event) {
-                        switch (event.getAction()) {
-                            case MotionEvent.ACTION_DOWN: {
-                                v.getBackground().setColorFilter(0xe0f47521, PorterDuff.Mode.SRC_ATOP);
-                                v.invalidate();
-                                break;
-                            }
-                            case MotionEvent.ACTION_UP: {
-                                v.getBackground().clearColorFilter();
-                                v.invalidate();
-                                break;
-                            }
-                        }
-                        return false;
-                    }
-                });
-            }
-        }
+
+                                             switch (view.getId()) {
+                                                 case R.id.sosButton:
+                                                     Toast.makeText(getApplicationContext(), "SOS Button activated", Toast.LENGTH_SHORT).show();
+
+                                             }
+                                         }
+
+                                         public void buttonEffect(View button) {
+                                             button.setOnTouchListener(new View.OnTouchListener() {
+
+                                                 public boolean onTouch(View v, MotionEvent event) {
+                                                     switch (event.getAction()) {
+                                                         case MotionEvent.ACTION_DOWN: {
+                                                             v.getBackground().setColorFilter(0xe0f47521, PorterDuff.Mode.SRC_ATOP);
+                                                             v.invalidate();
+                                                             break;
+                                                         }
+                                                         case MotionEvent.ACTION_UP: {
+                                                             v.getBackground().clearColorFilter();
+                                                             v.invalidate();
+                                                             break;
+                                                         }
+                                                     }
+                                                     return false;
+                                                 }
+                                             });
+                                         }
+                                     }
 
         );
 
@@ -361,8 +381,7 @@ public class MainActivity extends AppCompatActivity  {
 //        })
 
         Button locationButton = findViewById(R.id.locationButton);
-        locationButton.setOnClickListener(new View.OnClickListener()
-        {
+        locationButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
@@ -389,15 +408,52 @@ public class MainActivity extends AppCompatActivity  {
         });
 
 
-
-
-
-    updateGPS();
+        updateGPS();
 
 
     }// end of on create method
 
-    
+    private void startLocationUpdate() {
+        test3.setText("Tracking now");
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            // TODO: Consider calling
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
+            return;
+        }
+        fusedLocationProviderClient.requestLocationUpdates(locationRequest, locationCallBack, null);
+        updateGPS();
+    }
+
+    private void stopLocationUpdate() {
+        test1.setText("Not tracking");
+        test2.setText("Not tracking");
+        test3.setText("Not tracking");
+        test4.setText("Not Tracking");
+        fusedLocationProviderClient.removeLocationUpdates(locationCallBack);
+
+    }
+
+    private void updateUIValues(Location location)
+    {
+        test1.setText("Lat: " + String.valueOf(location.getLatitude()));
+        test2.setText("Lng: " + String.valueOf(location.getLongitude()));
+        Geocoder geocoder = new Geocoder(MainActivity.this);
+        try {
+            List<Address> addressList = geocoder.getFromLocation(location.getLatitude(), location.getLongitude(), 1);
+            test4.setText(addressList.get(0).getAddressLine(0));
+        }
+        catch (Exception e)
+        {
+            test4.setText("Not available");
+
+        }
+    }
+
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
@@ -432,11 +488,7 @@ public class MainActivity extends AppCompatActivity  {
                   @Override
                   public void onSuccess(Location location) {
                     // we got permission
-                      test1.setText("Lat: " + String.valueOf(location.getLatitude()));
-                      test2.setText("Long: " + location.getLongitude());
-                      test3.setText("Accuracy: " + location.getAccuracy());
-
-
+                      updateUIValues(location);
 
 
                   }

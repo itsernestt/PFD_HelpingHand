@@ -78,7 +78,7 @@
         app:backgroundTint="#affdae"
         app:layout_constraintBottom_toTopOf="@+id/lostButton"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.123"
+        app:layout_constraintHorizontal_bias="0.149"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/cancelButton"
         app:layout_constraintVertical_bias="0.0" />
@@ -149,8 +149,8 @@
 
     <TextView
         android:id="@+id/elderlyTest1"
-        android:layout_width="101dp"
-        android:layout_height="18dp"
+        android:layout_width="129dp"
+        android:layout_height="19dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.016"
@@ -160,8 +160,8 @@
 
     <TextView
         android:id="@+id/elderlyTest2"
-        android:layout_width="101dp"
-        android:layout_height="18dp"
+        android:layout_width="129dp"
+        android:layout_height="20dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.012"
@@ -211,6 +211,18 @@
         app:maxImageSize="46dp"
         app:srcCompat="@drawable/ic_pairup_notice"
         app:tint="@android:color/white" />
+
+    <Switch
+        android:id="@+id/elderlyTrackingSwitch"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Location Tracking"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.517"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.694" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

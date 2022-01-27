@@ -1,8 +1,5 @@
 package com.example.pfdhelpinghand;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -12,6 +9,9 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -20,12 +20,10 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.UserProfileChangeRequest;
-import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 
@@ -174,6 +172,55 @@ public class SignUpElderlyActivity extends AppCompatActivity {
                                     Log.e("TAG", "onFailure: " + e.toString());
                                 }
                             });
+
+                            //Initialize ElderlyMedML
+
+                            Map<String, Object> MedML = new HashMap<>();
+                            MedML.put("elderlyID", userID);
+                            MedML.put("elderlyName", elderly.getFullName());
+                            MedML.put("alarmFailed", new ArrayList<Medication>());
+                            MedML.put("alarmSuccess", new ArrayList<Medication>());
+
+
+                            fStore.collection("ElderlyMedicationML").document(userID)
+                                    .set(MedML)
+                                    .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                        @Override
+                                        public void onSuccess(Void aVoid) {
+                                            Log.d("TAG","onSuccess: Elderly Medication ML profile created for " + userID);
+                                        }
+                                    }).addOnFailureListener(new OnFailureListener() {
+                                @Override
+                                public void onFailure(@NonNull Exception e) {
+                                    Log.e("TAG", "onFailure: " + e.toString());
+                                }
+                            });
+
+
+                            //Initialize ElderlyLocationML
+                            Map<String, Object> LocML = new HashMap<>();
+                            ArrayList<Location> locationArrayList = new ArrayList<Location>();
+
+
+                            LocML.put("elderlyID", userID);
+                            LocML.put("elderlyName", elderly.getFullName());
+                            LocML.put("locationList", locationArrayList);
+
+                            fStore.collection("ElderlyLocationML").document(userID)
+                                    .set(LocML)
+                                    .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                        @Override
+                                        public void onSuccess(Void aVoid) {
+                                            Log.d("TAG","onSuccess: Elderly Location ML profile created for " + userID);
+                                        }
+                                    }).addOnFailureListener(new OnFailureListener() {
+                                @Override
+                                public void onFailure(@NonNull Exception e) {
+                                    Log.e("TAG", "onFailure: " + e.toString());
+                                }
+                            });
+
+
                             startActivity(new Intent(getApplicationContext(), MainActivity.class));
                         }
                     }
