@@ -30,6 +30,7 @@ import android.widget.Toast;
 import android.widget.ToggleButton;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -40,6 +41,7 @@ import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
@@ -49,17 +51,20 @@ import com.google.firebase.firestore.DocumentChange;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
+import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class MainActivity extends AppCompatActivity {
-    public static final int DEFAULT_UPDATE_INTERVAL = 5;
     private static final int PERMISSIONS_FINE_LOCATION = 99;
 
     FirebaseAuth fAuth;
@@ -70,7 +75,8 @@ public class MainActivity extends AppCompatActivity {
 
     ArrayList<PairUpRequest> requests = new ArrayList<PairUpRequest>();
     ArrayList<EmergencyPerson> emergencyPeople;
-    String currentLocation;
+    ElderlyLocation currentLocation;
+    String locationAddress;
 
     TextView test1, test2, test3, test4;
     Switch trackingSwitch;
@@ -111,6 +117,7 @@ public class MainActivity extends AppCompatActivity {
         locationRequest.setFastestInterval(1000);
 
         locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+        currentLocation = new ElderlyLocation();
 
         //triggered whenever the update interval is met
         locationCallBack = new LocationCallback() {
@@ -363,25 +370,8 @@ public class MainActivity extends AppCompatActivity {
 
         );
 
-//        public static class Post {
-//            public String address;
-//        }
-//
-//        final FirebaseDatabase database = FirebaseDatabase.getInstance();
-//        DatabaseReference ref = database.getReference("");
-//
-//        ref.addValueEventListener(new ValueEventListener() {
-//            @Override
-//            public void onDataChange(@NonNull DataSnapshot snapshot) {
-//                Post post = dataSnapshot.getValue(Post.class);
-//                System.out.printIn(post);
-//            }
-//
-//            @Override
-//            public void onCancelled(@NonNull DatabaseError error) {
-//
-//            }
-//        })
+
+
 
         Button locationButton = findViewById(R.id.locationButton);
         locationButton.setOnClickListener(new View.OnClickListener() {
@@ -395,9 +385,14 @@ public class MainActivity extends AppCompatActivity {
                 mapIntent.setPackage("com.google.android.apps.maps");
                 startActivity(mapIntent);
 
-//
+
             }
         });
+
+
+
+
+
 
 
         pairUpDialog = new Dialog(this);
@@ -413,6 +408,14 @@ public class MainActivity extends AppCompatActivity {
 
         updateGPS();
 
+        //update the elderly current location every 1 minute
+        new Timer().scheduleAtFixedRate(new TimerTask() {
+            @Override
+            public void run() {
+                UpdateLocation();
+            }
+        }, 0, 60000);//put here time 1000 milliseconds=1 second
+
 
     }// end of on create method
 
@@ -421,15 +424,12 @@ public class MainActivity extends AppCompatActivity {
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             // TODO: Consider calling
             //    ActivityCompat#requestPermissions
-            // here to request the missing permissions, and then overriding
-            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-            //                                          int[] grantResults)
-            // to handle the case where the user grants the permission. See the documentation
-            // for ActivityCompat#requestPermissions for more details.
+
             return;
         }
         fusedLocationProviderClient.requestLocationUpdates(locationRequest, locationCallBack, null);
         updateGPS();
+
     }
 
     private void stopLocationUpdate() {
@@ -441,20 +441,67 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     private void updateUIValues(Location location)
     {
         test1.setText("Lat: " + String.valueOf(location.getLatitude()));
         test2.setText("Lng: " + String.valueOf(location.getLongitude()));
+
+        LocalDateTime date = LocalDateTime.now();
+        int seconds = date.toLocalTime().toSecondOfDay();
+
+        currentLocation.setLat(location.getLatitude());
+        currentLocation.setLng(location.getLongitude());
+        currentLocation.setTime(seconds);
+
+
+
+
         Geocoder geocoder = new Geocoder(MainActivity.this);
         try {
             List<Address> addressList = geocoder.getFromLocation(location.getLatitude(), location.getLongitude(), 1);
             test4.setText(addressList.get(0).getAddressLine(0));
+            locationAddress = addressList.get(0).getAddressLine(0);
         }
         catch (Exception e)
         {
             test4.setText("Not available");
 
         }
+    }
+
+    // Updates the database of the location
+    public void UpdateLocation()
+    {
+        fStore.collection("Elderly").document(user.getUid())
+                .update("currentLocation", locationAddress)
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void unused) {
+                        Log.d("TAG","onSuccess: Location updated");
+
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Log.e("TAG", "onFailure: " + e.toString());
+            }
+        });
+
+        fStore.collection("ElderlyLocationML").document(user.getUid())
+                .update("locationList", FieldValue.arrayUnion(currentLocation))
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void unused) {
+                        Log.d("TAG","onSuccess: Location updated");
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+
+                Log.e("TAG", "onFailure: " + e.toString());
+            }
+        });
     }
 
 
