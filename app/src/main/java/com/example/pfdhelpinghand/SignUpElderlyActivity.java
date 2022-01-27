@@ -28,8 +28,8 @@ import java.util.Map;
 
 
 public class SignUpElderlyActivity extends AppCompatActivity {
-    EditText eFullName, eEmail, ePhone, ePassword, ePassword2, eContactName, eContactPhone, eAddress;
-    Button eRegisterButton;
+    EditText eFullName, eEmail, ePhone, ePassword, eContactName, eContactPhone, eAddress;
+    Button eRegisterButton, eBackBtn;
     FirebaseAuth fAuth;
     FirebaseFirestore fStore;
     String userID;
@@ -47,20 +47,32 @@ public class SignUpElderlyActivity extends AppCompatActivity {
         eEmail = findViewById(R.id.elderlyEmail);
         ePhone = findViewById(R.id.elderlyPhone);
         ePassword = findViewById(R.id.elderlyPassword);
-        ePassword2 = findViewById(R.id.elderlyPassword2);
         eContactName = findViewById(R.id.elderlyContactName);
         eContactPhone = findViewById(R.id.elderlyContactPhone);
         eAddress = findViewById(R.id.elderlyAddress);
 
         eRegisterButton = findViewById(R.id.elderlyRegisterButton);
+        eBackBtn = findViewById(R.id.elderlysignupBack);
 
         fAuth = FirebaseAuth.getInstance();
         fStore = FirebaseFirestore.getInstance();
+
+
+        // Set up the title bar
+        getSupportActionBar().setTitle("Elderly Sign Up");
 
         if (fAuth.getCurrentUser() != null){
             startActivity(new Intent(getApplicationContext(), LoginActivity.class));
             finish();
         }
+
+        eBackBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent navigateToPreviousPage = new Intent(SignUpElderlyActivity.this, com.example.pfdhelpinghand.LoginActivity.class);
+                startActivity(navigateToPreviousPage);
+            }
+        });
 
         eRegisterButton.setOnClickListener(new View.OnClickListener(){
             @Override
@@ -70,7 +82,7 @@ public class SignUpElderlyActivity extends AppCompatActivity {
                 String email = eEmail.getText().toString().trim();
                 String phone = ePhone.getText().toString().trim();
                 String password = ePassword.getText().toString().trim();
-                String password2 = ePassword2.getText().toString().trim();
+
 
                 String contactName = eContactName.getText().toString();
 
@@ -108,18 +120,7 @@ public class SignUpElderlyActivity extends AppCompatActivity {
                     return;
                 }
 
-                if (TextUtils.isEmpty(password2))
-                {
-                    ePassword2.setError("Please enter your password again");
-                    return;
-                }
 
-                if (!password.equals(password2))
-                {
-                    ePassword2.setError("Password does not match! ");
-                    ePassword2.setText("");
-                    return;
-                }
 
                 if (TextUtils.isEmpty(contactName))
                 {
