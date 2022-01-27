@@ -168,6 +168,9 @@ public class MainActivity extends AppCompatActivity {
                 elderly = documentSnapshot.toObject(Elderly.class);
                 emergencyPeople = elderly.getEmergencyPerson();
 
+                //Set up title action bar
+                getSupportActionBar().setTitle("Welcome, " + elderly.getFullName());
+
                 fStore.collection("PairingRequest")
                         .whereEqualTo("receiverEmail", elderly.getEmail())
                         .addSnapshotListener(new EventListener<QuerySnapshot>() {

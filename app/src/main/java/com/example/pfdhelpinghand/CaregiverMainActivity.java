@@ -305,57 +305,8 @@ public class CaregiverMainActivity extends AppCompatActivity {
 
     private Handler mHandler = new Handler();
 
-    //This page is for caregiver to see pairing history and progress
-    public void ShowPopup2(View v)
-    {
 
-        TextView closeBut2, pairUpHistory;
-
-        myDialog2.setContentView(R.layout.activity_pop_up_window2);
-        myDialog2.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-        myDialog2.show();
-
-        closeBut2 = (TextView) myDialog2.findViewById(R.id.closePopupButton2);
-        pairUpHistory = myDialog2.findViewById(R.id.pairUpHIstory);
-
-
-        closeBut2.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                myDialog2.dismiss();
-            }
-        });
-
-
-        fStore.collection("PairingRequest")
-                .whereEqualTo("senderEmail", caretaker.getEmail())
-                .addSnapshotListener(new EventListener<QuerySnapshot>() {
-                    @Override
-                    public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots,
-                                        @Nullable FirebaseFirestoreException e) {
-                            if (e != null) {
-                                Log.w(TAG, "Listen failed.", e);
-                                return;
-                            }
-                            pairUpHistory.setText("");
-
-                            for (QueryDocumentSnapshot doc : queryDocumentSnapshots) {
-                                if (doc.get("receiverEmail") != null) {
-                                    pairUpHistory.setText(pairUpHistory.getText() + "Receiver email: " + doc.getString("receiverEmail") + "\n");
-                                    if (doc.getBoolean("isPairUpSuccess")) {
-                                        pairUpHistory.setText(pairUpHistory.getText() + "Status: Completed pairing");
-                                    }
-                                    else {
-                                        pairUpHistory.setText(pairUpHistory.getText() + "    Status: Pending...");
-                                    }
-                                    pairUpHistory.setText(pairUpHistory.getText() + "\n\n");
-                                }
-                            }
-                        }
-                });
-    }
-
-
+    // Pop up for pairing button
     public void ShowPopup(View v) {
         TextView closeBut, foundMessage, pairupMessage;
         ProgressBar progressBar;
@@ -391,9 +342,6 @@ public class CaregiverMainActivity extends AppCompatActivity {
                 ShowPopup2(v);
             }
         });
-
-
-
 
 
         pairUpBut.setOnClickListener(new View.OnClickListener() {
@@ -503,8 +451,6 @@ public class CaregiverMainActivity extends AppCompatActivity {
 
                                                                         }
                                                                     });
-
-
                                                         }
                                                     })
                                                     .addOnFailureListener(new OnFailureListener() {
@@ -524,11 +470,61 @@ public class CaregiverMainActivity extends AppCompatActivity {
         });
 
 
-
-
     }
 
 
+    //This pop up is for caregiver to see pairing history and progress
+    public void ShowPopup2(View v)
+    {
+
+        TextView closeBut2, pairUpHistory;
+
+        myDialog2.setContentView(R.layout.activity_pop_up_window2);
+        myDialog2.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        myDialog2.show();
+
+        closeBut2 = (TextView) myDialog2.findViewById(R.id.closePopupButton2);
+        pairUpHistory = myDialog2.findViewById(R.id.pairUpHIstory);
+
+
+        closeBut2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                myDialog2.dismiss();
+            }
+        });
+
+
+        fStore.collection("PairingRequest")
+                .whereEqualTo("senderEmail", caretaker.getEmail())
+                .addSnapshotListener(new EventListener<QuerySnapshot>() {
+                    @Override
+                    public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots,
+                                        @Nullable FirebaseFirestoreException e) {
+                        if (e != null) {
+                            Log.w(TAG, "Listen failed.", e);
+                            return;
+                        }
+                        pairUpHistory.setText("");
+
+                        for (QueryDocumentSnapshot doc : queryDocumentSnapshots) {
+                            if (doc.get("receiverEmail") != null) {
+                                pairUpHistory.setText(pairUpHistory.getText() + "Receiver email: " + doc.getString("receiverEmail") + "\n");
+                                if (doc.getBoolean("isPairUpSuccess")) {
+                                    pairUpHistory.setText(pairUpHistory.getText() + "Status: Completed pairing");
+                                }
+                                else {
+                                    pairUpHistory.setText(pairUpHistory.getText() + "    Status: Pending...");
+                                }
+                                pairUpHistory.setText(pairUpHistory.getText() + "\n\n");
+                            }
+                        }
+                    }
+                });
+    }
+
+
+    // Refresh the page
     private Runnable mRefreshPage = new Runnable() {
         public void run() {
             // do what you need to do here after the delay

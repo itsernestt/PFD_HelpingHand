@@ -1,19 +1,17 @@
 package com.example.pfdhelpinghand;
 
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Intent;
-import android.nfc.Tag;
 import android.os.Bundle;
-import android.provider.ContactsContract;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -23,16 +21,13 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.UserProfileChangeRequest;
-import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
 
 public class SignUpMainActivity extends AppCompatActivity {
     EditText mFullName, mEmail, mPassword, mPassword2, mPhone;
-    Button mRegisterButton;
+    Button mRegisterButton, mBackBut;
     FirebaseAuth fAuth;
     FirebaseFirestore fStore;
     String userID;
@@ -42,12 +37,17 @@ public class SignUpMainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_up_main);
 
+
+
         mFullName = findViewById(R.id.caregiverName);
         mEmail = findViewById(R.id.caregiverEmail);
         mPassword = findViewById(R.id.caregiverPassword);
         mPassword2 = findViewById(R.id.caregiverPassword2);
         mPhone = findViewById(R.id.caregiverPhone);
         mRegisterButton = findViewById(R.id.caregiverRegisterButton);
+        mBackBut = findViewById(R.id.backButton);
+
+
 
 
         fAuth = FirebaseAuth.getInstance();
@@ -59,6 +59,13 @@ public class SignUpMainActivity extends AppCompatActivity {
         }
 
 
+        mBackBut.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent navigateToPreviousPage = new Intent(SignUpMainActivity.this, com.example.pfdhelpinghand.LoginActivity.class);
+                startActivity(navigateToPreviousPage);
+            }
+        });
 
         mRegisterButton.setOnClickListener(new View.OnClickListener(){
             @Override
