@@ -200,12 +200,12 @@ public class SignUpElderlyActivity extends AppCompatActivity {
 
                             //Initialize ElderlyLocationML
                             Map<String, Object> LocML = new HashMap<>();
-                            ArrayList<Location> locationArrayList = new ArrayList<Location>();
+                            ArrayList<ElderlyLocation> elderlyLocationArrayList = new ArrayList<ElderlyLocation>();
 
 
                             LocML.put("elderlyID", userID);
                             LocML.put("elderlyName", elderly.getFullName());
-                            LocML.put("locationList", locationArrayList);
+                            LocML.put("locationList", elderlyLocationArrayList);
 
                             fStore.collection("ElderlyLocationML").document(userID)
                                     .set(LocML)
