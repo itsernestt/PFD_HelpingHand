@@ -1,6 +1,8 @@
 package com.example.pfdhelpinghand;
 
+import android.app.AlarmManager;
 import android.app.AlertDialog;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -51,6 +53,8 @@ public class MedAdapter extends RecyclerView.Adapter<MedAdapter.MedViewHolder>{
         this.mMeds = mMeds;
     }
     public MedAdapter(Context context){this.context = context;}
+    private PendingIntent pendingIntent;
+    private AlarmManager alarmManager;
 
     @NonNull
     @Override
@@ -125,6 +129,7 @@ public class MedAdapter extends RecyclerView.Adapter<MedAdapter.MedViewHolder>{
 
                                 public void onClick(DialogInterface dialog, int whichButton) {
                                     meds.remove(holder.getAdapterPosition());
+
 
                                     DocumentReference docRef = fStore.collection("Elderly").document(userID);
                                     docRef.update("medList", meds)

@@ -3,11 +3,16 @@ package com.example.pfdhelpinghand;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.AlarmManager;
 import android.app.DatePickerDialog;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.Build;
 import android.os.Bundle;
 import android.text.format.DateFormat;
 import android.util.Log;
@@ -22,6 +27,7 @@ import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
+import com.example.pfdhelpinghand.databinding.ActivityMainBinding;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.Timestamp;
@@ -49,11 +55,11 @@ public class AddMedication extends AppCompatActivity {
     SharedPreferences sharedPreferences;
     boolean timeset = false;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_medication);
+//        createNotificationChannel();
 
         editName = findViewById(R.id.medNameInput);
         editDes = findViewById(R.id.medDescriptionInput);
@@ -80,6 +86,9 @@ public class AddMedication extends AppCompatActivity {
             public void onSuccess(DocumentSnapshot documentSnapshot) {
                 elderly = documentSnapshot.toObject(Elderly.class);
                 ArrayList<Medication> mList = elderly.getMedList();
+
+
+
 
                 timeBtn.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -181,4 +190,17 @@ public class AddMedication extends AppCompatActivity {
 
         timePickerDialog.show();
     }
+
+//    private void createNotificationChannel(){
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
+//            CharSequence name = "HHMedicationChannel";
+//            String description = "Channel for Alarm Manager";
+//            int importance = NotificationManager.IMPORTANCE_HIGH;
+//            NotificationChannel channel = new NotificationChannel("HelpingHand", name, importance);
+//            channel.setDescription(description);
+//
+//            NotificationManager notificationManager = getSystemService(NotificationManager.class);
+//            notificationManager.createNotificationChannel(channel);
+//        }
+//    }
 }

@@ -4,7 +4,12 @@ package com.example.pfdhelpinghand;
 import static android.content.ContentValues.TAG;
 
 import android.Manifest;
+import android.app.Activity;
+import android.app.AlarmManager;
 import android.app.Dialog;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
@@ -59,6 +64,7 @@ import com.google.firebase.firestore.QuerySnapshot;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Timer;
@@ -97,6 +103,10 @@ public class MainActivity extends AppCompatActivity {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        createNotificationChannel();
+        Calendar currentTime = Calendar.getInstance();
+
+
         Button cancelButton = findViewById(R.id.cancelButton);
 
         fAuth = FirebaseAuth.getInstance();
@@ -175,6 +185,18 @@ public class MainActivity extends AppCompatActivity {
             public void onSuccess(DocumentSnapshot documentSnapshot) {
                 elderly = documentSnapshot.toObject(Elderly.class);
                 emergencyPeople = elderly.getEmergencyPerson();
+                ArrayList<Medication> mList = elderly.getMedList();
+                int counter = 1;
+                for (Medication m:
+                     mList) {
+                    Calendar tempCal = Calendar.getInstance();
+                    tempCal.setTimeInMillis(m.getDay().toDate().getTime());
+                    float x = currentTime.compareTo(tempCal);
+                    if (x<0){
+                        setAlarm(counter, tempCal, m.medName);
+                    }
+                    counter++;
+                }
 
                 //Set up title action bar
                 getSupportActionBar().setTitle("Welcome, " + elderly.getFullName());
@@ -420,6 +442,29 @@ public class MainActivity extends AppCompatActivity {
 
 
     }// end of on create method
+
+    private void setAlarm(int counter, Calendar tempCal, String medName) {
+        Intent intent = new Intent(this, AlarmReceiver.class);
+        PendingIntent pi = PendingIntent.getBroadcast(this, counter, intent, 0);
+        intent.putExtra("alarmid", counter);
+        intent.putExtra("medname", medName);
+
+        AlarmManager am = (AlarmManager) getSystemService(Activity.ALARM_SERVICE);
+        am.setExact(AlarmManager.RTC_WAKEUP, tempCal.getTimeInMillis(), pi);
+    }
+
+    private void createNotificationChannel(){
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
+            CharSequence name = "HHAlarmChannel";
+            String description = "Channel for Alarm Manager";
+            int importance = NotificationManager.IMPORTANCE_HIGH;
+            NotificationChannel channel = new NotificationChannel("HelpingHand", name, importance);
+            channel.setDescription(description);
+
+            NotificationManager notificationManager = getSystemService(NotificationManager.class);
+            notificationManager.createNotificationChannel(channel);
+        }
+    }
 
     private void startLocationUpdate() {
         test3.setText("Tracking now");
