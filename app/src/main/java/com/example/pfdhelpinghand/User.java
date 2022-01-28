@@ -11,6 +11,7 @@ public class User implements Serializable {
     protected String phoneNumber;
     protected String email;
     protected String password;
+    protected String img;
 
     public String getPassword() {
         return password;
@@ -50,5 +51,13 @@ public class User implements Serializable {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public String getImg() {
+        return img;
+    }
+
+    public void setImg(String img) {
+        this.img = img;
     }
 }

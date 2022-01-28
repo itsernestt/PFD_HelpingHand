@@ -16,7 +16,7 @@ public class Elderly extends User{
 
     public Elderly(){}
 
-    public Elderly(String id, String name, String email, String phoneNum, String pw, String address, List<EmergencyPerson> eList,
+    public Elderly(String id, String name, String email, String phoneNum, String pw, String address, String img, List<EmergencyPerson> eList,
                    ArrayList<Medication> mList, ArrayList<Appointment> aList){
         this.ID = id;
         this.fullName = name;
@@ -27,6 +27,7 @@ public class Elderly extends User{
         this.emergencyPersonList = eList;
         this.medList = mList;
         this.apptList = aList;
+        this.img = img;
     }
 
     public void setElderlyAddress(String elderlyAddress) {
@@ -60,4 +61,20 @@ public class Elderly extends User{
 
     public void addCaretaker(Caretaker c){ this.caretakerList.add(c); }
 
+    @Override
+    public String toString() {
+        return "Elderly{" +
+                "elderlyAddress='" + elderlyAddress + '\'' +
+                ", medList=" + medList +
+                ", apptList=" + apptList +
+                ", caretakerList=" + caretakerList +
+                ", emergencyPersonList=" + emergencyPersonList +
+                ", ID='" + ID + '\'' +
+                ", fullName='" + fullName + '\'' +
+                ", phoneNumber='" + phoneNumber + '\'' +
+                ", email='" + email + '\'' +
+                ", password='" + password + '\'' +
+                ", img='" + img + '\'' +
+                '}';
+    }
 }
