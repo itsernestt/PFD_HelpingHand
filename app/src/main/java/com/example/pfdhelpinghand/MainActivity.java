@@ -4,12 +4,14 @@ package com.example.pfdhelpinghand;
 import static android.content.ContentValues.TAG;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlarmManager;
 import android.app.Dialog;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
@@ -17,6 +19,7 @@ import android.graphics.PorterDuff;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
+import android.location.LocationManager;
 import android.media.AudioAttributes;
 import android.media.MediaPlayer;
 import android.net.Uri;
@@ -24,6 +27,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Handler;
+import android.provider.Settings;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
@@ -37,15 +41,12 @@ import android.widget.ToggleButton;
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
-import com.google.android.gms.location.LocationResult;
-import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -71,7 +72,7 @@ import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements IBaseGpsListener {
     private static final int PERMISSIONS_FINE_LOCATION = 99;
 
     FirebaseAuth fAuth;
@@ -121,7 +122,6 @@ public class MainActivity extends AppCompatActivity {
         test2 = findViewById(R.id.elderlyTest2);
         test3 = findViewById(R.id.elderlyTest3);
         test4 = findViewById(R.id.elderlyTest4);
-        trackingSwitch = findViewById(R.id.elderlyTrackingSwitch);
 
         //Set all properties for LocationRequest
         locationRequest = new LocationRequest();
@@ -132,10 +132,9 @@ public class MainActivity extends AppCompatActivity {
 
         locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
         currentLocation = new ElderlyLocation();
-
+/*
         //triggered whenever the update interval is met
         locationCallBack = new LocationCallback() {
-
             @Override
             public void onLocationResult(LocationResult locationResult) {
                 super.onLocationResult(locationResult);
@@ -156,6 +155,8 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
+
+ */
 
 
 
@@ -419,15 +420,14 @@ public class MainActivity extends AppCompatActivity {
         });
 
 
-        updateGPS();
 
         //update the elderly current location every 1 minute
         new Timer().scheduleAtFixedRate(new TimerTask() {
             @Override
             public void run() {
-                // UpdateLocation();
+                UpdateLocation();
             }
-        }, 0, 60000);//put here time 1000 milliseconds=1 second
+        }, 0, 10000);//put here time 1000 milliseconds=1 second
 
 
         new Timer().scheduleAtFixedRate(new TimerTask() {
@@ -442,7 +442,142 @@ public class MainActivity extends AppCompatActivity {
             }
         }, 0, 30000);
 
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M &&
+                checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION)
+                    != PackageManager.PERMISSION_GRANTED)
+        {
+            requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, PERMISSIONS_FINE_LOCATION);
+
+        }else{
+            showLocation();
+        }
+
+
+
+
     }// end of on create method
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        if (requestCode == PERMISSIONS_FINE_LOCATION)
+        {
+            if (grantResults[0] == PackageManager.PERMISSION_GRANTED)
+            {
+                showLocation();
+            } else {
+                Toast.makeText(this, "Permission not granted!", Toast.LENGTH_SHORT).show();
+                finish();
+            }
+        }
+
+    }
+
+    @SuppressLint("MissingPermission")
+    private void showLocation()
+    {
+        LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+        if (locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER))
+        {
+            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, this);
+
+
+        }else{
+            Toast.makeText(this, "Enable GPS!", Toast.LENGTH_SHORT).show();
+            startActivity(new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS));
+        }
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    @Override
+    public void onLocationChanged(Location location) {
+        //update location
+
+        test1.setText("Lat: " + String.valueOf(location.getLatitude()));
+        test2.setText("Lng: " + String.valueOf(location.getLongitude()));
+
+        LocalDateTime date = LocalDateTime.now();
+        int seconds = date.toLocalTime().toSecondOfDay();
+
+        currentLocation.setLat(location.getLatitude());
+        currentLocation.setLng(location.getLongitude());
+        currentLocation.setTime(seconds);
+        locationURL = String.format("geo:%1$f,%2$f", location.getLatitude(), location.getLongitude());
+
+
+        Geocoder geocoder = new Geocoder(MainActivity.this);
+        try {
+            List<Address> addressList = geocoder.getFromLocation(location.getLatitude(), location.getLongitude(), 1);
+            test4.setText(addressList.get(0).getAddressLine(0));
+            locationAddress = addressList.get(0).getAddressLine(0);
+
+        }
+        catch (Exception e)
+        {
+            test4.setText("Not available");
+
+        }
+
+
+    }
+
+    @Override
+    public void onProviderDisabled(String provider) {
+
+    }
+
+    @Override
+    public void onProviderEnabled(String provider) {
+
+    }
+
+    @Override
+    public void onStatusChanged(String provider, int status, Bundle extras) {
+
+    }
+
+    @Override
+    public void onGpsStatusChanged(int event) {
+
+    }
+
+
+
+    // Updates the database of the location
+    public void UpdateLocation() {
+        fStore.collection("Elderly").document(user.getUid())
+                .update("currentLocation", locationAddress)
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void unused) {
+                        Log.d("TAG", "onSuccess: Location updated");
+
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Log.e("TAG", "onFailure: " + e.toString());
+            }
+        });
+
+        fStore.collection("ElderlyLocationML").document(user.getUid())
+                .update("locationList", FieldValue.arrayUnion(currentLocation))
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void unused) {
+                        Log.d("TAG", "onSuccess: Location updated");
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+
+                Log.e("TAG", "onFailure: " + e.toString());
+            }
+        });
+    }
+
+
+
 
     private void getAlarms(){
         DocumentReference docRef =  fStore.collection("Elderly").document(user.getUid());
@@ -515,146 +650,6 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private void startLocationUpdate() {
-        test3.setText("Tracking now");
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            // TODO: Consider calling
-            //    ActivityCompat#requestPermissions
-
-            return;
-        }
-        fusedLocationProviderClient.requestLocationUpdates(locationRequest, locationCallBack, null);
-        updateGPS();
-
-    }
-
-    private void stopLocationUpdate() {
-        test1.setText("Not tracking");
-        test2.setText("Not tracking");
-        test3.setText("Not tracking");
-        test4.setText("Not Tracking");
-        fusedLocationProviderClient.removeLocationUpdates(locationCallBack);
-
-    }
-
-//    @RequiresApi(api = Build.VERSION_CODES.O)
-//    private void updateUIValues(Location location)
-//    {
-//        // TODO: nullreference
-//        test1.setText("Lat: " + String.valueOf(location.getLatitude()));
-//        test2.setText("Lng: " + String.valueOf(location.getLongitude()));
-//
-//        LocalDateTime date = LocalDateTime.now();
-//        int seconds = date.toLocalTime().toSecondOfDay();
-//
-//        currentLocation.setLat(location.getLatitude());
-//        currentLocation.setLng(location.getLongitude());
-//        currentLocation.setTime(seconds);
-//        locationURL = String.format("geo:%1$f,%2$f", location.getLatitude(), location.getLongitude());
-//
-//
-//
-//
-//        Geocoder geocoder = new Geocoder(MainActivity.this);
-//        try {
-//            List<Address> addressList = geocoder.getFromLocation(location.getLatitude(), location.getLongitude(), 1);
-//            test4.setText(addressList.get(0).getAddressLine(0));
-//            locationAddress = addressList.get(0).getAddressLine(0);
-//
-//        }
-//        catch (Exception e)
-//        {
-//            test4.setText("Not available");
-//
-//        }
-//    }
-//
-//    // Updates the database of the location
-//    public void UpdateLocation()
-//    {
-//        fStore.collection("Elderly").document(user.getUid())
-//                .update("currentLocation", locationAddress)
-//                .addOnSuccessListener(new OnSuccessListener<Void>() {
-//                    @Override
-//                    public void onSuccess(Void unused) {
-//                        Log.d("TAG","onSuccess: Location updated");
-//
-//                    }
-//                }).addOnFailureListener(new OnFailureListener() {
-//            @Override
-//            public void onFailure(@NonNull Exception e) {
-//                Log.e("TAG", "onFailure: " + e.toString());
-//            }
-//        });
-//
-//        fStore.collection("ElderlyLocationML").document(user.getUid())
-//                .update("locationList", FieldValue.arrayUnion(currentLocation))
-//                .addOnSuccessListener(new OnSuccessListener<Void>() {
-//                    @Override
-//                    public void onSuccess(Void unused) {
-//                        Log.d("TAG","onSuccess: Location updated");
-//                    }
-//                }).addOnFailureListener(new OnFailureListener() {
-//            @Override
-//            public void onFailure(@NonNull Exception e) {
-//
-//                Log.e("TAG", "onFailure: " + e.toString());
-//            }
-//        });//   }
-
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        switch (requestCode)
-        {
-            case PERMISSIONS_FINE_LOCATION:
-                if (grantResults[0] == PackageManager.PERMISSION_GRANTED){
-                    updateGPS();
-                }
-                else
-                {
-                    Toast.makeText(this, "This app required permission to be granted for location", Toast.LENGTH_SHORT).show();
-                    finish();
-                }
-        }
-    }
-
-    //Location tracking
-    private void updateGPS()
-    {
-        //https://www.youtube.com/watch?v=_CdZ3xURK-c&ab_channel=ProgrammingwithProfessorSluiter
-        //get permission from the user to track GPS
-        // get the current location from the fused client
-        //update the UI
-
-        fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(MainActivity.this);
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED)
-        {
-          //user provides the permission
-              fusedLocationProviderClient.getLastLocation().addOnSuccessListener(this, new OnSuccessListener<Location>() {
-                  @Override
-                  public void onSuccess(Location location) {
-                    // we got permission
-                    //  updateUIValues(location);
-
-
-                  }
-              });
-        }
-        else{
-            // permission not given yet.
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
-            {
-                requestPermissions(new String[] {Manifest.permission.ACCESS_FINE_LOCATION}, PERMISSIONS_FINE_LOCATION);
-            }
-
-        }
-
-    }
-
-
-
 
     // disable the backbutton after logged in
     @Override
@@ -726,7 +721,6 @@ public class MainActivity extends AppCompatActivity {
             overridePendingTransition(0, 0);
         }
     };
-
 
 
 }
