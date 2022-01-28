@@ -65,6 +65,7 @@ import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Timer;
@@ -88,6 +89,8 @@ public class MainActivity extends AppCompatActivity {
     TextView test1, test2, test3, test4;
     Switch trackingSwitch;
 
+    Calendar currentTime = Calendar.getInstance();
+
     String soundUrl = "https://www.youtube.com/watch?v=4YKpBYo61Cs";
 
     //Main component for location tracking
@@ -104,7 +107,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         createNotificationChannel();
-        Calendar currentTime = Calendar.getInstance();
+
 
 
         Button cancelButton = findViewById(R.id.cancelButton);
@@ -137,7 +140,7 @@ public class MainActivity extends AppCompatActivity {
             public void onLocationResult(LocationResult locationResult) {
                 super.onLocationResult(locationResult);
                 Location location = locationResult.getLastLocation();
-                updateUIValues(location);
+                //updateUIValues(location);
             }
         };
 
@@ -183,20 +186,9 @@ public class MainActivity extends AppCompatActivity {
         docRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
             @Override
             public void onSuccess(DocumentSnapshot documentSnapshot) {
+                getAlarms();
                 elderly = documentSnapshot.toObject(Elderly.class);
                 emergencyPeople = elderly.getEmergencyPerson();
-                ArrayList<Medication> mList = elderly.getMedList();
-                int counter = 1;
-                for (Medication m:
-                     mList) {
-                    Calendar tempCal = Calendar.getInstance();
-                    tempCal.setTimeInMillis(m.getDay().toDate().getTime());
-                    float x = currentTime.compareTo(tempCal);
-                    if (x<0){
-                        setAlarm(counter, tempCal, m.medName);
-                    }
-                    counter++;
-                }
 
                 //Set up title action bar
                 getSupportActionBar().setTitle("Welcome, " + elderly.getFullName());
@@ -416,9 +408,6 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-
-
-
         pairUpDialog = new Dialog(this);
 
         viewPairUp.setOnClickListener(new View.OnClickListener() {
@@ -436,18 +425,78 @@ public class MainActivity extends AppCompatActivity {
         new Timer().scheduleAtFixedRate(new TimerTask() {
             @Override
             public void run() {
-                UpdateLocation();
+                // UpdateLocation();
             }
         }, 0, 60000);//put here time 1000 milliseconds=1 second
 
 
+        new Timer().scheduleAtFixedRate(new TimerTask() {
+            @Override
+            public void run() {
+                docRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                    @Override
+                    public void onSuccess(DocumentSnapshot documentSnapshot) {
+                        getAlarms();
+                    }
+                });
+            }
+        }, 0, 30000);
+
     }// end of on create method
+
+    private void getAlarms(){
+        DocumentReference docRef =  fStore.collection("Elderly").document(user.getUid());
+        docRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+            @Override
+            public void onSuccess(DocumentSnapshot documentSnapshot) {
+                elderly = documentSnapshot.toObject(Elderly.class);
+                ArrayList<Medication> mList = elderly.getMedList();
+                int counter = 1;
+                for (Medication m:
+                        mList) {
+                    Calendar tempCal = Calendar.getInstance();
+                    tempCal.setTimeInMillis(m.getDay().toDate().getTime());
+                    float x = currentTime.compareTo(tempCal);
+                    if (x<0){
+                        setAlarm(counter, tempCal, m.medName);
+                    }else if (x>0){
+                        mList.remove(m);
+                        Collections.sort(mList);
+                        docRef.update("medList", mList).addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                Toast.makeText(MainActivity.this, "Fail to delete medication!", Toast.LENGTH_SHORT).show();
+                            }
+                        });
+                        cancelAlarm(counter);
+                        DocumentReference addtoML = fStore.collection("ElderlyMedicationML").document(user.getUid());
+                        addtoML.update("alarmFailed", FieldValue.arrayUnion(m)).addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                Toast.makeText(MainActivity.this, "Fail to add ML record!", Toast.LENGTH_SHORT).show();
+                            }
+                        });
+                    }
+                    counter++;
+                }
+            }
+        });
+    }
+
+    private void cancelAlarm(int counter) {
+        Intent intent = new Intent(this, AlarmReceiver.class);
+
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, counter, intent, 0);
+        AlarmManager am = (AlarmManager) getSystemService(Activity.ALARM_SERVICE);
+        am.cancel(pendingIntent);
+    }
 
     private void setAlarm(int counter, Calendar tempCal, String medName) {
         Intent intent = new Intent(this, AlarmReceiver.class);
-        PendingIntent pi = PendingIntent.getBroadcast(this, counter, intent, 0);
         intent.putExtra("alarmid", counter);
         intent.putExtra("medname", medName);
+        PendingIntent pi = PendingIntent.getBroadcast(this, counter, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+
 
         AlarmManager am = (AlarmManager) getSystemService(Activity.ALARM_SERVICE);
         am.setExact(AlarmManager.RTC_WAKEUP, tempCal.getTimeInMillis(), pi);
@@ -488,70 +537,70 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.O)
-    private void updateUIValues(Location location)
-    {
-        test1.setText("Lat: " + String.valueOf(location.getLatitude()));
-        test2.setText("Lng: " + String.valueOf(location.getLongitude()));
-
-        LocalDateTime date = LocalDateTime.now();
-        int seconds = date.toLocalTime().toSecondOfDay();
-
-        currentLocation.setLat(location.getLatitude());
-        currentLocation.setLng(location.getLongitude());
-        currentLocation.setTime(seconds);
-        locationURL = String.format("geo:%1$f,%2$f", location.getLatitude(), location.getLongitude());
-
-
-
-
-        Geocoder geocoder = new Geocoder(MainActivity.this);
-        try {
-            List<Address> addressList = geocoder.getFromLocation(location.getLatitude(), location.getLongitude(), 1);
-            test4.setText(addressList.get(0).getAddressLine(0));
-            locationAddress = addressList.get(0).getAddressLine(0);
-
-        }
-        catch (Exception e)
-        {
-            test4.setText("Not available");
-
-        }
-    }
-
-    // Updates the database of the location
-    public void UpdateLocation()
-    {
-        fStore.collection("Elderly").document(user.getUid())
-                .update("currentLocation", locationAddress)
-                .addOnSuccessListener(new OnSuccessListener<Void>() {
-                    @Override
-                    public void onSuccess(Void unused) {
-                        Log.d("TAG","onSuccess: Location updated");
-
-                    }
-                }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                Log.e("TAG", "onFailure: " + e.toString());
-            }
-        });
-
-        fStore.collection("ElderlyLocationML").document(user.getUid())
-                .update("locationList", FieldValue.arrayUnion(currentLocation))
-                .addOnSuccessListener(new OnSuccessListener<Void>() {
-                    @Override
-                    public void onSuccess(Void unused) {
-                        Log.d("TAG","onSuccess: Location updated");
-                    }
-                }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-
-                Log.e("TAG", "onFailure: " + e.toString());
-            }
-        });
-    }
+//    @RequiresApi(api = Build.VERSION_CODES.O)
+//    private void updateUIValues(Location location)
+//    {
+//        // TODO: nullreference
+//        test1.setText("Lat: " + String.valueOf(location.getLatitude()));
+//        test2.setText("Lng: " + String.valueOf(location.getLongitude()));
+//
+//        LocalDateTime date = LocalDateTime.now();
+//        int seconds = date.toLocalTime().toSecondOfDay();
+//
+//        currentLocation.setLat(location.getLatitude());
+//        currentLocation.setLng(location.getLongitude());
+//        currentLocation.setTime(seconds);
+//        locationURL = String.format("geo:%1$f,%2$f", location.getLatitude(), location.getLongitude());
+//
+//
+//
+//
+//        Geocoder geocoder = new Geocoder(MainActivity.this);
+//        try {
+//            List<Address> addressList = geocoder.getFromLocation(location.getLatitude(), location.getLongitude(), 1);
+//            test4.setText(addressList.get(0).getAddressLine(0));
+//            locationAddress = addressList.get(0).getAddressLine(0);
+//
+//        }
+//        catch (Exception e)
+//        {
+//            test4.setText("Not available");
+//
+//        }
+//    }
+//
+//    // Updates the database of the location
+//    public void UpdateLocation()
+//    {
+//        fStore.collection("Elderly").document(user.getUid())
+//                .update("currentLocation", locationAddress)
+//                .addOnSuccessListener(new OnSuccessListener<Void>() {
+//                    @Override
+//                    public void onSuccess(Void unused) {
+//                        Log.d("TAG","onSuccess: Location updated");
+//
+//                    }
+//                }).addOnFailureListener(new OnFailureListener() {
+//            @Override
+//            public void onFailure(@NonNull Exception e) {
+//                Log.e("TAG", "onFailure: " + e.toString());
+//            }
+//        });
+//
+//        fStore.collection("ElderlyLocationML").document(user.getUid())
+//                .update("locationList", FieldValue.arrayUnion(currentLocation))
+//                .addOnSuccessListener(new OnSuccessListener<Void>() {
+//                    @Override
+//                    public void onSuccess(Void unused) {
+//                        Log.d("TAG","onSuccess: Location updated");
+//                    }
+//                }).addOnFailureListener(new OnFailureListener() {
+//            @Override
+//            public void onFailure(@NonNull Exception e) {
+//
+//                Log.e("TAG", "onFailure: " + e.toString());
+//            }
+//        });//   }
 
 
     @Override
@@ -587,7 +636,7 @@ public class MainActivity extends AppCompatActivity {
                   @Override
                   public void onSuccess(Location location) {
                     // we got permission
-                      updateUIValues(location);
+                    //  updateUIValues(location);
 
 
                   }

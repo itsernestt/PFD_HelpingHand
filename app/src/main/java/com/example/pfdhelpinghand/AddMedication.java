@@ -181,6 +181,7 @@ public class AddMedication extends AppCompatActivity {
                 calendar1.set(Calendar.MINUTE, minute);
                 finalCalendar.set(Calendar.HOUR_OF_DAY, hour);
                 finalCalendar.set(Calendar.MINUTE, minute);
+                finalCalendar.set(Calendar.SECOND, 0);
 
                 CharSequence timeCharSequence = DateFormat.format("hh:mm a", calendar1);
                 timeTV.setText(timeCharSequence);

@@ -1,13 +1,17 @@
 package com.example.pfdhelpinghand;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -15,12 +19,14 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.Timestamp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.text.DateFormat;
@@ -28,6 +34,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -40,6 +47,7 @@ public class MedicationAppointmentActivity extends AppCompatActivity {
     ArrayList<Appointment> appts;
     RecyclerView medRecyclerView;
     RecyclerView apptRecyclerView;
+    Dialog alarmDialog;
     SharedPreferences sharedpreferences;
 
     @Override
@@ -51,6 +59,8 @@ public class MedicationAppointmentActivity extends AppCompatActivity {
         Button medicationBackButton = findViewById(R.id.medicationBackButton);
         Button weeklyMedButton = findViewById(R.id.weeklyMedicationButton);
         Button weeklyApptButton = findViewById(R.id.weeklyAppointmentButton);
+
+
 
         fAuth = FirebaseAuth.getInstance();
         fStore = FirebaseFirestore.getInstance();
@@ -77,6 +87,41 @@ public class MedicationAppointmentActivity extends AppCompatActivity {
                 List medications = new ArrayList();
                 List appointments = new ArrayList();
                 meds = elderly.getMedList();
+
+                Intent intent = getIntent();
+                if (intent.hasExtra("medname")){
+                    String medname = intent.getStringExtra("medname");
+                    alarmDialog = new Dialog(MedicationAppointmentActivity.this);
+                    alarmDialog.setContentView(R.layout.alarm_popup);
+                    TextView medName = (TextView) alarmDialog.findViewById(R.id.medNameTV);
+                    TextView medDesc = (TextView) alarmDialog.findViewById(R.id.medDescriptionTV);
+
+                    for (Medication m:
+                        meds){
+                        if (m.medName.equals(medname)){
+                            medName.setText(medname);
+                            medDesc.setText(m.medDescription);
+                        }
+                        meds.remove(m);
+
+                        DocumentReference addtoML = fStore.collection("ElderlyMedicationML").document(userID);
+                        addtoML.update("alarmSuccess", FieldValue.arrayUnion(m)).addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                Toast.makeText(MedicationAppointmentActivity.this, "Fail to add ML record!", Toast.LENGTH_SHORT).show();
+                            }
+                        });
+                    }
+                    alarmDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                    alarmDialog.show();
+                    Collections.sort(meds);
+                    docRef.update("medList", meds).addOnSuccessListener(new OnSuccessListener<Void>() {
+                        @Override
+                        public void onSuccess(Void unused) {
+                            Toast.makeText(MedicationAppointmentActivity.this, "Alarm removed.", Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                }
 
                 for (Medication m:
                         meds) {
@@ -108,6 +153,7 @@ public class MedicationAppointmentActivity extends AppCompatActivity {
                         appointments.add(a);
                     }
                 }
+                Collections.sort(appts);
                 if (appointments.isEmpty()){
                     DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
                     try {
