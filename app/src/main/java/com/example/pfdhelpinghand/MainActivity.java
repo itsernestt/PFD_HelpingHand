@@ -2,12 +2,15 @@ package com.example.pfdhelpinghand;
 //ernest
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -21,6 +24,7 @@ import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.os.IBinder;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
@@ -193,7 +197,27 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-              /*  if (ActivityCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                String mPermission = Manifest.permission.ACCESS_FINE_LOCATION;
+                try {
+                    if (ActivityCompat.checkSelfPermission( getApplicationContext(), mPermission)
+                            != PackageManager.PERMISSION_GRANTED) {
+
+                        ActivityCompat.requestPermissions(MainActivity.this, new String[]{mPermission},
+                                2);
+                        // If any permission above not allowed by user, this condition will
+                        // execute every time, else your else part will work
+                    } else {
+                        Intent navigateToLocationPage = new Intent(MainActivity.this, MapsActivity.class);
+                        startActivity(navigateToLocationPage);
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
+
+
+/*
+               if (ActivityCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
                     ActivityCompat.requestPermissions((Activity) getApplicationContext(), new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
                     ActivityCompat.requestPermissions((Activity) getApplicationContext(), new String[]{Manifest.permission.ACCESS_COARSE_LOCATION}, 1);
                    return;
@@ -216,10 +240,10 @@ public class MainActivity extends AppCompatActivity {
                 String latitude = "Latitude: " + location.getLatitude();
                 Log.v("latitude", latitude); */
 
-                LocationManager locationManager = (LocationManager)
+               /* LocationManager locationManager = (LocationManager)
                         getSystemService(Context.LOCATION_SERVICE);
 
-                LocationListener locationListener = new MyLocationListener();
+                LocationListener locationListener = new MyLocationListener(getApplicationContext());
                 if (ActivityCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
                     // TODO: Consider calling
                     //    ActivityCompat#requestPermissions
@@ -232,11 +256,11 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-                    return;
+                   /// return;
                 } else {
                     locationManager.requestLocationUpdates(
                             LocationManager.GPS_PROVIDER, 5000, 10, locationListener);
-                }
+                }*/
 
 
 
@@ -249,25 +273,132 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-
-
-
-
-
-
     public void logout(View view) {
         FirebaseAuth.getInstance().signOut();
         startActivity(new Intent(getApplicationContext(), LoginActivity.class));
         finish();
     }
 
-    private class MyLocationListener implements LocationListener {
+    private class MyLocationListener extends Service implements LocationListener {
 
+        private final Context mContext;
+        // flag for GPS status
+        boolean isGPSEnabled = false;
+
+        // flag for network status
+        boolean isNetworkEnabled = false;
+
+        // flag for GPS status
+        boolean canGetLocation = false;
+
+        Location location; // location
+        double latitude; // latitude
+        double longitude; // longitude
+
+        // The minimum distance to change Updates in meters
+        private static final long MIN_DISTANCE_CHANGE_FOR_UPDATES = 10; // 10 meters
+
+        // The minimum time between updates in milliseconds
+        private static final long MIN_TIME_BW_UPDATES = 1000 * 60 * 1; // 1 minute
+
+        // Declaring a Location Manager
+        protected LocationManager locationManager;
+
+        private static final int REQUEST_CODE_PERMISSION = 2;
+        String mPermission = Manifest.permission.ACCESS_FINE_LOCATION;
+
+
+        public MyLocationListener(Context context) {
+            this.mContext = context;
+            getLocation();
+        }
+
+        @SuppressLint("MissingPermission")
+        public void getLocation() {
+            try {
+                locationManager = (LocationManager) mContext.getSystemService(LOCATION_SERVICE);
+
+                // getting GPS status
+                isGPSEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
+
+                // getting network status
+                isNetworkEnabled = locationManager
+                        .isProviderEnabled(LocationManager.NETWORK_PROVIDER);
+
+                if (!isGPSEnabled && !isNetworkEnabled) {
+                    // no network provider is enabled
+                } else {
+                    this.canGetLocation = true;
+                    // First get location from Network Provider
+                    if (isNetworkEnabled) {
+                   /* if (ActivityCompat.checkSelfPermission(this,
+                   //         Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
+                    // && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                        // TODO: Consider calling
+                        //    ActivityCompat#requestPermissions
+                        // here to request the missing permissions, and then overriding
+                        //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+                        //                                          int[] grantResults)
+                        // to handle the case where the user grants the permission. See the documentation
+                        // for ActivityCompat#requestPermissions for more details.
+                        //return ;
+                         Already check in the launching
+                    } */
+
+                        try {
+                            if (ActivityCompat.checkSelfPermission(this, mPermission)
+                                    != PackageManager.PERMISSION_GRANTED) {
+
+                                locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, MIN_TIME_BW_UPDATES, MIN_DISTANCE_CHANGE_FOR_UPDATES, this);
+
+                                // If any permission above not allowed by user, this condition will
+                                // execute every time, else your else part will work
+                            }
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+
+                        Log.d("Network", "Network");
+                        if (locationManager != null) {
+                            location = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+
+                            if (location != null) {
+                                latitude = location.getLatitude();
+                                longitude = location.getLongitude();
+                            }
+                        }
+                    }
+
+                    // if GPS Enabled get lat/long using GPS Services
+                    if (isGPSEnabled) {
+                        if (location == null) {
+                            assert locationManager != null;
+                            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,
+                                    MIN_TIME_BW_UPDATES, MIN_DISTANCE_CHANGE_FOR_UPDATES, this);
+
+                            Log.d("GPS Enabled", "GPS Enabled");
+                            if (locationManager != null) {
+                                location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+
+                                if (location != null) {
+                                    latitude = location.getLatitude();
+                                    longitude = location.getLongitude();
+                                }
+                            }
+                        }
+                    }
+                }
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+        }
 
         @Override
         public void onLocationChanged(@NonNull Location location) {
 
-            String longitude = "Longitude: " + location.getLongitude();
+            /*String longitude = "Longitude: " + location.getLongitude();
             Log.v("longitude", longitude);
             String latitude = "Latitude: " + location.getLatitude();
             Log.v("latitude", latitude);
@@ -280,7 +411,64 @@ public class MainActivity extends AppCompatActivity {
 
             Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
             mapIntent.setPackage("com.google.android.apps.maps");
-            startActivity(mapIntent);
+            startActivity(mapIntent);*/
+        }
+
+        /**
+         * Stop using GPS listener
+         * Calling this function will stop using GPS in your app
+         * */
+
+        public void stopUsingGPS() {
+            if (locationManager != null) {
+          /*  if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                // TODO: Consider calling
+                //    ActivityCompat#requestPermissions
+                // here to request the missing permissions, and then overriding
+                //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+                //                                          int[] grantResults)
+                // to handle the case where the user grants the permission. See the documentation
+                // for ActivityCompat#requestPermissions for more details.
+                //return;
+                // Already check in the launching
+            }*/
+                locationManager.removeUpdates(MyLocationListener.this);
+            }
+        }
+
+        /**
+         * Function to get latitude
+         * */
+
+        public double getLatitude(){
+            if(location != null){
+                latitude = location.getLatitude();
+            }
+
+            // return latitude
+            return latitude;
+        }
+
+        /**
+         * Function to get longitude
+         * */
+
+        public double getLongitude(){
+            if(location != null){
+                longitude = location.getLongitude();
+            }
+
+            // return longitude
+            return longitude;
+        }
+
+        /**
+         * Function to check GPS/wifi enabled
+         * @return boolean
+         * */
+
+        public boolean canGetLocation() {
+            return this.canGetLocation;
         }
 
         @Override
@@ -306,6 +494,12 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public void onProviderDisabled(@NonNull String provider) {
 
+        }
+
+        @Nullable
+        @Override
+        public IBinder onBind(Intent intent) {
+            return null;
         }
     }
 }
