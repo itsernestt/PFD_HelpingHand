@@ -50,14 +50,14 @@ public class CountdownDialog extends AppCompatActivity{
         countdownTimerTV = findViewById(R.id.countdownTimer);
 
         CountDownTimer cTimer = null;
-        CountDownTimer finalCTimer = cTimer;
+
         cTimer = new CountDownTimer(30000, 1000) {
             public void onTick(long millisUntilFinished) {
                 countdownTimerTV.setText((int) (millisUntilFinished/1000) + " seconds remaining");
             }
             public void onFinish() {
                 deleteMedRecord();
-                finalCTimer.cancel();
+                cancel();
             }
         };
         cTimer.start();
