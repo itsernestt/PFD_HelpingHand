@@ -1,21 +1,33 @@
 package com.example.pfdhelpinghand;
 
+import android.content.Context;
 import android.content.Intent;
+import android.location.Address;
+import android.location.Geocoder;
+import android.net.wifi.WifiManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
+import com.google.android.gms.common.GooglePlayServicesRepairableException;
+import com.google.android.gms.fitness.data.Field;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.libraries.places.api.net.PlacesClient;
+import com.google.android.libraries.places.widget.Autocomplete;
+import com.google.android.libraries.places.widget.model.AutocompleteActivityMode;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -23,18 +35,32 @@ import com.google.firebase.auth.UserProfileChangeRequest;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+
+import com.google.android.gms.location.places.Place;
+import com.google.android.gms.location.places.ui.PlacePicker;
+
+// Add an import statement for the client library.
+import com.google.android.libraries.places.api.Places;
+
 
 
 public class SignUpElderlyActivity extends AppCompatActivity {
     EditText eFullName, eEmail, ePhone, ePassword, eContactName, eContactPhone, eAddress;
     Button eRegisterButton, eBackBtn, ePickAddr;
+    TextView ePickAddrText;
     FirebaseAuth fAuth;
     FirebaseFirestore fStore;
     String userID;
     ArrayList<EmergencyPerson> eList;
     Elderly elderly;
+    String addressInCoords;
+
+    private final static int PLACE_PICKER_REQUEST = 999;
+    WifiManager wifiManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,26 +69,56 @@ public class SignUpElderlyActivity extends AppCompatActivity {
 
         eList = new ArrayList<EmergencyPerson>();
 
+
+
         eFullName = findViewById(R.id.elderlyName);
         eEmail = findViewById(R.id.elderlyEmail);
         ePhone = findViewById(R.id.elderlyPhone);
         ePassword = findViewById(R.id.elderlyPassword);
         eContactName = findViewById(R.id.elderlyContactName);
         eContactPhone = findViewById(R.id.elderlyContactPhone);
-        eAddress = findViewById(R.id.elderlyAddress);
 
         eRegisterButton = findViewById(R.id.elderlyRegisterButton);
-        eBackBtn = findViewById(R.id.elderlysignupBack);
         ePickAddr = findViewById(R.id.elderlyAddressPicker);
+        ePickAddrText = findViewById(R.id.elderlyAddressPickerText);
 
         fAuth = FirebaseAuth.getInstance();
         fStore = FirebaseFirestore.getInstance();
 
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            wifiManager= (WifiManager) this.getApplicationContext().getSystemService(Context.WIFI_SERVICE);
+        }
+
+        // Initialize Places.
+        Places.initialize(getApplicationContext(), "AIzaSyAmh_CHKyEBR4VW1tscBLu1Sm0BJeK0ipE");
+
+        // Create a new Places client instance.
+        PlacesClient placesClient = Places.createClient(this);
+
+        PlacePicker.IntentBuilder builder = new PlacePicker.IntentBuilder();
+
         ePickAddr.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //Intent navigateToAddrPicker = new Intent(getApplicationContext(), AddressPicker.class);
-                //startActivity(navigateToAddrPicker);
+
+                try {
+                    startActivityForResult(builder.build(SignUpElderlyActivity.this), PLACE_PICKER_REQUEST);
+
+                    //Enable Wifi
+                    wifiManager.setWifiEnabled(true);
+
+                } catch (GooglePlayServicesRepairableException e) {
+                    Log.d("Exception",e.getMessage());
+
+                    e.printStackTrace();
+                } catch (GooglePlayServicesNotAvailableException e) {
+                    Log.d("Exception",e.getMessage());
+
+                    e.printStackTrace();
+                }
+
+
+
             }
         });
 
@@ -75,13 +131,6 @@ public class SignUpElderlyActivity extends AppCompatActivity {
             finish();
         }
 
-        eBackBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent navigateToPreviousPage = new Intent(SignUpElderlyActivity.this, com.example.pfdhelpinghand.LoginActivity.class);
-                startActivity(navigateToPreviousPage);
-            }
-        });
 
         eRegisterButton.setOnClickListener(new View.OnClickListener(){
             @Override
@@ -93,11 +142,12 @@ public class SignUpElderlyActivity extends AppCompatActivity {
                 String password = ePassword.getText().toString().trim();
 
 
+
                 String contactName = eContactName.getText().toString();
 
                 String contactPhone = eContactPhone.getText().toString().trim();
 
-                String address = eAddress.getText().toString();
+                String address = ePickAddrText.getText().toString();
 
 
                 if (TextUtils.isEmpty(userFullName)) {
@@ -141,9 +191,9 @@ public class SignUpElderlyActivity extends AppCompatActivity {
                     eContactPhone.setError("Contact person phone number is required!");
                     return;
                 }
-                if (TextUtils.isEmpty(address))
+                if (address.equals("Pick your address below!"))
                 {
-                    eAddress.setError("Address is required!");
+                    ePickAddrText.setError("Address is required!");
                     return;
                 }
 
@@ -165,7 +215,7 @@ public class SignUpElderlyActivity extends AppCompatActivity {
                             eList.add(new EmergencyPerson(contactName, contactPhone));
 
                             ArrayList<Medication> mList = new ArrayList<Medication>();
-                            elderly = new Elderly(userID, userFullName, email, phone, password, address,"", eList, mList, new ArrayList<Appointment>(), new ArrayList<String>() );
+                            elderly = new Elderly(userID, userFullName, email, phone, password, addressInCoords,"", eList, mList, new ArrayList<Appointment>(), new ArrayList<String>() );
 
 
 
@@ -243,4 +293,37 @@ public class SignUpElderlyActivity extends AppCompatActivity {
 
 
     }
+
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (resultCode == RESULT_OK) {
+            switch (requestCode) {
+                case PLACE_PICKER_REQUEST:
+                    Place place = PlacePicker.getPlace(SignUpElderlyActivity.this, data);
+
+                    double latitude = place.getLatLng().latitude;
+                    double longitude = place.getLatLng().longitude;
+
+
+                    addressInCoords = String.valueOf(latitude) + " , " + String.valueOf(longitude);
+
+                    Geocoder geocoder = new Geocoder(SignUpElderlyActivity.this);
+                    try {
+                        List<Address> addressList = geocoder.getFromLocation(latitude, longitude, 1);
+                        ePickAddrText.setText(addressList.get(0).getAddressLine(0));
+                    }
+                    catch (Exception e)
+                    {
+                        ePickAddrText.setText("Not available");
+
+                    }
+
+
+            }
+        }
+    }
+
 }
