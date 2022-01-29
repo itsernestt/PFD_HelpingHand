@@ -18,22 +18,14 @@ public class AlarmReceiver extends BroadcastReceiver {
         int reqCode = intent.getIntExtra("alarmid",1);
         String medName = intent.getStringExtra("medname");
 
-        Intent i = new Intent(context, MedicationAppointmentActivity.class);
-        i.putExtra("medname", medName);
-        i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        PendingIntent pendingIntent = PendingIntent.getActivity(context, reqCode, i, PendingIntent.FLAG_UPDATE_CURRENT);
+        // keep
+        Intent newIntent = new Intent(context, CountdownDialog.class);
+        newIntent.putExtra("medname", medName);
+        newIntent.putExtra("reqCode", reqCode);
+        newIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        newIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(context, "HelpingHand")
-                .setSmallIcon(R.drawable.notification_important)
-                .setContentTitle("Alarm")
-                .setContentText("Time to take " + medName + "!")
-                .setAutoCancel(true)
-                .setDefaults(NotificationCompat.DEFAULT_ALL)
-                .setPriority(NotificationCompat.PRIORITY_MAX)
-                .setContentIntent(pendingIntent);
-
-        NotificationManagerCompat notificationManagerCompat = NotificationManagerCompat.from(context);
-        notificationManagerCompat.notify(123, builder.build());
+        context.startActivity(newIntent);
 
     }
 }

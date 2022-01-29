@@ -7,17 +7,14 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.os.Build;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.RequiresApi;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.gms.tasks.OnFailureListener;
@@ -171,7 +168,7 @@ public class MedAdapter extends RecyclerView.Adapter<MedAdapter.MedViewHolder>{
             txtMedName = itemView.findViewById(R.id.txtMedName);
             txtMedDate = itemView.findViewById(R.id.txtMedDate);
             txtMedInstruct = itemView.findViewById(R.id.txtMedInstruct);
-            deleteBtn = itemView.findViewById(R.id.deleteMedBtn);
+            deleteBtn = itemView.findViewById(R.id.xDialogButton);
 
         }
     }

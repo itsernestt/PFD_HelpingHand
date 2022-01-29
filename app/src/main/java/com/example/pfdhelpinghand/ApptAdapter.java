@@ -27,6 +27,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.List;
 
 public class ApptAdapter extends RecyclerView.Adapter<ApptAdapter.ApptViewHolder> {
@@ -69,6 +70,7 @@ public class ApptAdapter extends RecyclerView.Adapter<ApptAdapter.ApptViewHolder
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                 elderly = task.getResult().toObject(Elderly.class);
                 appointments = elderly.getApptList();
+                Collections.sort(appointments);
             }
         });
 
