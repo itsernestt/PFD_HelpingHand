@@ -11,7 +11,6 @@
     android:gravity="center">
 
 
-
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent">
@@ -35,12 +34,6 @@
                     android:layout_margin="10dp"
                     android:orientation="vertical">
 
-
-                    <Button
-                        android:id="@+id/elderlysignupBack"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Back"/>
 
                     <com.google.android.material.textfield.TextInputLayout
                         android:id="@+id/elderlySignup"
@@ -72,7 +65,7 @@
                             style="@style/modifiedEditText"
                             android:backgroundTint="@color/whiteTextColor"
                             android:hint="Email"
-                            android:inputType="textPersonName"
+                            android:inputType="textEmailAddress"
                             android:maxLines="1" />
 
                     </com.google.android.material.textfield.TextInputLayout>
@@ -90,7 +83,7 @@
                             style="@style/modifiedEditText"
                             android:backgroundTint="@color/whiteTextColor"
                             android:hint="Phone Number"
-                            android:inputType="textPersonName"
+                            android:inputType="textPhonetic"
                             android:maxLines="1" />
 
                     </com.google.android.material.textfield.TextInputLayout>
@@ -109,7 +102,7 @@
                             style="@style/modifiedEditText"
                             android:backgroundTint="@color/whiteTextColor"
                             android:hint="Password"
-                            android:inputType="textPersonName"
+                            android:inputType="textPassword"
                             android:maxLines="1" />
 
                     </com.google.android.material.textfield.TextInputLayout>
@@ -134,7 +127,6 @@
                     </com.google.android.material.textfield.TextInputLayout>
 
 
-
                     <com.google.android.material.textfield.TextInputLayout
                         android:id="@+id/elderlySignup7"
                         style="@style/parent"
@@ -148,52 +140,58 @@
                             style="@style/modifiedEditText"
                             android:backgroundTint="@color/whiteTextColor"
                             android:hint="Emergency Contact Phone"
-                            android:inputType="textPersonName"
+                            android:inputType="textPhonetic"
                             android:maxLines="1" />
 
                     </com.google.android.material.textfield.TextInputLayout>
 
 
-                    <com.google.android.material.textfield.TextInputLayout
-                        android:id="@+id/elderlySignup8"
-                        style="@style/parent"
-                        android:layout_marginLeft="20dp"
-                        android:layout_marginTop="10dp"
-                        android:layout_marginRight="20dp">
-
-
-                        <EditText
-                            android:id="@+id/elderlyAddress"
-                            style="@style/modifiedEditText"
-                            android:backgroundTint="@color/whiteTextColor"
-                            android:hint="Enter home address"
-                            android:inputType="textPersonName"
-                            android:maxLines="1" />
-
-                    </com.google.android.material.textfield.TextInputLayout>
-
-                    <Button
-                        android:id="@+id/elderlyRegisterButton"
+                    <RelativeLayout
                         android:layout_width="wrap_content"
-                        android:layout_marginLeft="120dp"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="20dp"
+                        android:layout_gravity="center"
+                        android:layout_marginTop="10dp">
+
+                        <TextView
+
+                            android:id="@+id/elderlyAddressPickerText"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="20dp"
+                            android:text="Pick your address below!"
+                            android:textSize="15sp"></TextView>
+
+                        <Button
+                            android:id="@+id/elderlyAddressPicker"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_below="@+id/elderlyAddressPickerText"
+                            android:layout_centerHorizontal="true"
+                            android:text="Pick" />
 
 
+                    </RelativeLayout>
 
-                        android:text="Register" />
+                    <RelativeLayout
+                        android:layout_marginTop="30dp"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
 
 
+                        <Button
+                            android:id="@+id/elderlyRegisterButton"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerHorizontal="true"
+
+
+                            android:text="Register" />
+                    </RelativeLayout>
 
 
                 </LinearLayout>
 
             </androidx.cardview.widget.CardView>
-
-
-
-
-
 
 
         </LinearLayout>
