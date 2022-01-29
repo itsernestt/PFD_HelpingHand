@@ -29,7 +29,7 @@ import java.util.Map;
 
 public class SignUpElderlyActivity extends AppCompatActivity {
     EditText eFullName, eEmail, ePhone, ePassword, eContactName, eContactPhone, eAddress;
-    Button eRegisterButton, eBackBtn;
+    Button eRegisterButton, eBackBtn, ePickAddr;
     FirebaseAuth fAuth;
     FirebaseFirestore fStore;
     String userID;
@@ -53,9 +53,18 @@ public class SignUpElderlyActivity extends AppCompatActivity {
 
         eRegisterButton = findViewById(R.id.elderlyRegisterButton);
         eBackBtn = findViewById(R.id.elderlysignupBack);
+        ePickAddr = findViewById(R.id.elderlyAddressPicker);
 
         fAuth = FirebaseAuth.getInstance();
         fStore = FirebaseFirestore.getInstance();
+
+        ePickAddr.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //Intent navigateToAddrPicker = new Intent(getApplicationContext(), AddressPicker.class);
+                //startActivity(navigateToAddrPicker);
+            }
+        });
 
 
         // Set up the title bar
