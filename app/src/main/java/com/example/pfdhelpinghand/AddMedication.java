@@ -81,19 +81,17 @@ public class AddMedication extends AppCompatActivity {
         DocumentReference docRef = fStore.collection("Elderly").document(userID);
         Log.d("TAG", String.valueOf(docRef));
 
+        timeBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) { selectDate();}
+        });
+
         docRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
             @Override
             public void onSuccess(DocumentSnapshot documentSnapshot) {
                 elderly = documentSnapshot.toObject(Elderly.class);
                 ArrayList<Medication> mList = elderly.getMedList();
 
-
-
-
-                timeBtn.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) { selectDate();}
-                });
 
                 addBtn.setOnClickListener(new View.OnClickListener() {
                     @Override

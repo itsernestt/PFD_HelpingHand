@@ -116,6 +116,7 @@ public class MainActivity extends AppCompatActivity implements IBaseGpsListener 
         fAuth = FirebaseAuth.getInstance();
         fStore = FirebaseFirestore.getInstance();
         user = fAuth.getCurrentUser();
+        getAlarms();
 
         //Testing location tracking
         test1 = findViewById(R.id.elderlyTest1);
@@ -427,20 +428,20 @@ public class MainActivity extends AppCompatActivity implements IBaseGpsListener 
             public void run() {
                 UpdateLocation();
             }
-        }, 0, 10000);//put here time 1000 milliseconds=1 second
+        }, 0, 60000);//put here time 1000 milliseconds=1 second
 
-
-        new Timer().scheduleAtFixedRate(new TimerTask() {
-            @Override
-            public void run() {
-                docRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-                    @Override
-                    public void onSuccess(DocumentSnapshot documentSnapshot) {
-                        getAlarms();
-                    }
-                });
-            }
-        }, 0, 30000);
+        // Set alarm every 30 seconds...?
+//        new Timer().scheduleAtFixedRate(new TimerTask() {
+//            @Override
+//            public void run() {
+//                docRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+//                    @Override
+//                    public void onSuccess(DocumentSnapshot documentSnapshot) {
+//                        getAlarms();
+//                    }
+//                });
+//            }
+//        }, 0, 30000);
 
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M &&
@@ -460,10 +461,9 @@ public class MainActivity extends AppCompatActivity implements IBaseGpsListener 
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        if (requestCode == PERMISSIONS_FINE_LOCATION)
-        {
-            if (grantResults[0] == PackageManager.PERMISSION_GRANTED)
-            {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == PERMISSIONS_FINE_LOCATION) {
+            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 showLocation();
             } else {
                 Toast.makeText(this, "Permission not granted!", Toast.LENGTH_SHORT).show();
