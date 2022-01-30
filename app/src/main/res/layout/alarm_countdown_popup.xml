@@ -6,24 +6,33 @@
     android:layout_gravity="center"
     android:background="@drawable/popupalarmbackground">
 
-    <com.google.android.material.button.MaterialButton
+<!--    <com.google.android.material.button.MaterialButton-->
+<!--        android:id="@+id/xDialogButton"-->
+<!--        style="@style/Widget.MaterialComponents.Button.Icon"-->
+<!--        android:layout_width="40dp"-->
+<!--        android:layout_height="40dp"-->
+<!--        android:layout_alignParentRight="true"-->
+<!--        android:insetLeft="0dp"-->
+<!--        android:insetTop="0dp"-->
+<!--        android:insetRight="0dp"-->
+<!--        android:insetBottom="0dp"-->
+<!--        app:backgroundTint="#000000"-->
+<!--        app:icon="@android:drawable/ic_delete"-->
+<!--        app:iconGravity="textStart"-->
+<!--        app:iconPadding="0dp"-->
+<!--        app:iconSize="27dp"-->
+<!--        app:layout_constraintStart_toEndOf="parent"-->
+<!--        app:layout_constraintTop_toTopOf="parent"-->
+<!--        app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.HelpingHand.Button.Rounded" />-->
+
+    <Button
         android:id="@+id/xDialogButton"
-        style="@style/Widget.MaterialComponents.Button.Icon"
         android:layout_width="40dp"
-        android:layout_height="40dp"
+        android:layout_height="50dp"
+        android:text="x"
         android:layout_alignParentRight="true"
-        android:insetLeft="0dp"
-        android:insetTop="0dp"
-        android:insetRight="0dp"
-        android:insetBottom="0dp"
-        app:backgroundTint="#000000"
-        app:icon="@android:drawable/ic_delete"
-        app:iconGravity="textStart"
-        app:iconPadding="0dp"
-        app:iconSize="27dp"
-        app:layout_constraintStart_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.HelpingHand.Button.Rounded" />
+        android:layout_marginEnd="5dp"
+        android:backgroundTint="@color/black"/>
 
     <TextView
         android:id="@+id/headerTV"

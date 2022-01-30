@@ -30,7 +30,7 @@
         android:layout_marginTop="2dp"
         android:fontFamily="sans-serif-black"
         android:textColor="#000000"
-        android:textSize="20sp"
+        android:textSize="27sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/medicationBackButton" />
@@ -118,13 +118,15 @@
 
         app:layout_constraintTop_toBottomOf="@+id/appointmentListTV" />
 
-    <TextView
+    <TextClock
         android:id="@+id/timeInMedApptTV"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="5dp"
-        android:text=""
         android:textColor="#000000"
+        android:fontFamily="sans-serif-black"
+        android:textSize="20sp"
+        android:format12Hour="hh:mm:ss a"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/medicationCurrentDate" />

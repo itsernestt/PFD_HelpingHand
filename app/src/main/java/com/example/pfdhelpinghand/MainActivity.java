@@ -7,11 +7,13 @@ import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlarmManager;
+import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
@@ -38,17 +40,22 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -102,14 +109,14 @@ public class MainActivity extends AppCompatActivity implements IBaseGpsListener 
     LocationCallback locationCallBack;
 
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
         createNotificationChannel();
-
-
 
         Button cancelButton = findViewById(R.id.cancelButton);
 
@@ -454,10 +461,44 @@ public class MainActivity extends AppCompatActivity implements IBaseGpsListener 
             showLocation();
         }
 
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M &&
+                !Settings.canDrawOverlays(this))
+        {
+            askForOverlay();
+        }
+
+
+
 
 
 
     }// end of on create method
+
+    public void askForOverlay(){
+        new AlertDialog.Builder(MainActivity.this)
+                .setTitle("Request permission")
+                .setMessage("Our application requires your permission to send alerts anywhere. Grant permission?")
+                .setIcon(android.R.drawable.star_big_off)
+                .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        Intent myIntent = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION);
+                        startActivity(myIntent);
+                    }
+                })
+                .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        Toast.makeText(MainActivity.this, "idk just give us permission pls", Toast.LENGTH_SHORT).show();
+                        try {
+                            Thread.sleep(3 * 1000);
+                            askForOverlay();
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }).show();
+    }
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
@@ -470,7 +511,6 @@ public class MainActivity extends AppCompatActivity implements IBaseGpsListener 
                 finish();
             }
         }
-
     }
 
     @SuppressLint("MissingPermission")

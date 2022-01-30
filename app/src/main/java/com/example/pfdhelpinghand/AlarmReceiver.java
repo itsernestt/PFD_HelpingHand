@@ -22,8 +22,7 @@ public class AlarmReceiver extends BroadcastReceiver {
         Intent newIntent = new Intent(context, CountdownDialog.class);
         newIntent.putExtra("medname", medName);
         newIntent.putExtra("reqCode", reqCode);
-        newIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        newIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        newIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
 
 
         context.startActivity(newIntent);
