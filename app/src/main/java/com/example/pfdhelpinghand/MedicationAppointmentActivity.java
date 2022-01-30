@@ -51,6 +51,84 @@ public class MedicationAppointmentActivity extends AppCompatActivity {
     SharedPreferences sharedpreferences;
 
     @Override
+    protected void onResume() {
+        super.onResume();
+        fAuth = FirebaseAuth.getInstance();
+        fStore = FirebaseFirestore.getInstance();
+        user = fAuth.getCurrentUser();
+        meds = new ArrayList<Medication>();
+        appts = new ArrayList<Appointment>();
+        long date = System.currentTimeMillis();
+
+        String userID = user.getUid();
+        DocumentReference docRef = fStore.collection("Elderly").document(userID);
+        medRecyclerView = findViewById(R.id.recyclerView1);
+        apptRecyclerView = findViewById(R.id.recyclerView2);
+
+        docRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+            @Override
+            public void onSuccess(DocumentSnapshot documentSnapshot) {
+                Elderly elderly = documentSnapshot.toObject(Elderly.class);
+                SimpleDateFormat sdf = new SimpleDateFormat("EEE");
+                SimpleDateFormat sdf2 = new SimpleDateFormat("dd MM yyyy");
+                String dateString = sdf.format(date);
+                String dateString2 = sdf2.format(date);
+
+                List medications = new ArrayList();
+                List appointments = new ArrayList();
+                meds = elderly.getMedList();
+                appts = elderly.getApptList();
+
+                for (Medication m:
+                        meds) {
+                    Calendar cal = Calendar.getInstance();
+                    cal.setTime(m.getDay().toDate());
+                    String medDay = sdf.format(cal.getTime());
+                    if (medDay.equals(dateString)){
+                        medications.add(m);
+                    }
+                }
+                if (medications.isEmpty()){
+                    DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+                    try {
+                        Date date1 = dateFormat.parse("01/01/2003");
+                        Medication m = new Medication("No medications today!","", new Timestamp(date1));
+                        medications.add(m);
+                    } catch (ParseException e) {
+                        e.printStackTrace();
+                    }
+                }
+
+                for (Appointment a:appts){
+                    Calendar cal = Calendar.getInstance();
+                    cal.setTime(a.getTime().toDate());
+
+                    String temp = sdf2.format(cal.getTime());
+                    if (dateString2.equals(temp)){
+                        appointments.add(a);
+                    }
+                }
+                Collections.sort(appts);
+                if (appointments.isEmpty()){
+                    DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+                    try {
+                        Date date1 = dateFormat.parse("01/01/2003");
+                        Appointment a = new Appointment("No appointments today!", "", new Timestamp(date1));
+                        appointments.add(a);
+                    } catch (ParseException e) {
+                        e.printStackTrace();
+                    }
+                }
+
+                MedAdapter medAdapter = new MedAdapter(medications);
+                ApptAdapter apptAdapter = new ApptAdapter(appointments);
+                medRecyclerView.setAdapter(medAdapter);
+                apptRecyclerView.setAdapter(apptAdapter);
+            }
+        });
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_medappt_alarm);

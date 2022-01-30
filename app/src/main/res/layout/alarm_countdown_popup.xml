@@ -62,7 +62,9 @@
         android:layout_below="@+id/headerTV"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="10dp"
+        android:fontFamily="monospace"
         android:text="Countdown Timer"
+        android:textColor="@color/black"
         android:textSize="18sp" />
 
 </RelativeLayout>
