@@ -22,9 +22,9 @@
             android:id="@+id/elderly_personPic"
             android:layout_width="38dp"
             android:layout_height="38dp"
+            android:background="@null"
             app:srcCompat="@drawable/e_person"
-            app:tint="@color/purple_700"
-            android:background="@null"/>
+            app:tint="@color/purple_700" />
 
 
         <TextView
@@ -63,7 +63,7 @@
             android:id="@+id/elderlyItem_phonecall"
             android:layout_width="36dp"
             android:layout_height="36dp"
-            android:tint="@android:color/black"
+            app:tint="@android:color/black"
             android:layout_marginLeft="40dp"
             android:layout_marginRight="80dp"
             android:layout_toRightOf="@id/elderlyItem_name"

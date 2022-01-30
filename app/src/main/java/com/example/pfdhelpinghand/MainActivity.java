@@ -750,16 +750,16 @@ public class MainActivity extends AppCompatActivity implements IBaseGpsListener 
     }
 
     //Testing!!!
-    public ArrayList<Elderly> addElderlyRecord()
-    {
-        ArrayList<EmergencyPerson> ePerson = new ArrayList<EmergencyPerson>();
-        ePerson.add(new EmergencyPerson("Chance123", "98284455"));
-        ArrayList<Elderly> eList = new ArrayList<Elderly>();
-        eList.add(new Elderly("12345", "Chen Han", "c@gmail.com","982955865",
-                "12345678", "Clementi", "Clementi mall", ePerson,
-                new ArrayList<Medication>(), new ArrayList<Appointment>(), new ArrayList<String>()));
-        return eList;
-    }
+//    public ArrayList<Elderly> addElderlyRecord()
+//    {
+//        ArrayList<EmergencyPerson> ePerson = new ArrayList<EmergencyPerson>();
+//        ePerson.add(new EmergencyPerson("Chance123", "98284455"));
+//        ArrayList<Elderly> eList = new ArrayList<Elderly>();
+//        eList.add(new Elderly("12345", "Chen Han", "c@gmail.com","982955865",
+//                "12345678", "Clementi", "Clementi mall", ePerson,
+//                new ArrayList<Medication>(), new ArrayList<Appointment>(), new ArrayList<String>()));
+//        return eList;
+//    }
 
     private Handler mHandler = new Handler();
 

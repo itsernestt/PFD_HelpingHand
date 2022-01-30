@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/customborder"
+    android:paddingTop="10dp"
+    android:paddingBottom="10dp"
+    app:cardBackgroundColor="#7C99AC"
+    app:cardCornerRadius="5dp"
+    app:cardElevation="5dp"
+    app:cardUseCompatPadding="true">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:clipToPadding="true"
+        android:padding="16dp"
+        android:paddingBottom="16dp">
+
+        <ImageView
+            android:id="@+id/reportMedPic"
+            android:layout_width="38dp"
+            android:layout_height="38dp"
+            android:layout_marginTop="5dp"
+            android:background="@null"
+            app:srcCompat="@drawable/e_med"
+            app:tint="@color/white"
+            />
+
+        <TextView
+            android:id="@+id/medReportNameTV"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="11dp"
+            android:layout_toRightOf="@id/reportMedPic"
+            android:fontFamily="@font/lato_bold"
+            android:text="Name of medication"
+            android:textColor="@color/black"
+            android:textSize="17sp" />
+
+        <TextView
+            android:id="@+id/medRatioTV"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/reportMedPic"
+            android:layout_marginStart="7dp"
+            android:layout_marginTop="12dp"
+            android:fontFamily="@font/roboto_medium"
+            android:text="0/0"
+            android:textColor="@color/black" />
+
+        <ProgressBar
+            android:id="@+id/medReportProgressBar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/medReportNameTV"
+            android:layout_marginStart="15dp"
+            android:layout_marginTop="10dp"
+            android:layout_toRightOf="@id/medRatioTV"
+            android:max="1"
+            android:minWidth="150dp"
+            android:minHeight="20dp"
+            android:progress="1" />
+
+    </RelativeLayout>
+
+</androidx.cardview.widget.CardView>
