@@ -437,6 +437,13 @@ public class MainActivity extends AppCompatActivity implements IBaseGpsListener 
             }
         }, 0, 60000);//put here time 1000 milliseconds=1 second
 
+
+        new Timer().scheduleAtFixedRate(new TimerTask() {
+            @Override
+            public void run() {
+                getAlarms();
+            }
+        }, 0, 60000);
         // Set alarm every 30 seconds...?
 //        new Timer().scheduleAtFixedRate(new TimerTask() {
 //            @Override
@@ -626,9 +633,11 @@ public class MainActivity extends AppCompatActivity implements IBaseGpsListener 
             public void onSuccess(DocumentSnapshot documentSnapshot) {
                 elderly = documentSnapshot.toObject(Elderly.class);
                 ArrayList<Medication> mList = elderly.getMedList();
+                ArrayList<Appointment> aList = elderly.getApptList();
                 int counter = 1;
-                for (Medication m:
-                        mList) {
+                int counter2 = 100;
+
+                for (Medication m: mList) {
                     Calendar tempCal = Calendar.getInstance();
                     tempCal.setTimeInMillis(m.getDay().toDate().getTime());
                     float x = currentTime.compareTo(tempCal);
@@ -654,6 +663,26 @@ public class MainActivity extends AppCompatActivity implements IBaseGpsListener 
                     }
                     counter++;
                 }
+
+                for (Appointment a: aList){
+                    Calendar tempCal = Calendar.getInstance();
+                    tempCal.setTimeInMillis(a.getTime().toDate().getTime());
+                    float x = currentTime.compareTo(tempCal);
+                    if (x<0){
+                        setAlarm(counter2, tempCal, a.apptName);
+                    }else if (x>0){
+                        aList.remove(a);
+                        Collections.sort(aList);
+                        docRef.update("apptList", aList).addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                Toast.makeText(MainActivity.this, "Fail to delete appointment!", Toast.LENGTH_SHORT).show();
+                            }
+                        });
+                        cancelAlarm(counter2);
+                    }
+                    counter2--;
+                }
             }
         });
     }
@@ -666,15 +695,24 @@ public class MainActivity extends AppCompatActivity implements IBaseGpsListener 
         am.cancel(pendingIntent);
     }
 
-    private void setAlarm(int counter, Calendar tempCal, String medName) {
-        Intent intent = new Intent(this, AlarmReceiver.class);
-        intent.putExtra("alarmid", counter);
-        intent.putExtra("medname", medName);
-        PendingIntent pi = PendingIntent.getBroadcast(this, counter, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+    private void setAlarm(int counter, Calendar tempCal, String itemName) {
+        if (counter<50){
+            Intent intent = new Intent(this, AlarmReceiver.class);
+            intent.putExtra("alarmid", counter);
+            intent.putExtra("medname", itemName);
+            PendingIntent pi = PendingIntent.getBroadcast(this, counter, intent, PendingIntent.FLAG_UPDATE_CURRENT);
 
-
-        AlarmManager am = (AlarmManager) getSystemService(Activity.ALARM_SERVICE);
-        am.setExact(AlarmManager.RTC_WAKEUP, tempCal.getTimeInMillis(), pi);
+            AlarmManager am = (AlarmManager) getSystemService(Activity.ALARM_SERVICE);
+            am.setExact(AlarmManager.RTC_WAKEUP, tempCal.getTimeInMillis(), pi);
+        }else if (counter>=50){
+            Intent intent = new Intent(this, AlarmReceiver.class);
+            intent.putExtra("alarmid", counter);
+            intent.putExtra("apptname", itemName);
+            PendingIntent pi = PendingIntent.getBroadcast(this, counter, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+            tempCal.add(Calendar.HOUR_OF_DAY, -1);
+            AlarmManager am = (AlarmManager) getSystemService(Activity.ALARM_SERVICE);
+            am.setExact(AlarmManager.RTC_WAKEUP, tempCal.getTimeInMillis(), pi);
+        }
     }
 
     private void createNotificationChannel(){

@@ -83,10 +83,16 @@ public class AddAppointment extends AppCompatActivity {
 //                        String strDate = dateFormat.format(date1);
                         com.google.firebase.Timestamp ts = new com.google.firebase.Timestamp(finalCalendar.getTime());
                         Calendar currentTime = Calendar.getInstance();
+                        Calendar oneHourForward = Calendar.getInstance();
+                        oneHourForward.add(Calendar.HOUR_OF_DAY, 1);
                         float x = currentTime.compareTo(finalCalendar);
+                        float y = oneHourForward.compareTo(finalCalendar);
                         if (x>0 || !timeset){
                             Toast.makeText(AddAppointment.this, "Pick a future value for date and time!", Toast.LENGTH_SHORT).show();
-                        }else{
+                        }else if (y>0){
+                            Toast.makeText(AddAppointment.this, "Time set must be more than one hour in the future!", Toast.LENGTH_LONG).show();
+                        }
+                        else{
                             Appointment newAppt = new Appointment(apptName, location, ts);
 
                             apptList.add(newAppt);

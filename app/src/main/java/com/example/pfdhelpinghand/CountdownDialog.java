@@ -29,95 +29,10 @@ import java.util.Collections;
 public class CountdownDialog extends AppCompatActivity{
 
     Button xBtn, goBtn;
-    TextView countdownTimerTV;
-    Dialog countdownDialog;
+    TextView countdownTimerTV, headerTV;
     FirebaseFirestore fStore;
     FirebaseAuth fAuth;
     FirebaseUser user;
-
-    @Override
-    protected void onStop() {
-        super.onStop();
-        setContentView(R.layout.alarm_countdown_popup);
-        Intent intent = getIntent();
-        xBtn = findViewById(R.id.xDialogButton);
-        goBtn = findViewById(R.id.takeMedBtn);
-        countdownTimerTV = findViewById(R.id.countdownTimer);
-        CountDownTimer cTimer = null;
-
-        cTimer = new CountDownTimer(30000, 1000) {
-            public void onTick(long millisUntilFinished) {
-                countdownTimerTV.setText((int) (millisUntilFinished/1000) + " seconds remaining");
-            }
-            public void onFinish() {
-                deleteMedRecord();
-                cancel();
-            }
-        };
-        cTimer.start();
-
-        goBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Context context = CountdownDialog.this;
-                Intent i = new Intent(context, MedicationAppointmentActivity.class);
-                i.putExtra("medname", intent.getStringExtra("medname"));
-                i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                startActivity(i);
-            }
-        });
-
-        CountDownTimer finalCTimer1 = cTimer;
-        xBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                finalCTimer1.cancel();
-                deleteMedRecord();
-            }
-        });
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        setContentView(R.layout.alarm_countdown_popup);
-        Intent intent = getIntent();
-        xBtn = findViewById(R.id.xDialogButton);
-        goBtn = findViewById(R.id.takeMedBtn);
-        countdownTimerTV = findViewById(R.id.countdownTimer);
-        CountDownTimer cTimer = null;
-
-        cTimer = new CountDownTimer(30000, 1000) {
-            public void onTick(long millisUntilFinished) {
-                countdownTimerTV.setText((int) (millisUntilFinished/1000) + " seconds remaining");
-            }
-            public void onFinish() {
-                deleteMedRecord();
-                cancel();
-            }
-        };
-        cTimer.start();
-
-        goBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Context context = CountdownDialog.this;
-                Intent i = new Intent(context, MedicationAppointmentActivity.class);
-                i.putExtra("medname", intent.getStringExtra("medname"));
-                i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                startActivity(i);
-            }
-        });
-
-        CountDownTimer finalCTimer1 = cTimer;
-        xBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                finalCTimer1.cancel();
-                deleteMedRecord();
-            }
-        });
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -127,50 +42,89 @@ public class CountdownDialog extends AppCompatActivity{
         xBtn = findViewById(R.id.xDialogButton);
         goBtn = findViewById(R.id.takeMedBtn);
         countdownTimerTV = findViewById(R.id.countdownTimer);
+        headerTV = findViewById(R.id.headerTV);
 
-        CountDownTimer cTimer = null;
+        if (intent.hasExtra("medname")){
+            headerTV.setText("Time to take medication!");
+            CountDownTimer cTimer = null;
 
-        cTimer = new CountDownTimer(30000, 1000) {
-            public void onTick(long millisUntilFinished) {
-                countdownTimerTV.setText((int) (millisUntilFinished/1000) + " seconds remaining");
-            }
-            public void onFinish() {
-                deleteMedRecord();
-                cancel();
-            }
-        };
-        cTimer.start();
+            cTimer = new CountDownTimer(30000, 1000) {
+                public void onTick(long millisUntilFinished) {
+                    countdownTimerTV.setText((int) (millisUntilFinished/1000) + " seconds remaining");
+                }
+                public void onFinish() {
+                    deleteMedRecord();
+                    cancel();
+                }
+            };
+            cTimer.start();
 
+            CountDownTimer finalCTimer = cTimer;
+            goBtn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    finalCTimer.cancel();
+                    Context context = CountdownDialog.this;
+                    Intent i = new Intent(context, MedicationAppointmentActivity.class);
+                    i.putExtra("medname", intent.getStringExtra("medname"));
+                    i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                    startActivity(i);
+                }
+            });
 
+            CountDownTimer finalCTimer1 = cTimer;
+            xBtn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    finalCTimer1.cancel();
+                    deleteMedRecord();
+                }
+            });
+        }else if (intent.hasExtra("apptname")){
+            headerTV.setText("You have an appointment in one hour!");
+            goBtn.setText("Check details");
+            CountDownTimer cTimer = null;
 
-        goBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Context context = CountdownDialog.this;
-                Intent i = new Intent(context, MedicationAppointmentActivity.class);
-                i.putExtra("medname", intent.getStringExtra("medname"));
-                i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                startActivity(i);
-            }
-        });
+            cTimer = new CountDownTimer(60000, 1000) {
+                public void onTick(long millisUntilFinished) {
+                    countdownTimerTV.setText((int) (millisUntilFinished/1000) + " seconds remaining");
+                }
+                public void onFinish() {
+                    cancel();
+                }
+            };
+            cTimer.start();
 
+            CountDownTimer finalCTimer = cTimer;
+            goBtn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    finalCTimer.cancel();
+                    Context context = CountdownDialog.this;
+                    Intent i = new Intent(context, MedicationAppointmentActivity.class);
+                    i.putExtra("apptname", intent.getStringExtra("apptname"));
+                    i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                    startActivity(i);
+                }
+            });
 
+            CountDownTimer finalCTimer1 = cTimer;
+            xBtn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    finalCTimer1.cancel();
+                }
+            });
 
-        CountDownTimer finalCTimer1 = cTimer;
-        xBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                finalCTimer1.cancel();
-                deleteMedRecord();
-            }
-        });
-
+        }
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
     }
+
+
 
     private void deleteMedRecord(){
         Intent intent = getIntent();
