@@ -1,6 +1,9 @@
 package com.example.pfdhelpinghand;
 
 
+import android.location.Address;
+import android.location.Geocoder;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -8,16 +11,18 @@ public class Elderly extends User{
 
     private String address;
     private String currentLocation;
+    private Integer p_score;
 
     protected ArrayList<Medication> medList;
     protected ArrayList<Appointment> apptList;
     protected ArrayList<String> caretakerList;
 
+
     protected ArrayList<EmergencyPerson> emergencyPerson;
 
     public Elderly(){}
 
-    public Elderly(String id, String name, String email, String phoneNum, String pw, String address, String cLocation, ArrayList<EmergencyPerson> eList,
+    public Elderly(String id, String name, String email, String phoneNum, String pw, Integer p, String address, String cLocation, ArrayList<EmergencyPerson> eList,
                    ArrayList<Medication> mList, ArrayList<Appointment> aList, ArrayList<String> cList){
         this.ID = id;
         this.fullName = name;
@@ -30,6 +35,16 @@ public class Elderly extends User{
         this.medList = mList;
         this.apptList = aList;
         this.caretakerList = cList;
+        this.p_score = p;
+
+    }
+
+    public Integer getP_score() {
+        return p_score;
+    }
+
+    public void setP_score(Integer p_score) {
+        this.p_score = p_score;
     }
 
     public String getAddress(){
@@ -81,5 +96,34 @@ public class Elderly extends User{
     public void addCaretaker(String c){
         this.caretakerList.add(c);
     }
+
+    public void reducePScore()
+    {
+        if (this.p_score >= 8)
+        {
+            this.p_score -= 8;
+        }
+        else{
+            this.p_score = 0;
+        }
+
+
+    }
+
+    public void increasePScore()
+    {
+        if (this.p_score <= 95)
+        {
+            this.p_score += 5;
+        }
+        else
+        {
+            this.p_score = 100;
+        }
+
+    }
+
+
+
 
 }
