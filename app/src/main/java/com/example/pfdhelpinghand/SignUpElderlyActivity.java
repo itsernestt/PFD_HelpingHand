@@ -264,6 +264,7 @@ public class SignUpElderlyActivity extends AppCompatActivity {
 
                             LocML.put("elderlyID", userID);
                             LocML.put("elderlyName", elderly.getFullName());
+                            LocML.put("elderlyAddress", addressInCoords);
                             LocML.put("locationList", elderlyLocationArrayList);
 
                             fStore.collection("ElderlyLocationML").document(userID)

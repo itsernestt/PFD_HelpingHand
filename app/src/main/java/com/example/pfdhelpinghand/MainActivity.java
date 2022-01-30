@@ -140,32 +140,6 @@ public class MainActivity extends AppCompatActivity implements IBaseGpsListener 
 
         locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
         currentLocation = new ElderlyLocation();
-/*
-        //triggered whenever the update interval is met
-        locationCallBack = new LocationCallback() {
-            @Override
-            public void onLocationResult(LocationResult locationResult) {
-                super.onLocationResult(locationResult);
-                Location location = locationResult.getLastLocation();
-                //updateUIValues(location);
-            }
-        };
-
-        trackingSwitch.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (trackingSwitch.isChecked()) {
-                    //turn on
-                    startLocationUpdate();
-                } else {
-                    //turn off tracking
-                    stopLocationUpdate();
-                }
-            }
-        });
-
- */
-
 
 
         String userID = user.getUid();
@@ -473,10 +447,6 @@ public class MainActivity extends AppCompatActivity implements IBaseGpsListener 
         {
             askForOverlay();
         }
-
-
-
-
 
 
     }// end of on create method
