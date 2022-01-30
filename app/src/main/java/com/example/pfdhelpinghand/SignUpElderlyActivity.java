@@ -215,7 +215,7 @@ public class SignUpElderlyActivity extends AppCompatActivity {
                             eList.add(new EmergencyPerson(contactName, contactPhone));
 
                             ArrayList<Medication> mList = new ArrayList<Medication>();
-                            elderly = new Elderly(userID, userFullName, email, phone, password, addressInCoords,"", eList, mList, new ArrayList<Appointment>(), new ArrayList<String>() );
+                            elderly = new Elderly(userID, userFullName, email, phone, password, 100, addressInCoords,"", eList, mList, new ArrayList<Appointment>(), new ArrayList<String>() );
 
 
 
