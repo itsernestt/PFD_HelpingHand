@@ -29,5 +29,25 @@ public class Caretaker extends User{
         this.elderlyList.add(eID);
     }
 
+    public Integer getLevelOfAlert(Integer p_value)
+    {
+        if (p_value <= 100 && p_value > 80)
+        {
+            return 0;
+        }
+        else if (p_value <= 80 && p_value > 50)
+        {
+            return 1;
+        }
+        else if (p_value <= 50 && p_value > 20)
+        {
+            return 2;
+        }
+        else
+        {
+            return 3;
+        }
+    }
+
 
 }
