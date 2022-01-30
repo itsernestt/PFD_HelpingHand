@@ -85,6 +85,7 @@ public class MedicationAppointmentActivity extends AppCompatActivity {
                 List medications = new ArrayList();
                 List appointments = new ArrayList();
                 meds = elderly.getMedList();
+                appts = elderly.getApptList();
 
                 Intent intent = getIntent();
                 if (intent.hasExtra("medname")){
@@ -99,21 +100,47 @@ public class MedicationAppointmentActivity extends AppCompatActivity {
                         if (m.medName.equals(medname)){
                             medName.setText(medname);
                             medDesc.setText(m.medDescription);
+                            meds.remove(m);
+                            DocumentReference addtoML = fStore.collection("ElderlyMedicationML").document(userID);
+                            addtoML.update("alarmSuccess", FieldValue.arrayUnion(m)).addOnFailureListener(new OnFailureListener() {
+                                @Override
+                                public void onFailure(@NonNull Exception e) {
+                                    Toast.makeText(MedicationAppointmentActivity.this, "Fail to add ML record!", Toast.LENGTH_SHORT).show();
+                                }
+                            });
                         }
-                        meds.remove(m);
-
-                        DocumentReference addtoML = fStore.collection("ElderlyMedicationML").document(userID);
-                        addtoML.update("alarmSuccess", FieldValue.arrayUnion(m)).addOnFailureListener(new OnFailureListener() {
-                            @Override
-                            public void onFailure(@NonNull Exception e) {
-                                Toast.makeText(MedicationAppointmentActivity.this, "Fail to add ML record!", Toast.LENGTH_SHORT).show();
-                            }
-                        });
                     }
                     alarmDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
                     alarmDialog.show();
                     Collections.sort(meds);
                     docRef.update("medList", meds).addOnSuccessListener(new OnSuccessListener<Void>() {
+                        @Override
+                        public void onSuccess(Void unused) {
+                            Toast.makeText(MedicationAppointmentActivity.this, "Alarm removed.", Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                }else if (intent.hasExtra("apptname")){
+                    String apptName = intent.getStringExtra("apptname");
+                    alarmDialog = new Dialog(MedicationAppointmentActivity.this);
+                    alarmDialog.setContentView(R.layout.alarm_popup);
+                    TextView medName = (TextView) alarmDialog.findViewById(R.id.medNameTV);
+                    TextView medDesc = (TextView) alarmDialog.findViewById(R.id.medDescriptionTV);
+
+                    for (Appointment a: appts){
+                        if (a.apptName.equals(apptName)){
+                            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("hh:mm a");
+                            medName.setText(apptName);
+                            Calendar temp = Calendar.getInstance();
+                            temp.setTime(a.getTime().toDate());
+                            medDesc.setText(a.location + "\n" + simpleDateFormat.format(temp.getTime()));
+                            appts.remove(a);
+                        }
+                    }
+                    alarmDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                    alarmDialog.show();
+                    Collections.sort(appts);
+
+                    docRef.update("apptList", appts).addOnSuccessListener(new OnSuccessListener<Void>() {
                         @Override
                         public void onSuccess(Void unused) {
                             Toast.makeText(MedicationAppointmentActivity.this, "Alarm removed.", Toast.LENGTH_SHORT).show();
@@ -141,7 +168,6 @@ public class MedicationAppointmentActivity extends AppCompatActivity {
                     }
                 }
 
-                appts = elderly.getApptList();
                 for (Appointment a:appts){
                     Calendar cal = Calendar.getInstance();
                     cal.setTime(a.getTime().toDate());
