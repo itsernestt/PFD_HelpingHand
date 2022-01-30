@@ -435,7 +435,7 @@ public class MainActivity extends AppCompatActivity implements IBaseGpsListener 
             public void run() {
                 UpdateLocation();
             }
-        }, 0, 60000);//put here time 1000 milliseconds=1 second
+        }, 0, 60000*3);//put here time 1000 milliseconds=1 second
 
 
         new Timer().scheduleAtFixedRate(new TimerTask() {
@@ -640,7 +640,8 @@ public class MainActivity extends AppCompatActivity implements IBaseGpsListener 
                 for (Medication m: mList) {
                     Calendar tempCal = Calendar.getInstance();
                     tempCal.setTimeInMillis(m.getDay().toDate().getTime());
-                    float x = currentTime.compareTo(tempCal);
+                    Calendar tempCal2 = Calendar.getInstance();
+                    float x = tempCal2.compareTo(tempCal);
                     if (x<0){
                         setAlarm(counter, tempCal, m.medName);
                     }else if (x>0){
@@ -667,7 +668,8 @@ public class MainActivity extends AppCompatActivity implements IBaseGpsListener 
                 for (Appointment a: aList){
                     Calendar tempCal = Calendar.getInstance();
                     tempCal.setTimeInMillis(a.getTime().toDate().getTime());
-                    float x = currentTime.compareTo(tempCal);
+                    Calendar tempCal2 = Calendar.getInstance();
+                    float x = tempCal2.compareTo(tempCal);
                     if (x<0){
                         setAlarm(counter2, tempCal, a.apptName);
                     }else if (x>0){
