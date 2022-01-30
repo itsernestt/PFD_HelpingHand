@@ -59,33 +59,6 @@ public class MedicationAppointmentActivity extends AppCompatActivity {
         Button medicationBackButton = findViewById(R.id.medicationBackButton);
         Button weeklyMedButton = findViewById(R.id.weeklyMedicationButton);
         Button weeklyApptButton = findViewById(R.id.weeklyAppointmentButton);
-        TextView time = findViewById(R.id.timeInMedApptTV);
-        Thread thread = new Thread(){
-            @Override
-            public void run()
-            {
-                try {
-                    while (!isInterrupted())
-                    {
-                        Thread.sleep(1000);
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                String datetimeFormat = "MM/dd/yy hh:mm a";
-                                Date date = Calendar.getInstance().getTime();
-                                time.setText(String.format(DateFormat.getDateTimeInstance().format(date), datetimeFormat));
-                            }
-                        });
-                    }
-                }
-                catch (Exception e)
-                {
-                    time.setText(R.string.app_name);
-                }
-            }
-        };
-        thread.start();
-
 
         fAuth = FirebaseAuth.getInstance();
         fStore = FirebaseFirestore.getInstance();
