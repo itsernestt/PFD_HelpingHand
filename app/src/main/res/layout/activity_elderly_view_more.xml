@@ -33,7 +33,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="40dp"
-                android:layout_marginTop="20dp"
+                android:layout_marginTop="30dp"
 
                 android:text="Elderly Name: "
                 android:textColor="@color/black"
@@ -45,7 +45,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="20dp"
-                android:layout_marginTop="20dp"
+                android:layout_marginTop="30dp"
                 android:layout_toEndOf="@+id/viewMore_text1"
                 android:layout_toRightOf="@+id/viewMore_text1"
 
@@ -149,13 +149,45 @@
                 />
 
             <TextView
-                android:id="@+id/viewMore_text5"
+                android:id="@+id/viewMore_text11"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/viewMore_text4"
                 android:layout_marginLeft="40dp"
 
                 android:layout_marginTop="20dp"
+
+                android:text="Punctuality score: "
+                android:textColor="@color/black"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/viewMore_elderlyPScore"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/viewMore_elderlyAddress"
+
+                android:layout_marginLeft="20dp"
+                android:layout_marginTop="20dp"
+                android:layout_toEndOf="@+id/viewMore_text11"
+                android:layout_toRightOf="@+id/viewMore_text11"
+
+                android:text=""
+                android:textColor="@android:color/holo_red_dark"
+                android:textSize="16sp"
+
+
+                />
+
+            <TextView
+                android:id="@+id/viewMore_text5"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/viewMore_text11"
+                android:layout_marginLeft="40dp"
+
+                android:layout_marginTop="40dp"
 
                 android:text="Emergency Contact Person (main) "
                 android:textColor="@color/black"

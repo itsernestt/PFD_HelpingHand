@@ -182,6 +182,7 @@ public class MedicationAppointmentActivity extends AppCompatActivity {
                             medName.setText(medname);
                             medDesc.setText(m.medDescription);
                             meds.remove(m);
+
                             DocumentReference addtoML = fStore.collection("ElderlyMedicationML").document(userID);
                             addtoML.update("alarmSuccess", FieldValue.arrayUnion(m)).addOnFailureListener(new OnFailureListener() {
                                 @Override
@@ -200,6 +201,15 @@ public class MedicationAppointmentActivity extends AppCompatActivity {
                             Toast.makeText(MedicationAppointmentActivity.this, "Alarm removed.", Toast.LENGTH_SHORT).show();
                         }
                     });
+                    Integer p = elderly.increasePScore();
+                    docRef.update("p_score", p)
+                            .addOnSuccessListener(new OnSuccessListener<Void>() {
+                        @Override
+                        public void onSuccess(Void unused) {
+                            Toast.makeText(MedicationAppointmentActivity.this, "updated p_score.", Toast.LENGTH_SHORT).show();
+                        }
+                    });
+
                 }else if (intent.hasExtra("apptname")){
                     String apptName = intent.getStringExtra("apptname");
                     alarmDialog = new Dialog(MedicationAppointmentActivity.this);
