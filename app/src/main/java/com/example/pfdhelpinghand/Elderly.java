@@ -123,6 +123,49 @@ public class Elderly extends User{
 
     }
 
+    public Integer getLevelOfAlert()
+    {
+        if (this.p_score <= 100 && this.p_score > 80)
+        {
+            return 0;
+        }
+        else if (this.p_score <= 80 && this.p_score > 50)
+        {
+            return 1;
+        }
+        else if (this.p_score <= 50 && this.p_score > 20)
+        {
+            return 2;
+        }
+        else
+        {
+            return 3;
+        }
+    }
+
+    public String getAlertMessage()
+    {
+        if (this.p_score <= 100 && this.p_score > 80)
+        {
+            return "High punctuality score! No need to worry,";
+        }
+        else if (this.p_score <= 80 && this.p_score > 50)
+        {
+            return "Consider dropping some messages for reminder.";
+        }
+        else if (this.p_score <= 50 && this.p_score > 20)
+        {
+            return "A phone call is needed to remind!";
+        }
+        else
+        {
+            return "Very insistent in taking medication!";
+        }
+
+    }
+
+
+
 
 
 
