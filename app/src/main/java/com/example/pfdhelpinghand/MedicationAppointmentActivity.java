@@ -146,7 +146,6 @@ public class MedicationAppointmentActivity extends AppCompatActivity {
         meds = new ArrayList<Medication>();
         appts = new ArrayList<Appointment>();
 
-
         String userID = user.getUid();
         medRecyclerView = findViewById(R.id.recyclerView1);
         apptRecyclerView = findViewById(R.id.recyclerView2);
@@ -174,6 +173,8 @@ public class MedicationAppointmentActivity extends AppCompatActivity {
                     alarmDialog.setContentView(R.layout.alarm_popup);
                     TextView medName = (TextView) alarmDialog.findViewById(R.id.medNameTV);
                     TextView medDesc = (TextView) alarmDialog.findViewById(R.id.medDescriptionTV);
+                    TextView timing = (TextView) alarmDialog.findViewById(R.id.timingTV);
+                    timing.setVisibility(View.GONE);
 
                     for (Medication m:
                         meds){

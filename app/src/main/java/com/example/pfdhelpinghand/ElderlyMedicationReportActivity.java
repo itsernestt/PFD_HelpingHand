@@ -17,6 +17,9 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
 
 public class ElderlyMedicationReportActivity extends AppCompatActivity {
 
@@ -24,7 +27,7 @@ public class ElderlyMedicationReportActivity extends AppCompatActivity {
     FirebaseAuth fAuth;
     FirebaseFirestore fStore;
     RecyclerView reportsRV;
-    ArrayList<Medication> mList;
+    ArrayList<Medication> mList = new ArrayList<>();
     Button backBtn;
 
 
@@ -34,22 +37,28 @@ public class ElderlyMedicationReportActivity extends AppCompatActivity {
         setContentView(R.layout.activity_elderly_medication_report);
         fAuth = FirebaseAuth.getInstance();
         fStore = FirebaseFirestore.getInstance();
-        ArrayList<MedicationReport> allReports = new ArrayList<MedicationReport>();
         reportsRV = findViewById(R.id.medReportRV);
         backBtn = findViewById(R.id.medReportBack);
 
         Intent intent = getIntent();
         elderlyID = intent.getStringExtra("elderlyID");
-        DocumentReference docRef = fStore.collection("ElderlyMedicationMl").document(elderlyID);
+        DocumentReference docRef = fStore.collection("ElderlyMedicationML").document(elderlyID);
 
         docRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
             @Override
             public void onSuccess(DocumentSnapshot documentSnapshot) {
-                ArrayList<Medication> sList = (ArrayList<Medication>) documentSnapshot.get("alarmFailed");
-                ArrayList<Medication> fList = (ArrayList<Medication>) documentSnapshot.get("alarmSuccess");
+                ArrayList<Medication>fList = new ArrayList<>();
+                ArrayList<Medication>sList=new ArrayList<>();
+                MedReportElderly current = documentSnapshot.toObject(MedReportElderly.class);
+                fList = current.alarmFailed;
+                sList = current.alarmSuccess;
+
+                ArrayList<MedicationReport> allReports = new ArrayList<>();
+
+
                 if (!(sList == null) || !(fList == null)){
-                    fList.addAll(sList);
-                    mList = fList;
+                    mList.addAll(sList);
+                    mList.addAll(fList);
                 }else{
                     mList = new ArrayList<>();
                 }
@@ -58,23 +67,28 @@ public class ElderlyMedicationReportActivity extends AppCompatActivity {
                     MedicationReport mRpt = new MedicationReport("No reports available yet!", 0, 0);
                     allReports.add(mRpt);
                 }else{
+                    ArrayList<String> names = new ArrayList<>();
                     for (Medication m:mList) {
-                        String name = m.medName;
-                        int count = 0;
-                        int suc = 0;
-                        for (Medication z : mList){
-                            if (z.medName.equals(name)){
-                                count++;
-                                if (sList.contains(z)){
-                                    suc++;
-                                }
-                                mList.remove(z);
+                        if (names.contains(m.medName)){
+                            int x = names.indexOf(m.medName);
+                            allReports.get(x).totalNumber += 1;
+                            if (sList.contains(m)){
+                                allReports.get(x).numSucceed += 1;
+                            }
+                        }else{
+                            names.add(m.medName);
+                            if (fList.contains(m)){
+                                MedicationReport mRpt = new MedicationReport(m.medName, 1, 0);
+                                allReports.add(mRpt);
+                            }else{
+                                MedicationReport mRpt = new MedicationReport(m.medName, 1, 1);
+                                allReports.add(mRpt);
                             }
                         }
-                        MedicationReport mRpt = new MedicationReport(name, count, suc);
-                        allReports.add(mRpt);
                     }
                 }
+
+                Collections.sort(allReports, (o1, o2) -> o1.medName.compareTo(o2.medName));
 
                 MedReportAdapter adapter = new MedReportAdapter(allReports);
                 reportsRV.setAdapter(adapter);
