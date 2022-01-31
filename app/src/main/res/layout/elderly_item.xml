@@ -139,12 +139,14 @@
 
 
             android:layout_alignBaseline="@+id/elderlyItem_med_pvalue"
-            android:layout_marginLeft="20dp"
-            android:visibility="invisible"
+            android:layout_marginLeft="10dp"
             android:layout_toRightOf="@id/elderlyItem_med_pvalue"
             android:text="30sec"
+            android:fontFamily="@font/roboto_medium"
+            android:textStyle="bold"
             android:textColor="@color/black"
             android:textSize="14sp"
+            android:visibility="invisible"
 
             />
 
@@ -155,27 +157,28 @@
 
             android:layout_below="@id/elderlyItem_medName"
 
-            android:layout_marginLeft="20dp"
+            android:layout_marginLeft="15dp"
+            android:layout_marginTop="0dp"
             android:layout_toRightOf="@+id/elderlyItem_med_des"
-            android:visibility="invisible"
             android:text="Alert Level: 1"
             android:textColor="@android:color/holo_red_dark"
-            android:textSize="13sp" />
+            android:textSize="13sp"
+            android:visibility="invisible" />
 
         <TextView
             android:id="@+id/elderlyItem_med_alertText"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="183dp"
+            android:layout_height="34dp"
 
             android:layout_below="@id/elderlyItem_med_pvalue"
             android:layout_alignLeft="@id/elderlyItem_med_pvalue"
 
-            android:visibility="invisible"
-            android:layout_marginLeft="1dp"
-            android:layout_marginTop="-2dp"
+            android:layout_marginLeft="0dp"
+            android:layout_marginTop="2dp"
             android:text="Recommend calling to take med"
             android:textColor="@android:color/holo_red_dark"
-            android:textSize="11sp" />
+            android:textSize="11sp"
+            android:visibility="invisible" />
 
         <TextView
             android:id="@+id/elderlyItem_medTime"

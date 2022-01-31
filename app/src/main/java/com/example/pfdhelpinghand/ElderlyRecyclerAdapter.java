@@ -16,10 +16,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
+import androidx.core.app.NotificationCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -59,6 +61,8 @@ public class ElderlyRecyclerAdapter extends RecyclerView.Adapter<ElderlyRecycler
     DocumentReference docRef = fStore.collection("Caregiver").document(userID);
     List elderlyList;
     Integer elderlyPScore;
+    Integer timeCounter;
+    Boolean isLastRecordCancel;
 
 
 
@@ -81,6 +85,7 @@ public class ElderlyRecyclerAdapter extends RecyclerView.Adapter<ElderlyRecycler
         {
             super(view);
             //Text views
+            isLastRecordCancel = false;
             elderlyIndex = view.findViewById(R.id.elderlyItem_index);
             eldelyName = view.findViewById(R.id.elderlyItem_name);
             elderlyPhone = view.findViewById(R.id.elderlyItem_phone);
@@ -139,6 +144,7 @@ public class ElderlyRecyclerAdapter extends RecyclerView.Adapter<ElderlyRecycler
     @Override
     public void onBindViewHolder(@NonNull ElderlyRecyclerAdapter.MyViewHolder holder, int position) {
 
+
         holder.elderlyIndex.setText(String.valueOf(position + 1));
 
         String eName = elderlyArrayList.get(position).getFullName();
@@ -194,7 +200,6 @@ public class ElderlyRecyclerAdapter extends RecyclerView.Adapter<ElderlyRecycler
 
             long total_millis = (end_millis - start_millis);
 
-
             CountDownTimer timer = new CountDownTimer(total_millis, 1000) {
 
                 public void onTick(long millisUntilFinished) {
@@ -209,26 +214,35 @@ public class ElderlyRecyclerAdapter extends RecyclerView.Adapter<ElderlyRecycler
 
                     long seconds = TimeUnit.MILLISECONDS.toSeconds(millisUntilFinished);
 
+
                     holder.elderlyMedTime.setText(days + ":" + hours + ":" + minutes + ":" + seconds); //You can compute the millisUntilFinished on hours/minutes/seconds
                 }
 
                 public void onFinish() {
                     holder.elderlyMedTime.setText("done!");
 
+
                     CountDownTimer timer2 = new CountDownTimer(30 * 1000, 1000) {
                         @Override
                         public void onTick(long millisUntilFinished) {
+
                             holder.elderly30s.setVisibility(View.VISIBLE);
-                            holder.elderlyAlert.setVisibility(View.VISIBLE);
                             holder.elderlyAlertDesc.setVisibility(View.VISIBLE);
+                            holder.elderlyAlertDesc.setTextColor(Color.BLACK);
 
                             Elderly elderly1 = elderlyArrayList.get(position);
-                            holder.elderlyAlert.setText("Alert level: " + elderly1.getLevelOfAlert());
+
+                            if (elderly1.getLevelOfAlert() != 0)
+                            {
+
+                                holder.elderlyAlert.setVisibility(View.VISIBLE);
+                                holder.elderlyAlert.setText("Alert level: " + elderly1.getLevelOfAlert());
+                            }
                             holder.elderlyAlertDesc.setText(elderly1.getAlertMessage());
 
 
                             long seconds = TimeUnit.MILLISECONDS.toSeconds(millisUntilFinished);
-                            holder.elderly30s.setText("<" + seconds + ">");
+                            holder.elderly30s.setText("< " + seconds + " > ");
                             fStore.collection("ElderlyMedicationML")
                                     .whereEqualTo("elderlyID", elderlyArrayList.get(position).getID() )
                                     .addSnapshotListener(new EventListener<QuerySnapshot>() {
@@ -245,7 +259,9 @@ public class ElderlyRecyclerAdapter extends RecyclerView.Adapter<ElderlyRecycler
                                                     case REMOVED:
                                                         break;
                                                     case MODIFIED:
-                                                        onFinish();
+                                                        holder.elderly30s.setVisibility(View.INVISIBLE);
+                                                        holder.elderlyAlert.setVisibility(View.INVISIBLE);
+                                                        holder.elderlyAlertDesc.setVisibility(View.INVISIBLE);
                                                         return;
                                                 };
                                             }
@@ -258,9 +274,12 @@ public class ElderlyRecyclerAdapter extends RecyclerView.Adapter<ElderlyRecycler
 
                         @Override
                         public void onFinish() {
-                            holder.elderly30s.setVisibility(View.INVISIBLE);
                             holder.elderlyAlert.setVisibility(View.INVISIBLE);
+                            holder.elderly30s.setVisibility(View.INVISIBLE);
                             holder.elderlyAlertDesc.setVisibility(View.INVISIBLE);
+                            holder.elderlyAlertDesc.setText("Please follow up on previous medication!");
+                            holder.elderlyAlertDesc.setTextColor(Color.RED);
+
 
                         }
                     };
