@@ -49,9 +49,6 @@ public class MedAdapter extends RecyclerView.Adapter<MedAdapter.MedViewHolder>{
     public MedAdapter(List mMeds){
         this.mMeds = mMeds;
     }
-    public MedAdapter(Context context){this.context = context;}
-    private PendingIntent pendingIntent;
-    private AlarmManager alarmManager;
 
     @NonNull
     @Override

@@ -750,7 +750,6 @@ public class MainActivity extends AppCompatActivity implements IBaseGpsListener 
 
     }
 
-
     private Handler mHandler = new Handler();
 
     private Runnable mRefreshPage = new Runnable() {
