@@ -6,6 +6,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.Button;
 
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -55,6 +56,14 @@ public class ElderlyAppointmentReportActivity extends AppCompatActivity {
                 ApptReportAdapter adapter = new ApptReportAdapter(aList);
                 reportsRV.setAdapter(adapter);
                 reportsRV.setLayoutManager(new LinearLayoutManager(ElderlyAppointmentReportActivity.this));
+            }
+        });
+
+        apptBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent navigate = new Intent(ElderlyAppointmentReportActivity.this, ElderlyViewMore.class);
+                startActivity(navigate);
             }
         });
     }

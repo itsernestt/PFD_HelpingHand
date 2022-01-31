@@ -164,7 +164,16 @@ public class MainActivity extends AppCompatActivity implements IBaseGpsListener 
             e.printStackTrace();
         }
 
-
+        fStore.collection("Elderly").document(userID).addSnapshotListener(new EventListener<DocumentSnapshot>() {
+            @Override
+            public void onEvent(@Nullable DocumentSnapshot documentSnapshot, @Nullable FirebaseFirestoreException e) {
+                if (e != null) {
+                    Log.w(TAG, "Listen failed.", e);
+                    return;
+                }
+                getAlarms();
+            }
+        });
 
         docRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
             @Override
@@ -174,17 +183,6 @@ public class MainActivity extends AppCompatActivity implements IBaseGpsListener 
 
                 //Set up title action bar
                 getSupportActionBar().setTitle("Welcome, " + elderly.getFullName());
-
-                fStore.collection("Elderly").document(userID).addSnapshotListener(new EventListener<DocumentSnapshot>() {
-                    @Override
-                    public void onEvent(@Nullable DocumentSnapshot documentSnapshot, @Nullable FirebaseFirestoreException e) {
-                        if (e != null) {
-                            Log.w(TAG, "Listen failed.", e);
-                            return;
-                        }
-                        getAlarms();
-                    }
-                });
 
                 fStore.collection("PairingRequest")
                         .whereEqualTo("receiverEmail", elderly.getEmail())
@@ -679,7 +677,7 @@ public class MainActivity extends AppCompatActivity implements IBaseGpsListener 
     private void cancelAlarm(int counter) {
         Intent intent = new Intent(this, AlarmReceiver.class);
 
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, counter, intent, 0);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, counter, intent, PendingIntent.FLAG_NO_CREATE);
         AlarmManager am = (AlarmManager) getSystemService(Activity.ALARM_SERVICE);
         am.cancel(pendingIntent);
     }

@@ -156,6 +156,15 @@ public class ElderlyViewMore extends AppCompatActivity {
             }
         });
 
+        apptReport.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent navigate = new Intent(ElderlyViewMore.this, ElderlyAppointmentReportActivity.class);
+                navigate.putExtra("elderlyID", elderlyID);
+                startActivity(navigate);
+            }
+        });
+
         delete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
