@@ -97,28 +97,32 @@ public class Elderly extends User{
         this.caretakerList.add(c);
     }
 
-    public void reducePScore()
+    public Integer reducePScore()
     {
         if (this.p_score >= 8)
         {
             this.p_score -= 8;
+            return this.p_score;
         }
         else{
             this.p_score = 0;
+            return this.p_score;
         }
 
 
     }
 
-    public void increasePScore()
+    public Integer increasePScore()
     {
         if (this.p_score <= 95)
         {
             this.p_score += 5;
+            return p_score;
         }
         else
         {
             this.p_score = 100;
+            return p_score;
         }
 
     }
@@ -147,19 +151,19 @@ public class Elderly extends User{
     {
         if (this.p_score <= 100 && this.p_score > 80)
         {
-            return "High punctuality score! No need to worry,";
+            return "High punctuality score! No need to worry :)";
         }
         else if (this.p_score <= 80 && this.p_score > 50)
         {
-            return "Consider dropping some messages for reminder.";
+            return "Consider dropping some reminder messages!";
         }
         else if (this.p_score <= 50 && this.p_score > 20)
         {
-            return "A phone call is needed to remind!";
+            return "Relatively low p_score, \nA phone call is needed to remind!";
         }
         else
         {
-            return "Very insistent in taking medication!";
+            return "Very low p_score, \nvery insistent in taking medication!";
         }
 
     }

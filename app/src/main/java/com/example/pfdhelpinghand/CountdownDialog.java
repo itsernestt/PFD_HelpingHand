@@ -114,14 +114,16 @@ public class CountdownDialog extends AppCompatActivity{
         fAuth = FirebaseAuth.getInstance();
         fStore = FirebaseFirestore.getInstance();
         user = fAuth.getCurrentUser();
+
+
+
         DocumentReference docRef = fStore.collection("Elderly").document(user.getUid());
         docRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
             @Override
             public void onSuccess(DocumentSnapshot documentSnapshot) {
                 Elderly currentElderly = documentSnapshot.toObject(Elderly.class);
                 ArrayList<Medication> mList = currentElderly.getMedList();
-                for (Medication m:
-                        mList) {
+                for (Medication m: mList) {
                     if (m.medName.equals(intent.getStringExtra("medname"))){
                         mList.remove(m);
                         fStore.collection("ElderlyMedicationML").document(user.getUid())
@@ -129,12 +131,23 @@ public class CountdownDialog extends AppCompatActivity{
                     }
                 }
                 Collections.sort(mList);
-                docRef.update("medList", mList).addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Log.e("TAG", "onFailure: " + e.toString());
-                    }
-                });
+                // update the med list in the elderly
+                docRef.update("medList", mList)
+                        .addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                Log.e("TAG", "onFailure: " + e.toString());
+                            }
+                        });
+                // updaste the p_value also
+                Integer p = currentElderly.reducePScore();
+                docRef.update("p_score", p)
+                        .addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+
+                            }
+                        });
             }
         });
         finish();

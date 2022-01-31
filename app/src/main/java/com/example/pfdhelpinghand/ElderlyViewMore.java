@@ -44,7 +44,9 @@ public class ElderlyViewMore extends AppCompatActivity {
     ArrayList<String> elderlyArrayList;
     ArrayList<String> caretakerList;
 
-    TextView elderlyName, elderlyPhone, elderlyEmail, elderlyAddress, emergencyName, emergencyPhone;
+    TextView elderlyName, elderlyPhone, elderlyEmail,
+            elderlyAddress, emergencyName, emergencyPhone,
+            elderlyPScore;
     Button medReport, apptReport, delete;
     ImageButton callBut;
 
@@ -69,6 +71,7 @@ public class ElderlyViewMore extends AppCompatActivity {
         elderlyAddress = findViewById(R.id.viewMore_elderlyAddress);
         emergencyName = findViewById(R.id.viewMore_emergencyName);
         emergencyPhone = findViewById(R.id.viewMore_emergencyPhone);
+        elderlyPScore = findViewById(R.id.viewMore_elderlyPScore);
 
         //Set buttons
         medReport = findViewById(R.id.viewMore_medReport);
@@ -87,6 +90,7 @@ public class ElderlyViewMore extends AppCompatActivity {
                 elderlyName.setText(elderly.getFullName());
                 elderlyPhone.setText(elderly.getPhoneNumber());
                 elderlyEmail.setText(elderly.getEmail());
+                elderlyPScore.setText(String.valueOf(elderly.getP_score()));
                 String address = elderly.getAddress();
 
                 String address2 = address.replaceAll("\\s+","");
