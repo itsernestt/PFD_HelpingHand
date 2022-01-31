@@ -38,6 +38,7 @@ public class CountdownDialog extends AppCompatActivity{
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.alarm_countdown_popup);
+        this.setFinishOnTouchOutside(false);
         Intent intent = getIntent();
         xBtn = findViewById(R.id.xDialogButton);
         goBtn = findViewById(R.id.takeMedBtn);
@@ -81,7 +82,7 @@ public class CountdownDialog extends AppCompatActivity{
                 }
             });
         }else if (intent.hasExtra("apptname")){
-            headerTV.setText("You have an appointment in one hour!");
+            headerTV.setText("Appointment in 1 hour!");
             goBtn.setText("Check details");
             CountDownTimer cTimer = null;
 

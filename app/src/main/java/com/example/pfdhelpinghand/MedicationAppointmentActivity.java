@@ -29,6 +29,8 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import org.w3c.dom.Text;
+
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -203,6 +205,7 @@ public class MedicationAppointmentActivity extends AppCompatActivity {
                     alarmDialog.setContentView(R.layout.alarm_popup);
                     TextView medName = (TextView) alarmDialog.findViewById(R.id.medNameTV);
                     TextView medDesc = (TextView) alarmDialog.findViewById(R.id.medDescriptionTV);
+                    TextView timing = (TextView) alarmDialog.findViewById(R.id.timingTV);
 
                     for (Appointment a: appts){
                         if (a.apptName.equals(apptName)){
@@ -210,8 +213,8 @@ public class MedicationAppointmentActivity extends AppCompatActivity {
                             medName.setText(apptName);
                             Calendar temp = Calendar.getInstance();
                             temp.setTime(a.getTime().toDate());
-                            medDesc.setText(a.location + "\n" + simpleDateFormat.format(temp.getTime()));
-                            appts.remove(a);
+                            medDesc.setText(a.location);
+                            timing.setText("at "+ simpleDateFormat.format(temp.getTime()));
                         }
                     }
                     alarmDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));

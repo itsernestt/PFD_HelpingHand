@@ -169,12 +169,22 @@ public class MainActivity extends AppCompatActivity implements IBaseGpsListener 
         docRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
             @Override
             public void onSuccess(DocumentSnapshot documentSnapshot) {
-                getAlarms();
                 elderly = documentSnapshot.toObject(Elderly.class);
                 emergencyPeople = elderly.getEmergencyPerson();
 
                 //Set up title action bar
                 getSupportActionBar().setTitle("Welcome, " + elderly.getFullName());
+
+                fStore.collection("Elderly").document(userID).addSnapshotListener(new EventListener<DocumentSnapshot>() {
+                    @Override
+                    public void onEvent(@Nullable DocumentSnapshot documentSnapshot, @Nullable FirebaseFirestoreException e) {
+                        if (e != null) {
+                            Log.w(TAG, "Listen failed.", e);
+                            return;
+                        }
+                        getAlarms();
+                    }
+                });
 
                 fStore.collection("PairingRequest")
                         .whereEqualTo("receiverEmail", elderly.getEmail())
@@ -410,14 +420,14 @@ public class MainActivity extends AppCompatActivity implements IBaseGpsListener 
                 UpdateLocation();
             }
         }, 0, 60000*3);//put here time 1000 milliseconds=1 second
-
-
-        new Timer().scheduleAtFixedRate(new TimerTask() {
-            @Override
-            public void run() {
-                getAlarms();
-            }
-        }, 0, 1000 * 60 * 5); // every 5 mins
+//
+//
+//        new Timer().scheduleAtFixedRate(new TimerTask() {
+//            @Override
+//            public void run() {
+//                getAlarms();
+//            }
+//        }, 0, 1000 * 60 * 5); // every 5 mins
 
         // Set alarm every 30 seconds...?
 //        new Timer().scheduleAtFixedRate(new TimerTask() {
@@ -611,8 +621,8 @@ public class MainActivity extends AppCompatActivity implements IBaseGpsListener 
                 for (Medication m: mList) {
                     Calendar tempCal = Calendar.getInstance();
                     tempCal.setTimeInMillis(m.getDay().toDate().getTime());
-                    Calendar tempCal2 = Calendar.getInstance();
-                    float x = tempCal2.compareTo(tempCal);
+                    Calendar currentTime = Calendar.getInstance();
+                    float x = currentTime.compareTo(tempCal);
                     if (x<0){
                         setAlarm(counter, tempCal, m.medName);
                     }else if (x>0){
@@ -639,9 +649,15 @@ public class MainActivity extends AppCompatActivity implements IBaseGpsListener 
                 for (Appointment a: aList){
                     Calendar tempCal = Calendar.getInstance();
                     tempCal.setTimeInMillis(a.getTime().toDate().getTime());
+
+                    Calendar tempCal3 = Calendar.getInstance();
+                    tempCal3.setTimeInMillis(a.getTime().toDate().getTime());
+                    tempCal3.add(Calendar.HOUR_OF_DAY, -1);
+
                     Calendar tempCal2 = Calendar.getInstance();
+                    float y = tempCal2.compareTo(tempCal3);
                     float x = tempCal2.compareTo(tempCal);
-                    if (x<0){
+                    if (x<0 && y<0){
                         setAlarm(counter2, tempCal, a.apptName);
                     }else if (x>0){
                         aList.remove(a);
