@@ -222,6 +222,11 @@ public class ElderlyRecyclerAdapter extends RecyclerView.Adapter<ElderlyRecycler
                             holder.elderlyAlert.setVisibility(View.VISIBLE);
                             holder.elderlyAlertDesc.setVisibility(View.VISIBLE);
 
+                            Elderly elderly1 = elderlyArrayList.get(position);
+                            holder.elderlyAlert.setText("Alert level: " + elderly1.getLevelOfAlert());
+                            holder.elderlyAlertDesc.setText(elderly1.getAlertMessage());
+
+
                             long seconds = TimeUnit.MILLISECONDS.toSeconds(millisUntilFinished);
                             holder.elderly30s.setText("<" + seconds + ">");
                             fStore.collection("ElderlyMedicationML")
@@ -237,10 +242,9 @@ public class ElderlyRecyclerAdapter extends RecyclerView.Adapter<ElderlyRecycler
                                             {
                                                 switch (dc.getType()) {
                                                     case ADDED:
+                                                    case REMOVED:
                                                         break;
                                                     case MODIFIED:
-                                                        break;
-                                                    case REMOVED:
                                                         onFinish();
                                                         return;
                                                 };
@@ -254,7 +258,6 @@ public class ElderlyRecyclerAdapter extends RecyclerView.Adapter<ElderlyRecycler
 
                         @Override
                         public void onFinish() {
-
                             holder.elderly30s.setVisibility(View.INVISIBLE);
                             holder.elderlyAlert.setVisibility(View.INVISIBLE);
                             holder.elderlyAlertDesc.setVisibility(View.INVISIBLE);
