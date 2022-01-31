@@ -1,6 +1,8 @@
 package com.example.pfdhelpinghand;
 
 
+import static android.content.ContentValues.TAG;
+
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -8,6 +10,7 @@ import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Build;
 import android.os.CountDownTimer;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,17 +18,25 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.Timestamp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentChange;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -47,6 +58,7 @@ public class ElderlyRecyclerAdapter extends RecyclerView.Adapter<ElderlyRecycler
     String userID = user.getUid();
     DocumentReference docRef = fStore.collection("Caregiver").document(userID);
     List elderlyList;
+    Integer elderlyPScore;
 
 
 
@@ -56,7 +68,11 @@ public class ElderlyRecyclerAdapter extends RecyclerView.Adapter<ElderlyRecycler
     }
 
     public class MyViewHolder extends RecyclerView.ViewHolder{
-        TextView elderlyIndex, elderlyApptLoc, eldelyName, elderlyPhone, elderlyMedName, elderlyMedTime, elderlyApptName, elderlyApptTime, elderlyLoc;
+        TextView elderlyIndex, elderlyApptLoc, eldelyName,
+                elderlyPhone, elderlyMedName, elderlyMedTime,
+                elderlyApptName, elderlyApptTime, elderlyLoc,
+                elderly30s, elderlyAlert, elderlyAlertDesc;
+
         ImageButton viewMed, viewAppt, viewLoc, phonecall, viewMore;
 
 
@@ -78,6 +94,10 @@ public class ElderlyRecyclerAdapter extends RecyclerView.Adapter<ElderlyRecycler
 
 
             elderlyLoc = view.findViewById(R.id.elderlyItem_locName);
+
+            elderly30s = view.findViewById(R.id.elderlyItem_med_countdown);
+            elderlyAlert = view.findViewById(R.id.elderlyItem_med_pvalue);
+            elderlyAlertDesc = view.findViewById(R.id.elderlyItem_med_alertText);
 
 
             //Image Buttons
@@ -127,6 +147,8 @@ public class ElderlyRecyclerAdapter extends RecyclerView.Adapter<ElderlyRecycler
 
         String ePhone = elderlyArrayList.get(position).getPhoneNumber();
         holder.elderlyPhone.setText(ePhone);
+
+        elderlyPScore = elderlyArrayList.get(position).getP_score();
 
 
         ArrayList<Medication> mList = elderlyArrayList.get(position).getMedList();
@@ -192,6 +214,55 @@ public class ElderlyRecyclerAdapter extends RecyclerView.Adapter<ElderlyRecycler
 
                 public void onFinish() {
                     holder.elderlyMedTime.setText("done!");
+
+                    CountDownTimer timer2 = new CountDownTimer(30 * 1000, 1000) {
+                        @Override
+                        public void onTick(long millisUntilFinished) {
+                            holder.elderly30s.setVisibility(View.VISIBLE);
+                            holder.elderlyAlert.setVisibility(View.VISIBLE);
+                            holder.elderlyAlertDesc.setVisibility(View.VISIBLE);
+
+                            long seconds = TimeUnit.MILLISECONDS.toSeconds(millisUntilFinished);
+                            holder.elderly30s.setText("<" + seconds + ">");
+                            fStore.collection("ElderlyMedicationML")
+                                    .whereEqualTo("elderlyID", elderlyArrayList.get(position).getID() )
+                                    .addSnapshotListener(new EventListener<QuerySnapshot>() {
+                                        @Override
+                                        public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException e) {
+                                            if (e != null) {
+                                                Log.w(TAG, "listen:error", e);
+                                                return;
+                                            }
+                                            for(DocumentChange dc: queryDocumentSnapshots.getDocumentChanges())
+                                            {
+                                                switch (dc.getType()) {
+                                                    case ADDED:
+                                                        break;
+                                                    case MODIFIED:
+                                                        break;
+                                                    case REMOVED:
+                                                        onFinish();
+                                                        return;
+                                                };
+                                            }
+
+                                        }
+                                    });
+
+
+                        }
+
+                        @Override
+                        public void onFinish() {
+
+                            holder.elderly30s.setVisibility(View.INVISIBLE);
+                            holder.elderlyAlert.setVisibility(View.INVISIBLE);
+                            holder.elderlyAlertDesc.setVisibility(View.INVISIBLE);
+
+                        }
+                    };
+                    timer2.start();
+
                 }
             };
 
@@ -248,10 +319,6 @@ public class ElderlyRecyclerAdapter extends RecyclerView.Adapter<ElderlyRecycler
             holder.elderlyApptTime.setTypeface(null, Typeface.BOLD);
 
 
-
-
-
-
             Calendar start_calendar = Calendar.getInstance();
 
             Timestamp timestamp = apptList.get(0).getTime();
@@ -282,6 +349,9 @@ public class ElderlyRecyclerAdapter extends RecyclerView.Adapter<ElderlyRecycler
 
                 public void onFinish() {
                     holder.elderlyApptTime.setText("done!");
+
+
+                    
                 }
             };
 

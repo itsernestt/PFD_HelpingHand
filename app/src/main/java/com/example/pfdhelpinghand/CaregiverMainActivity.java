@@ -268,17 +268,6 @@ public class CaregiverMainActivity extends AppCompatActivity {
     }
 
 
-    //Testing!!!
-    public void addElderlyRecord()
-    {
-        ArrayList<EmergencyPerson> ePerson = new ArrayList<EmergencyPerson>();
-        ePerson.add(new EmergencyPerson("Chance123", "98284455"));
-        elderlyList.add(new Elderly("12345", "Chen Han", "c@gmail.com","982955865",
-                "12345678", "Clementi", "Clementi mall", ePerson,
-                new ArrayList<Medication>(), new ArrayList<Appointment>(), new ArrayList<String>()));
-
-    }
-
     // For the floating button
     private void animation(){
         if (isOpen)

@@ -59,7 +59,8 @@
         <entry key="app/src/main/res/layout/activity_sign_up_main.xml" value="0.18614130434782608" />
         <entry key="app/src/main/res/layout/activity_view_caregivers.xml" value="0.12454710144927536" />
         <entry key="app/src/main/res/layout/activity_weekly_medication.xml" value="0.24725391478014502" />
-        <entry key="app/src/main/res/layout/elderly_item.xml" value="0.4696752401152029" />
+        <entry key="app/src/main/res/layout/elderly_item.xml" value="0.4443171104051836" />
+        <entry key="app/src/main/res/layout/medication_item.xml" value="0.1443311826419844" />
         <entry key="app/src/main/res/layout/popup_window.xml" value="0.21569325698911973" />
       </map>
     </option>
