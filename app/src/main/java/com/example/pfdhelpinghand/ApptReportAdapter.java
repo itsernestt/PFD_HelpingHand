@@ -46,7 +46,8 @@ public class ApptReportAdapter extends RecyclerView.Adapter<ApptReportAdapter.Ap
         }else{
             holder.apptName.setText(a.apptName);
             holder.apptLocation.setText(a.location);
-            holder.apptTime.setText(simpleDateFormat.format(a.getTime()));
+            String temp = simpleDateFormat.format(a.getTime().toDate());
+            holder.apptTime.setText(temp);
         }
     }
 
