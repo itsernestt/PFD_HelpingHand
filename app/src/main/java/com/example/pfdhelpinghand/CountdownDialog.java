@@ -40,7 +40,6 @@ public class CountdownDialog extends AppCompatActivity{
         setContentView(R.layout.alarm_countdown_popup);
         this.setFinishOnTouchOutside(false);
         Intent intent = getIntent();
-        xBtn = findViewById(R.id.xDialogButton);
         goBtn = findViewById(R.id.takeMedBtn);
         countdownTimerTV = findViewById(R.id.countdownTimer);
         headerTV = findViewById(R.id.headerTV);
@@ -73,14 +72,6 @@ public class CountdownDialog extends AppCompatActivity{
                 }
             });
 
-            CountDownTimer finalCTimer1 = cTimer;
-            xBtn.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    finalCTimer1.cancel();
-                    deleteMedRecord();
-                }
-            });
         }else if (intent.hasExtra("apptname")){
             headerTV.setText("Appointment in 1 hour!");
             goBtn.setText("Check details");
@@ -108,15 +99,6 @@ public class CountdownDialog extends AppCompatActivity{
                     startActivity(i);
                 }
             });
-
-            CountDownTimer finalCTimer1 = cTimer;
-            xBtn.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    finalCTimer1.cancel();
-                }
-            });
-
         }
     }
 

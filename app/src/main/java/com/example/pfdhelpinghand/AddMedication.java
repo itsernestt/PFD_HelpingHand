@@ -2,6 +2,7 @@ package com.example.pfdhelpinghand;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.room.util.StringUtil;
 
 import android.app.AlarmManager;
 import android.app.DatePickerDialog;
@@ -41,6 +42,8 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Locale;
 import java.util.TimeZone;
+
+import io.opencensus.internal.StringUtils;
 
 public class AddMedication extends AppCompatActivity {
 
@@ -97,6 +100,8 @@ public class AddMedication extends AppCompatActivity {
                     @Override
                     public void onClick(View v) {
                         String name = editName.getText().toString().trim();
+                        // Ensures first letter is capitalized
+                        name = name.substring(0,1).toUpperCase() + name.substring(1);
                         String des = editDes.getText().toString().trim();
                         Timestamp ts = new Timestamp(finalCalendar.getTime());
 

@@ -4,7 +4,7 @@ package com.example.pfdhelpinghand;
 import java.io.Serializable;
 
 
-public class User implements Serializable {
+public class    User implements Serializable {
 
     protected String ID;
     protected String fullName;

@@ -6,14 +6,6 @@
     android:layout_gravity="center"
     android:background="@drawable/popupalarmbackground">
 
-    <Button
-        android:id="@+id/xDialogButton"
-        android:layout_width="40dp"
-        android:layout_height="50dp"
-        android:text="x"
-        android:layout_alignParentRight="true"
-        android:layout_marginEnd="5dp"
-        android:backgroundTint="@color/black"/>
 
     <TextView
         android:id="@+id/headerTV"
