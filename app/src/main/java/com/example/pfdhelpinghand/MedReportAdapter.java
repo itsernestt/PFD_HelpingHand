@@ -41,11 +41,13 @@ public class MedReportAdapter extends RecyclerView.Adapter<MedReportAdapter.MedR
             holder.medName.setText(currentMed.medName);
             holder.medPB.setVisibility(View.GONE);
             holder.medRatio.setVisibility(View.GONE);
+            holder.medDes.setVisibility(View.GONE);
         }else{
             holder.medName.setText(currentMed.medName);
             holder.medRatio.setText(currentMed.numSucceed + "/" + currentMed.totalNumber);
             holder.medPB.setMax(currentMed.totalNumber);
             holder.medPB.setProgress(currentMed.numSucceed);
+            holder.medDes.setText(currentMed.medDes);
         }
     }
 
@@ -57,12 +59,14 @@ public class MedReportAdapter extends RecyclerView.Adapter<MedReportAdapter.MedR
     public class MedReportHolder extends RecyclerView.ViewHolder{
         TextView medName;
         TextView medRatio;
+        TextView medDes;
         ProgressBar medPB;
         public MedReportHolder(@NonNull View itemView) {
             super(itemView);
             medName = itemView.findViewById(R.id.medReportNameTV);
             medRatio = itemView.findViewById(R.id.medRatioTV);
             medPB = itemView.findViewById(R.id.medReportProgressBar);
+            medDes = itemView.findViewById(R.id.medReportDescriptionTV);
         }
     }
 }

@@ -32,6 +32,8 @@
         <entry key="..\:/Users/ernes/AndroidStudioProjects/PFDHelpingHand/app/src/main/res/layout/activity_sign_up_main.xml" value="0.1" />
         <entry key="..\:/Users/ernes/AndroidStudioProjects/PFDHelpingHand/app/src/main/res/layout/activity_weekly_medication.xml" value="0.1" />
         <entry key="..\:/Users/ernes/StudioProjects/PFD_HelpingHand/app/src/main/res/layout/activity_main.xml" value="0.27355072463768115" />
+        <entry key="..\:/Users/nhaak/AndroidStudioProjects/PFD_HelpingHand/app/src/main/res/drawable/customborder.xml" value="0.1875" />
+        <entry key="..\:/Users/nhaak/AndroidStudioProjects/PFD_HelpingHand/app/src/main/res/drawable/e_appointment.xml" value="0.1875" />
         <entry key="..\:/Users/nhaak/AndroidStudioProjects/PFD_HelpingHand/app/src/main/res/drawable/e_med.xml" value="0.1605" />
         <entry key="..\:/Users/nhaak/AndroidStudioProjects/PFD_HelpingHand/app/src/main/res/drawable/e_person.xml" value="0.1605" />
         <entry key="..\:/Users/nhaak/AndroidStudioProjects/PFD_HelpingHand/app/src/main/res/drawable/notification_important.xml" value="0.1395" />
@@ -40,6 +42,7 @@
         <entry key="..\:/Users/nhaak/AndroidStudioProjects/PFD_HelpingHand/app/src/main/res/layout/activity_add_medication.xml" value="0.27447916666666666" />
         <entry key="..\:/Users/nhaak/AndroidStudioProjects/PFD_HelpingHand/app/src/main/res/layout/activity_caregiver_main.xml" value="0.27447916666666666" />
         <entry key="..\:/Users/nhaak/AndroidStudioProjects/PFD_HelpingHand/app/src/main/res/layout/activity_caregiver_setting.xml" value="0.27447916666666666" />
+        <entry key="..\:/Users/nhaak/AndroidStudioProjects/PFD_HelpingHand/app/src/main/res/layout/activity_elderly_appointment_report.xml" value="0.27447916666666666" />
         <entry key="..\:/Users/nhaak/AndroidStudioProjects/PFD_HelpingHand/app/src/main/res/layout/activity_elderly_medication_report.xml" value="0.27447916666666666" />
         <entry key="..\:/Users/nhaak/AndroidStudioProjects/PFD_HelpingHand/app/src/main/res/layout/activity_elderly_view_more.xml" value="0.27447916666666666" />
         <entry key="..\:/Users/nhaak/AndroidStudioProjects/PFD_HelpingHand/app/src/main/res/layout/activity_medappt_alarm.xml" value="0.4" />
@@ -51,6 +54,7 @@
         <entry key="..\:/Users/nhaak/AndroidStudioProjects/PFD_HelpingHand/app/src/main/res/layout/activity_weekly_medication.xml" value="0.27447916666666666" />
         <entry key="..\:/Users/nhaak/AndroidStudioProjects/PFD_HelpingHand/app/src/main/res/layout/alarm_countdown_popup.xml" value="0.27447916666666666" />
         <entry key="..\:/Users/nhaak/AndroidStudioProjects/PFD_HelpingHand/app/src/main/res/layout/alarm_popup.xml" value="0.264" />
+        <entry key="..\:/Users/nhaak/AndroidStudioProjects/PFD_HelpingHand/app/src/main/res/layout/appt_report_item.xml" value="0.4" />
         <entry key="..\:/Users/nhaak/AndroidStudioProjects/PFD_HelpingHand/app/src/main/res/layout/elderly_item.xml" value="0.27447916666666666" />
         <entry key="..\:/Users/nhaak/AndroidStudioProjects/PFD_HelpingHand/app/src/main/res/layout/med_report_item.xml" value="0.27447916666666666" />
         <entry key="..\:/Users/nhaak/AndroidStudioProjects/PFD_HelpingHand/app/src/main/res/layout/medication_item.xml" value="0.4" />
