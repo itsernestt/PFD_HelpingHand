@@ -20,9 +20,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="45dp"
+        android:layout_marginTop="60dp"
         android:fontFamily="@font/lato_bold"
-        android:text=""
+        android:text="Header"
         android:textColor="#000000"
         android:textSize="32sp" />
 
@@ -30,9 +30,10 @@
         android:id="@+id/takeMedBtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/countdownTimer"
+        android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="25dp"
+        android:layout_marginTop="0dp"
+        android:layout_marginBottom="5dp"
         android:backgroundTint="#000000"
         android:text="GO!" />
 
@@ -40,9 +41,9 @@
         android:id="@+id/countdownTimer"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/headerTV"
+        android:layout_above="@id/takeMedBtn"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="10dp"
+        android:layout_marginBottom="16dp"
         android:fontFamily="monospace"
         android:text="Countdown Timer"
         android:textColor="@color/black"
