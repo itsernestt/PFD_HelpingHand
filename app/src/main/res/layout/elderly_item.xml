@@ -126,11 +126,56 @@
             android:layout_toEndOf="@id/elderly_medPic"
             android:layout_toRightOf="@+id/elderly_medPic"
 
-            android:text="Next medication in.."
+            android:text="Next med in..."
             android:textColor="@color/black"
-            android:textSize="11sp"
+            android:textSize="12sp"
 
             />
+
+        <TextView
+            android:id="@+id/elderlyItem_med_countdown"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+
+
+            android:layout_alignBaseline="@+id/elderlyItem_med_pvalue"
+            android:layout_marginLeft="20dp"
+            android:visibility="invisible"
+            android:layout_toRightOf="@id/elderlyItem_med_pvalue"
+            android:text="30sec"
+            android:textColor="@color/black"
+            android:textSize="14sp"
+
+            />
+
+        <TextView
+            android:id="@+id/elderlyItem_med_pvalue"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+
+            android:layout_below="@id/elderlyItem_medName"
+
+            android:layout_marginLeft="20dp"
+            android:layout_toRightOf="@+id/elderlyItem_med_des"
+            android:visibility="invisible"
+            android:text="Alert Level: 1"
+            android:textColor="@android:color/holo_red_dark"
+            android:textSize="13sp" />
+
+        <TextView
+            android:id="@+id/elderlyItem_med_alertText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+
+            android:layout_below="@id/elderlyItem_med_pvalue"
+            android:layout_alignLeft="@id/elderlyItem_med_pvalue"
+
+            android:visibility="invisible"
+            android:layout_marginLeft="1dp"
+            android:layout_marginTop="-2dp"
+            android:text="Recommend calling to take med"
+            android:textColor="@android:color/holo_red_dark"
+            android:textSize="11sp" />
 
         <TextView
             android:id="@+id/elderlyItem_medTime"
@@ -197,7 +242,7 @@
 
         <TextView
             android:id="@+id/elderlyItem_appt_loc"
-            android:layout_width="wrap_content"
+            android:layout_width="250dp"
             android:layout_height="wrap_content"
             android:layout_below="@id/elderlyItem_apptName"
 
@@ -209,7 +254,7 @@
             android:text="appointment location"
 
             android:textColor="@color/black"
-            android:textSize="11sp" />
+            android:textSize="12sp" />
 
 
         <TextView
@@ -260,10 +305,10 @@
 
         <TextView
             android:id="@+id/elderlyItem_locName"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-
+            android:layout_width="250dp"
+            android:layout_height="41dp"
             android:layout_below="@id/elderlyItem_apptTime"
+            android:layout_marginStart="10dp"
             android:layout_marginLeft="10dp"
             android:layout_marginTop="30dp"
             android:layout_toEndOf="@id/elderly_locPic"

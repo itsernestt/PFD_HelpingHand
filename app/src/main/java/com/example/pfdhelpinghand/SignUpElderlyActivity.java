@@ -213,9 +213,12 @@ public class SignUpElderlyActivity extends AppCompatActivity {
                             user.updateProfile(profileUpdates);
 
                             eList.add(new EmergencyPerson(contactName, contactPhone));
+                            Integer p = 100;
 
                             ArrayList<Medication> mList = new ArrayList<Medication>();
-                            elderly = new Elderly(userID, userFullName, email, phone, password, 100, addressInCoords,"", eList, mList, new ArrayList<Appointment>(), new ArrayList<String>() );
+
+                            elderly = new Elderly(userID, userFullName, email, phone, password, p, addressInCoords,"", eList, mList, new ArrayList<Appointment>(), new ArrayList<String>() );
+
 
 
 
