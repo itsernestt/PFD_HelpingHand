@@ -64,7 +64,7 @@ public class ElderlyMedicationReportActivity extends AppCompatActivity {
                 }
 
                 if (mList.isEmpty()){
-                    MedicationReport mRpt = new MedicationReport("No reports available yet!", 0, 0);
+                    MedicationReport mRpt = new MedicationReport("No reports available yet!", 0, 0, "");
                     allReports.add(mRpt);
                 }else{
                     ArrayList<String> names = new ArrayList<>();
@@ -78,10 +78,10 @@ public class ElderlyMedicationReportActivity extends AppCompatActivity {
                         }else{
                             names.add(m.medName);
                             if (fList.contains(m)){
-                                MedicationReport mRpt = new MedicationReport(m.medName, 1, 0);
+                                MedicationReport mRpt = new MedicationReport(m.medName, 1, 0, m.medDescription);
                                 allReports.add(mRpt);
                             }else{
-                                MedicationReport mRpt = new MedicationReport(m.medName, 1, 1);
+                                MedicationReport mRpt = new MedicationReport(m.medName, 1, 1, m.medDescription);
                                 allReports.add(mRpt);
                             }
                         }

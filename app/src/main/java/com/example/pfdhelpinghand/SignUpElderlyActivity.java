@@ -259,6 +259,28 @@ public class SignUpElderlyActivity extends AppCompatActivity {
                                 }
                             });
 
+                            //Initialize ElderlyAppointmentHistory
+                            Map<String, Object> ApptHistory = new HashMap<>();
+                            ApptHistory.put("elderlyID", userID);
+                            ApptHistory.put("elderlyName", elderly.getFullName());
+                            ApptHistory.put("apptList", new ArrayList<Appointment>());
+
+                            fStore.collection("ElderlyAppointmentHistory").document(userID)
+                                    .set(ApptHistory)
+                                    .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                        @Override
+                                        public void onSuccess(Void unused) {
+                                            Log.d("TAG","onSuccess: Elderly Appointment History profile created for " + userID);
+                                        }
+                                    }).addOnFailureListener(new OnFailureListener() {
+                                @Override
+                                public void onFailure(@NonNull Exception e) {
+                                    Log.e("TAG", "onFailure: " + e.toString());
+                                }
+                            });
+
+
+
 
                             //Initialize ElderlyLocationML
                             Map<String, Object> LocML = new HashMap<>();

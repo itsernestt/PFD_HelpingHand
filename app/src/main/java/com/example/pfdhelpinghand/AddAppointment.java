@@ -24,6 +24,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.sql.Timestamp;
@@ -113,6 +114,14 @@ public class AddAppointment extends AppCompatActivity {
                                             startActivity(navigateTo);
                                         }
                                     });
+
+                            DocumentReference documentReference = fStore.collection("ElderlyAppointmentHistory").document(userID);
+                            documentReference.update("apptList", FieldValue.arrayUnion(newAppt)).addOnFailureListener(new OnFailureListener() {
+                                @Override
+                                public void onFailure(@NonNull Exception e) {
+                                    Toast.makeText(AddAppointment.this, "Fail to add record!", Toast.LENGTH_SHORT).show();
+                                }
+                            });
                         }
                     }
                 });
