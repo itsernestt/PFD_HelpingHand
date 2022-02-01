@@ -77,6 +77,7 @@ public class ElderlyRecyclerAdapter extends RecyclerView.Adapter<ElderlyRecycler
     FirebaseUser user= fAuth.getCurrentUser();
     String userID = user.getUid();
     DocumentReference docRef = fStore.collection("Caregiver").document(userID);
+
     List elderlyList;
     Integer elderlyPScore;
     Boolean isLastRecordCancel;
