@@ -3,6 +3,12 @@ package com.example.pfdhelpinghand;
 
 import static android.content.ContentValues.TAG;
 
+import static androidx.core.content.ContextCompat.getSystemService;
+
+import android.app.Notification;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -22,6 +28,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.core.app.NotificationCompat;
+import androidx.core.app.NotificationManagerCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -63,7 +70,7 @@ public class ElderlyRecyclerAdapter extends RecyclerView.Adapter<ElderlyRecycler
     Integer elderlyPScore;
     Integer timeCounter;
     Boolean isLastRecordCancel;
-
+    Context context;
 
 
     public ElderlyRecyclerAdapter(ArrayList<Elderly> eList)
@@ -133,6 +140,7 @@ public class ElderlyRecyclerAdapter extends RecyclerView.Adapter<ElderlyRecycler
 
 
         sharedPreferences = parent.getContext().getSharedPreferences("CaretakerValues", Context.MODE_PRIVATE);
+        context = parent.getContext();
 
         View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.elderly_item, parent, false);
 
@@ -145,10 +153,12 @@ public class ElderlyRecyclerAdapter extends RecyclerView.Adapter<ElderlyRecycler
     public void onBindViewHolder(@NonNull ElderlyRecyclerAdapter.MyViewHolder holder, int position) {
 
 
+
         holder.elderlyIndex.setText(String.valueOf(position + 1));
 
         String eName = elderlyArrayList.get(position).getFullName();
         holder.eldelyName.setText(eName);
+
 
 
         String ePhone = elderlyArrayList.get(position).getPhoneNumber();
@@ -158,6 +168,8 @@ public class ElderlyRecyclerAdapter extends RecyclerView.Adapter<ElderlyRecycler
 
 
         ArrayList<Medication> mList = elderlyArrayList.get(position).getMedList();
+
+
 
 
         // ---To do: get the lastest med record according to the current date time---
@@ -185,7 +197,9 @@ public class ElderlyRecyclerAdapter extends RecyclerView.Adapter<ElderlyRecycler
                 };
             });
 
-            holder.elderlyMedName.setText(mList.get(0).medName);
+            String medName = mList.get(0).medName;
+
+            holder.elderlyMedName.setText(medName);
             holder.elderlyMedTime.setTextColor(Color.RED);
             holder.elderlyMedTime.setTypeface(null, Typeface.BOLD);
 
@@ -277,8 +291,32 @@ public class ElderlyRecyclerAdapter extends RecyclerView.Adapter<ElderlyRecycler
                             holder.elderlyAlert.setVisibility(View.INVISIBLE);
                             holder.elderly30s.setVisibility(View.INVISIBLE);
                             holder.elderlyAlertDesc.setVisibility(View.INVISIBLE);
-                            holder.elderlyAlertDesc.setText("Please follow up on previous medication!");
-                            holder.elderlyAlertDesc.setTextColor(Color.RED);
+
+
+                            String message = "Elderly has just missed taking ( " + medName + " )";
+
+
+
+                            NotificationCompat.Builder builder = new NotificationCompat.Builder(context, "NotifyElderlyMed");
+                            builder.setContentTitle("Alert! Elderly Has Missed Medication! ");
+                            builder.setContentText(message);
+                            builder.setContentInfo("Please follow up!");
+                            builder.setSmallIcon(R.drawable.app_icon);
+                            builder.setPriority(NotificationCompat.PRIORITY_HIGH);
+                            builder.setDefaults(NotificationCompat.DEFAULT_ALL);
+                            builder.setAutoCancel(true);
+                            Intent intent = new Intent(context, CaregiverMainActivity.class);
+
+                            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                            intent.putExtra("message", message);
+                            PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+                            builder.setContentIntent(pendingIntent);
+
+
+                            NotificationManagerCompat managerCompat =  NotificationManagerCompat.from(context);
+                            managerCompat.notify(0, builder.build());
+
+
 
 
                         }
