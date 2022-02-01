@@ -1,12 +1,16 @@
 package com.example.pfdhelpinghand;
 
+import android.Manifest;
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.location.Address;
 import android.location.Geocoder;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -17,6 +21,8 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -49,6 +55,8 @@ public class ElderlyViewMore extends AppCompatActivity {
             elderlyPScore;
     Button medReport, apptReport, delete;
     ImageButton callBut;
+    Integer requestCodeInt = 2;
+    String phoneNumber;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,6 +67,7 @@ public class ElderlyViewMore extends AppCompatActivity {
         fStore = FirebaseFirestore.getInstance();
         user = fAuth.getCurrentUser();
         userID = user.getUid();
+
 
 
         sharedPreferences = getSharedPreferences("CaretakerValues", Context.MODE_PRIVATE);
@@ -81,6 +90,13 @@ public class ElderlyViewMore extends AppCompatActivity {
         //Set image button
         callBut = findViewById(R.id.viewMore_emergencyPersonCall);
 
+        callBut.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                makePhonecall(phoneNumber);
+            }
+        });
+
         //Get elderly object
         fStore.collection("Elderly").document(elderlyID)
                 .get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
@@ -92,6 +108,7 @@ public class ElderlyViewMore extends AppCompatActivity {
                 elderlyEmail.setText(elderly.getEmail());
                 elderlyPScore.setText(String.valueOf(elderly.getP_score()));
                 String address = elderly.getAddress();
+
 
                 String address2 = address.replaceAll("\\s+","");
                 String[] str = address2.split("[,]", 0);
@@ -119,6 +136,8 @@ public class ElderlyViewMore extends AppCompatActivity {
                 emerList = elderly.getEmergencyPerson();
                 emergencyName.setText(emerList.get(0).getFullName());
                 emergencyPhone.setText(emerList.get(0).getPhoneNumber());
+
+                phoneNumber = emerList.get(0).getPhoneNumber();
 
             }
         });
@@ -217,5 +236,41 @@ public class ElderlyViewMore extends AppCompatActivity {
             }
         });
 
+    } // end of onCreate
+
+
+
+    public void makePhonecall(String phoneNum)
+    {
+        if (phoneNum != null)
+        {
+            if (ContextCompat.checkSelfPermission(ElderlyViewMore.this, Manifest.permission.CALL_PHONE)
+                    != PackageManager.PERMISSION_GRANTED)
+            {
+                ActivityCompat.requestPermissions((Activity) ElderlyViewMore.this, new String[] {Manifest.permission.CALL_PHONE} , requestCodeInt);
+            }
+            else
+            {
+
+                String s = "tel:" + phoneNum;
+                Intent intent = new Intent(Intent.ACTION_CALL);
+                intent.setData(Uri.parse(s));
+                startActivity(intent);
+            }
+        }
+        else {
+            Toast.makeText(ElderlyViewMore.this, "NO phone number set!", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        if (requestCode == requestCodeInt)
+        {
+            if (grantResults.length>0 && grantResults[0] == PackageManager.PERMISSION_GRANTED)
+            {
+                makePhonecall(phoneNumber);
+            }
+        }
     }
 }
