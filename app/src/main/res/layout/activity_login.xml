@@ -106,7 +106,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.077"
-        app:srcCompat="@drawable/app_icon" />
+        app:srcCompat="@drawable/app_icon_w_text" />
 
     <ProgressBar
         android:id="@+id/progressBar"
