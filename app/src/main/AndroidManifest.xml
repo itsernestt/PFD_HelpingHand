@@ -21,9 +21,7 @@
         android:roundIcon="@drawable/app_icon"
         android:supportsRtl="true"
         android:theme="@style/Theme.PFDHelpingHand">
-        <activity
-            android:name=".ViewCaregiverAdapter"
-            android:exported="false" />
+
         <activity
             android:name=".ElderlyMedicationReportActivity"
             android:exported="false" />
@@ -89,7 +87,9 @@
         <activity android:name=".MainActivity" />
         <activity
             android:name=".LoginActivity"
-            android:exported="true">
+            android:exported="true"
+            android:label="Welcome to HelpingHand!"
+            android:theme="@style/AppThemeLogin">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
