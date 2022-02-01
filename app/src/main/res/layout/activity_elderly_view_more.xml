@@ -133,8 +133,8 @@
 
             <TextView
                 android:id="@+id/viewMore_elderlyAddress"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="280dp"
+                android:layout_height="51dp"
                 android:layout_below="@id/viewMore_elderlyEmail"
 
                 android:layout_marginLeft="20dp"
@@ -152,7 +152,7 @@
                 android:id="@+id/viewMore_text11"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/viewMore_text4"
+                android:layout_below="@id/viewMore_elderlyAddress"
                 android:layout_marginLeft="40dp"
 
                 android:layout_marginTop="20dp"

@@ -2,12 +2,17 @@ package com.example.pfdhelpinghand;
 
 import static android.content.ContentValues.TAG;
 
+import static androidx.core.content.ContextCompat.getSystemService;
+
 import android.app.Dialog;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.TextUtils;
@@ -22,7 +27,9 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.NotificationManagerCompat;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -76,6 +83,10 @@ public class CaregiverMainActivity extends AppCompatActivity {
     private RecyclerView recyclerView;
 
 
+
+
+
+    @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -104,6 +115,13 @@ public class CaregiverMainActivity extends AppCompatActivity {
         pairupBut = findViewById(R.id.caregiver_pairupBut);
 
         Date dateTest = Calendar.getInstance().getTime();
+
+
+        NotificationChannel channel = new NotificationChannel("NotifyElderlyMed", "NotifyElderlyMed", NotificationManager.IMPORTANCE_HIGH);
+        NotificationManager manager;
+        manager = (NotificationManager) getSystemService(NotificationManager.class);
+
+        manager.createNotificationChannel(channel);
 
         
         //Display time
