@@ -3,15 +3,22 @@ package com.example.pfdhelpinghand;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.Manifest;
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -24,6 +31,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import java.util.ArrayList;
 
 public class ViewCaregiverAdapter extends RecyclerView.Adapter<ViewCaregiverAdapter.MyViewHolder>
+    implements ActivityCompat.OnRequestPermissionsResultCallback
 {
     private ArrayList<Caretaker> caretakerArrayList;
     Elderly elderly;
@@ -35,11 +43,48 @@ public class ViewCaregiverAdapter extends RecyclerView.Adapter<ViewCaregiverAdap
     ArrayList<String> caregiverStringList;
     Context context;
 
+    Integer requestCodeInt = 16;
+    String phoneNumber;
+
 
 
     public ViewCaregiverAdapter(ArrayList<Caretaker> cList)
     {
         this.caretakerArrayList = cList;
+    }
+
+    public void makePhonecall(String phoneNum)
+    {
+        if (phoneNum != null)
+        {
+            if (ContextCompat.checkSelfPermission(context, Manifest.permission.CALL_PHONE)
+                    != PackageManager.PERMISSION_GRANTED)
+            {
+                ActivityCompat.requestPermissions((Activity) context, new String[] {Manifest.permission.CALL_PHONE} , requestCodeInt);
+            }
+            else
+            {
+
+                String s = "tel:" + phoneNum;
+                Intent intent = new Intent(Intent.ACTION_CALL);
+                intent.setData(Uri.parse(s));
+                context.startActivity(intent);
+            }
+        }
+        else {
+            Toast.makeText(context, "NO phone number set!", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        if (requestCode == requestCodeInt)
+        {
+            if (grantResults.length>0 && grantResults[0] == PackageManager.PERMISSION_GRANTED)
+            {
+                makePhonecall(phoneNumber);
+            }
+        }
     }
 
 
@@ -88,7 +133,14 @@ public class ViewCaregiverAdapter extends RecyclerView.Adapter<ViewCaregiverAdap
         holder.caregiverName.setText(caregiverName);
         holder.caregiverPhoneNum.setText(caregiverPhone);
 
+        phoneNumber = caretakerArrayList.get(position).getPhoneNumber();
 
+        holder.caregiverPhoneCall.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                makePhonecall(phoneNumber);
+            }
+        });
 
 
 
