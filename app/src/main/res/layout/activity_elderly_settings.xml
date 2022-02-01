@@ -7,40 +7,297 @@
     android:background="#DFFFE1"
     tools:context=".ElderlySettingsActivity">
 
-    <Button
-        android:id="@+id/eldSettingsBack"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="5dp"
-        android:layout_marginTop="5dp"
-        android:text="Back"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        >
 
-    <TextView
-        android:id="@+id/caregiversTV"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
-        android:clickable="true"
-        android:text="View my Care-takers"
-        android:textAllCaps="true"
-        android:textColor="@android:color/darker_gray"
-        android:textSize="16sp"
-        android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/eldSettingsBack" />
 
-    <Button
-        android:id="@+id/logOutButton1"
-        android:layout_width="450dp"
-        android:layout_height="80dp"
-        android:onClick="logout"
-        android:text="LOG OUT"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.512"
-        app:layout_constraintStart_toStartOf="parent" />
+        <Button
+            android:id="@+id/eldSettingsBack"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="5dp"
+            android:text="Back"
+            android:textColor="#000000"
+            app:backgroundTint="#00FFFFFF"
+            app:strokeColor="#000000"
+            app:strokeWidth="2dp"
+            />
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            >
+
+            <TextView
+                android:id="@+id/caregiversTV"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:clickable="true"
+                android:outlineAmbientShadowColor="@color/black"
+                android:text="View my Care-takers"
+                android:textAllCaps="true"
+                android:textColor="@android:color/darker_gray"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:layout_above="@+id/logOutButton1"
+                android:layout_marginBottom="40dp"
+
+                />
+
+
+            <TextView
+                android:id="@+id/elderlySetting_text1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+
+                android:layout_marginLeft="40dp"
+
+                android:layout_marginTop="40dp"
+
+                android:text="Elderly Name: "
+                android:textColor="@color/black"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/elderlySetting_elderlyName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="20dp"
+                android:layout_toEndOf="@+id/elderlySetting_text1"
+                android:layout_toRightOf="@+id/elderlySetting_text1"
+                android:layout_alignBaseline="@+id/elderlySetting_text1"
+                android:text=""
+                android:textColor="@color/black"
+                android:textSize="16sp" />
+
+
+            <TextView
+                android:id="@+id/elderlySetting_text2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/elderlySetting_text1"
+                android:layout_marginLeft="40dp"
+
+                android:layout_marginTop="20dp"
+
+                android:text="Phone number: "
+                android:textColor="@color/black"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/elderlySetting_phoneNum"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/elderlySetting_text1"
+
+                android:layout_marginLeft="20dp"
+                android:layout_toEndOf="@+id/elderlySetting_text2"
+                android:layout_toRightOf="@+id/elderlySetting_text2"
+                android:layout_alignBaseline="@+id/elderlySetting_text2"
+
+                android:text=""
+                android:textColor="@color/black"
+                android:textSize="16sp"
+
+                />
+
+
+            <TextView
+                android:id="@+id/elderlySetting_text3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/elderlySetting_text2"
+                android:layout_marginLeft="40dp"
+
+                android:layout_marginTop="20dp"
+
+                android:text="Email: "
+                android:textColor="@color/black"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/elderlySetting_email"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/elderlySetting_text2"
+
+                android:layout_marginLeft="20dp"
+                android:layout_toEndOf="@+id/elderlySetting_text3"
+                android:layout_toRightOf="@+id/elderlySetting_text3"
+                android:layout_alignBaseline="@id/elderlySetting_text3"
+
+                android:text=""
+                android:textColor="@color/black"
+                android:textSize="16sp"
+
+                />
+
+            <TextView
+                android:id="@+id/elderlySetting_text4"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/elderlySetting_text3"
+                android:layout_marginLeft="40dp"
+
+                android:layout_marginTop="20dp"
+
+                android:text="Address: "
+                android:textColor="@color/black"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/elderlySetting_address"
+                android:layout_width="280dp"
+                android:layout_height="51dp"
+                android:layout_below="@id/elderlySetting_text3"
+
+                android:layout_alignBaseline="@id/elderlySetting_text4"
+                android:layout_marginLeft="20dp"
+                android:layout_toEndOf="@+id/elderlySetting_text4"
+                android:layout_toRightOf="@+id/elderlySetting_text4"
+
+                android:text=""
+                android:textColor="@color/black"
+                android:textSize="16sp"
+
+                />
+
+            <TextView
+                android:id="@+id/elderlySetting_text5"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/elderlySetting_address"
+                android:layout_marginLeft="40dp"
+
+                android:layout_marginTop="20dp"
+
+                android:text="Punctuality score: "
+                android:textColor="@color/black"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/elderlySetting_pscore"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/elderlySetting_address"
+
+                android:layout_alignBaseline="@+id/elderlySetting_text5"
+                android:layout_marginLeft="20dp"
+                android:layout_toEndOf="@+id/elderlySetting_text5"
+                android:layout_toRightOf="@+id/elderlySetting_text5"
+
+                android:text=""
+                android:textColor="@android:color/holo_red_dark"
+                android:textSize="16sp"
+
+                />
+
+            <TextView
+                android:id="@+id/elderlySetting_text6"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/elderlySetting_text5"
+                android:layout_marginLeft="40dp"
+
+                android:layout_marginTop="40dp"
+
+                android:text="Emergency Contact Person (main) "
+                android:textColor="@color/black"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/elderlySetting_text7"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/elderlySetting_text6"
+                android:layout_marginLeft="40dp"
+
+                android:layout_marginTop="10dp"
+
+                android:text="Name: "
+                android:textColor="@color/black"
+                android:textSize="14sp" />
+
+
+            <TextView
+                android:id="@+id/elderlySetting_emergencyname"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/elderlySetting_text6"
+
+                android:layout_marginLeft="20dp"
+                android:layout_toEndOf="@+id/elderlySetting_text7"
+                android:layout_toRightOf="@+id/elderlySetting_text7"
+                android:layout_alignBaseline="@id/elderlySetting_text7"
+
+                android:text=""
+                android:textColor="@color/black"
+                android:textSize="14sp"
+
+                />
+
+            <TextView
+                android:id="@+id/elderlySetting_text8"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/elderlySetting_text7"
+                android:layout_marginLeft="40dp"
+
+                android:layout_marginTop="10dp"
+
+                android:text="Phone number: "
+                android:textColor="@color/black"
+                android:textSize="14sp" />
+
+
+            <TextView
+                android:id="@+id/elderlySetting_emergencyPhone"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/elderlySetting_text7"
+
+                android:layout_marginLeft="20dp"
+                android:layout_toEndOf="@+id/elderlySetting_text8"
+                android:layout_toRightOf="@+id/elderlySetting_text8"
+                android:layout_alignBaseline="@id/elderlySetting_text8"
+
+                android:text=""
+                android:textColor="@color/black"
+                android:textSize="14sp"
+
+                />
+
+
+
+
+            <Button
+                android:id="@+id/logOutButton1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_centerHorizontal="true"
+                android:layout_marginBottom="20dp"
+                android:onClick="logout"
+                android:text="LOG OUT" />
+
+
+
+
+        </RelativeLayout>
+
+    </LinearLayout>
+
+
 </androidx.constraintlayout.widget.ConstraintLayout>
