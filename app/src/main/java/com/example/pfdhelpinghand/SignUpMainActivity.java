@@ -27,7 +27,7 @@ import java.util.ArrayList;
 
 public class SignUpMainActivity extends AppCompatActivity {
     EditText mFullName, mEmail, mPassword, mPassword2, mPhone;
-    Button mRegisterButton, mBackBut;
+    Button mRegisterButton;
     FirebaseAuth fAuth;
     FirebaseFirestore fStore;
     String userID;
@@ -45,7 +45,6 @@ public class SignUpMainActivity extends AppCompatActivity {
         mPassword2 = findViewById(R.id.caregiverPassword2);
         mPhone = findViewById(R.id.caregiverPhone);
         mRegisterButton = findViewById(R.id.caregiverRegisterButton);
-        mBackBut = findViewById(R.id.backButton);
 
 
 
@@ -58,14 +57,6 @@ public class SignUpMainActivity extends AppCompatActivity {
             finish();
         }
 
-
-        mBackBut.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent navigateToPreviousPage = new Intent(SignUpMainActivity.this, com.example.pfdhelpinghand.LoginActivity.class);
-                startActivity(navigateToPreviousPage);
-            }
-        });
 
         mRegisterButton.setOnClickListener(new View.OnClickListener(){
             @Override

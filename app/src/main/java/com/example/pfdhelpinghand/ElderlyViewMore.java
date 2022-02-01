@@ -107,8 +107,8 @@ public class ElderlyViewMore extends AppCompatActivity {
                 elderlyPhone.setText(elderly.getPhoneNumber());
                 elderlyEmail.setText(elderly.getEmail());
                 elderlyPScore.setText(String.valueOf(elderly.getP_score()));
-                String address = elderly.getAddress();
 
+                String address = elderly.getAddress();
 
                 String address2 = address.replaceAll("\\s+","");
                 String[] str = address2.split("[,]", 0);
@@ -122,7 +122,6 @@ public class ElderlyViewMore extends AppCompatActivity {
                     List<Address> addressList = geocoder.getFromLocation(lat, lng, 1);
                     String addressLine = addressList.get(0).getAddressLine(0);
                     elderlyAddress.setText(addressLine);
-
                 }
                 catch (Exception e)
                 {
