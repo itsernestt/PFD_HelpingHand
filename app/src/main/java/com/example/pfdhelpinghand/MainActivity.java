@@ -52,6 +52,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -94,6 +95,7 @@ public class MainActivity extends AppCompatActivity implements IBaseGpsListener 
     ElderlyLocation currentLocation;
     String locationAddress;
     String locationURL;
+    String locationInCoords;
 
     String phoneNumber;
 
@@ -110,7 +112,6 @@ public class MainActivity extends AppCompatActivity implements IBaseGpsListener 
     //A config file for all setting related to FuredLocationProviderClient
     LocationRequest locationRequest;
     LocationCallback locationCallBack;
-
 
 
     @Override
@@ -143,6 +144,8 @@ public class MainActivity extends AppCompatActivity implements IBaseGpsListener 
 
         locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
         currentLocation = new ElderlyLocation();
+
+        fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
 
 
         String userID = user.getUid();
@@ -382,8 +385,6 @@ public class MainActivity extends AppCompatActivity implements IBaseGpsListener 
         );
 
 
-
-
         Button locationButton = findViewById(R.id.locationButton);
         locationButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -402,8 +403,6 @@ public class MainActivity extends AppCompatActivity implements IBaseGpsListener 
         });
 
 
-
-
         pairUpDialog = new Dialog(this);
 
         viewPairUp.setOnClickListener(new View.OnClickListener() {
@@ -415,7 +414,7 @@ public class MainActivity extends AppCompatActivity implements IBaseGpsListener 
         });
 
 
-
+/*
         //update the elderly current location every 1 minute
         new Timer().scheduleAtFixedRate(new TimerTask() {
             @Override
@@ -423,6 +422,8 @@ public class MainActivity extends AppCompatActivity implements IBaseGpsListener 
                 UpdateLocation();
             }
         }, 0, 60000*3);//put here time 1000 milliseconds=1 second
+
+ */
 //
 //
 //        new Timer().scheduleAtFixedRate(new TimerTask() {
@@ -448,24 +449,22 @@ public class MainActivity extends AppCompatActivity implements IBaseGpsListener 
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M &&
                 checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION)
-                    != PackageManager.PERMISSION_GRANTED)
-        {
+                        != PackageManager.PERMISSION_GRANTED) {
             requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, PERMISSIONS_FINE_LOCATION);
 
-        }else{
+        } else {
             showLocation();
         }
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M &&
-                !Settings.canDrawOverlays(this))
-        {
+                !Settings.canDrawOverlays(this)) {
             askForOverlay();
         }
 
 
     }// end of on create method
 
-    public void askForOverlay(){
+    public void askForOverlay() {
         new AlertDialog.Builder(MainActivity.this)
                 .setTitle("Request permission")
                 .setMessage("Our application requires your permission to send alerts anywhere. Grant permission?")
@@ -503,25 +502,27 @@ public class MainActivity extends AppCompatActivity implements IBaseGpsListener 
             }
         }
 
-        if (requestCode == PERMISSION_PHONE_CALL)
-        {
-            if (grantResults.length>0 && grantResults[0] == PackageManager.PERMISSION_GRANTED)
-            {
+        if (requestCode == PERMISSION_PHONE_CALL) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 makePhonecall(phoneNumber);
             }
         }
     }
 
-    @SuppressLint("MissingPermission")
-    private void showLocation()
-    {
+
+    // -----------------FOR LOCATION --------------//
+    private void showLocation() {
         LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-        if (locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER))
-        {
+        if (locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                // TODO: Consider calling
+                ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+                        PERMISSIONS_FINE_LOCATION);
+            }
+            getLocation();
             locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, this);
 
-
-        }else{
+        } else {
             Toast.makeText(this, "Enable GPS!", Toast.LENGTH_SHORT).show();
             startActivity(new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS));
         }
@@ -532,17 +533,7 @@ public class MainActivity extends AppCompatActivity implements IBaseGpsListener 
     public void onLocationChanged(Location location) {
         //update location
 
-        test1.setText("Lat: " + String.valueOf(location.getLatitude()));
-        test2.setText("Lng: " + String.valueOf(location.getLongitude()));
-
-        LocalDateTime date = LocalDateTime.now();
-        int seconds = date.toLocalTime().toSecondOfDay();
-
-        currentLocation.setLat(location.getLatitude());
-        currentLocation.setLng(location.getLongitude());
-        currentLocation.setTime(seconds);
-        locationURL = String.format("geo:%1$f,%2$f", location.getLatitude(), location.getLongitude());
-
+        UpdateLocation(location);
 
         Geocoder geocoder = new Geocoder(MainActivity.this);
         try {
@@ -550,9 +541,7 @@ public class MainActivity extends AppCompatActivity implements IBaseGpsListener 
             test4.setText(addressList.get(0).getAddressLine(0));
             locationAddress = addressList.get(0).getAddressLine(0);
 
-        }
-        catch (Exception e)
-        {
+        } catch (Exception e) {
             test4.setText("Not available");
 
         }
@@ -580,12 +569,47 @@ public class MainActivity extends AppCompatActivity implements IBaseGpsListener 
 
     }
 
+    public void getLocation() {
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            // TODO: Consider calling
+            ActivityCompat.requestPermissions(MainActivity.this, new String[] {Manifest.permission.ACCESS_FINE_LOCATION},
+                    PERMISSIONS_FINE_LOCATION);
+            return;
+        }
+        fusedLocationProviderClient.getLastLocation().addOnCompleteListener(new OnCompleteListener<Location>() {
+            @Override
+            public void onComplete(@NonNull Task<Location> task) {
+                Location loc = task.getResult();
+                if (loc != null) {
+                    UpdateLocation(loc);
+                }
+            }
+        });
+    }
+
 
 
     // Updates the database of the location
-    public void UpdateLocation() {
+    public void UpdateLocation(Location location) {
+
+
+        test1.setText("Lat: " + String.valueOf(location.getLatitude()));
+        test2.setText("Lng: " + String.valueOf(location.getLongitude()));
+
+        LocalDateTime date = LocalDateTime.now();
+        int seconds = date.toLocalTime().toSecondOfDay();
+
+        currentLocation.setLat(location.getLatitude());
+        currentLocation.setLng(location.getLongitude());
+        currentLocation.setTime(seconds);
+        locationURL = String.format("geo:%1$f,%2$f", location.getLatitude(), location.getLongitude());
+
+        locationInCoords = String.valueOf(location.getLatitude()) + " , " + String.valueOf(location.getLongitude());
+
+
+
         fStore.collection("Elderly").document(user.getUid())
-                .update("currentLocation", locationAddress)
+                .update("currentLocation", locationInCoords)
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void unused) {
@@ -616,7 +640,7 @@ public class MainActivity extends AppCompatActivity implements IBaseGpsListener 
     }
 
 
-
+//------------FOR MED AND APPT ALARM ---------------------//
 
     private void getAlarms(){
         DocumentReference docRef =  fStore.collection("Elderly").document(user.getUid());

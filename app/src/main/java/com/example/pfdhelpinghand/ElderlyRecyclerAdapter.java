@@ -18,6 +18,8 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.graphics.Typeface;
+import android.location.Address;
+import android.location.Geocoder;
 import android.net.Uri;
 import android.os.Build;
 import android.os.CountDownTimer;
@@ -77,11 +79,14 @@ public class ElderlyRecyclerAdapter extends RecyclerView.Adapter<ElderlyRecycler
     DocumentReference docRef = fStore.collection("Caregiver").document(userID);
     List elderlyList;
     Integer elderlyPScore;
-    Integer timeCounter;
     Boolean isLastRecordCancel;
     Context context;
     Integer requestCodeInt = 1;
     String phoneNumber;
+
+    String currentLocationString;
+    double lat, lng;
+
 
 
     public ElderlyRecyclerAdapter(ArrayList<Elderly> eList)
@@ -199,9 +204,7 @@ public class ElderlyRecyclerAdapter extends RecyclerView.Adapter<ElderlyRecycler
     @Override
     public void onBindViewHolder(@NonNull ElderlyRecyclerAdapter.MyViewHolder holder, int position)
     {
-
-
-
+        // For general
 
         holder.elderlyIndex.setText(String.valueOf(position + 1));
 
@@ -222,6 +225,7 @@ public class ElderlyRecyclerAdapter extends RecyclerView.Adapter<ElderlyRecycler
         phoneNumber = elderlyArrayList.get(position).getPhoneNumber();
 
 
+        // For Phone call button
 
         holder.phonecall.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -232,7 +236,7 @@ public class ElderlyRecyclerAdapter extends RecyclerView.Adapter<ElderlyRecycler
 
 
 
-        // FOR MEDICATION //
+        // For Medication
         if (mList.size() == 0)
         {
             holder.elderlyMedName.setText("No record found");
@@ -404,9 +408,9 @@ public class ElderlyRecyclerAdapter extends RecyclerView.Adapter<ElderlyRecycler
         }
 
 
-
+        // For appointment
         ArrayList<Appointment> apptList = elderlyArrayList.get(position).getApptList();
-        // ---To do: same as above task---
+
         if (apptList.size() == 0)
         {
             holder.elderlyApptName.setText("No record found");
@@ -433,10 +437,14 @@ public class ElderlyRecyclerAdapter extends RecyclerView.Adapter<ElderlyRecycler
             });
             
             holder.elderlyApptName.setText(apptList.get(0).apptName);
+
+
+
             holder.elderlyApptLoc.setText(apptList.get(0).location);
 
             holder.elderlyApptTime.setTextColor(Color.RED);
             holder.elderlyApptTime.setTypeface(null, Typeface.BOLD);
+
 
 
             Calendar start_calendar = Calendar.getInstance();
@@ -478,9 +486,6 @@ public class ElderlyRecyclerAdapter extends RecyclerView.Adapter<ElderlyRecycler
 
 
 
-
-
-
             holder.viewAppt.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -495,11 +500,7 @@ public class ElderlyRecyclerAdapter extends RecyclerView.Adapter<ElderlyRecycler
             });
         }
 
-
-        String eLocation = elderlyArrayList.get(position).getCurrentLocation();
-        holder.elderlyLoc.setText(eLocation);
-
-
+        // For viewing more info button
         holder.viewMore.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -513,18 +514,56 @@ public class ElderlyRecyclerAdapter extends RecyclerView.Adapter<ElderlyRecycler
             }
         });
 
+        // For elderly current location
+
+        currentLocationString = elderlyArrayList.get(position).getCurrentLocation();
 
 
+        Geocoder geocoder = new Geocoder(context);
+        try {
+            String eLocation2 = currentLocationString.replaceAll("\\s+","");
+            String[] str = eLocation2.split("[,]", 0);
+            String latString = str[0];
+            String lngString = str[1];
+            lat = Double.parseDouble(latString);
+            lng = Double.parseDouble(lngString);
+
+            List<Address> addressList = geocoder.getFromLocation(lat, lng, 1);
+            String addressLine = addressList.get(0).getAddressLine(0);
+            holder.elderlyLoc.setText(addressLine);
 
 
+        }
+        catch (Exception e)
+        {
+            holder.elderlyLoc.setText("not available at the moment!");
+        }
 
 
+        // For viewing elderly current location
+        holder.viewLoc.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (currentLocationString != null)
+                {
+                    String locationURL = String.format("geo:%1$f,%2$f",lat, lng);
+
+                    Uri gmmIntentUri = Uri.parse(locationURL);
+
+                    Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
+                    mapIntent.setPackage("com.google.android.apps.maps");
+                    context.startActivity(mapIntent);
+                }
+            }
+        });
     }
+
+
+
+
 
     @Override
     public int getItemCount() {
         return elderlyArrayList.size();
     }
-
-
 }
