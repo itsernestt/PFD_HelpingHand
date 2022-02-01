@@ -10,6 +10,7 @@ import android.app.NotificationManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
@@ -188,7 +189,7 @@ public class CaregiverMainActivity extends AppCompatActivity {
 
 
 
-    }
+    }// end of OnCreate
 
 
     //Avoid going backwards
@@ -478,6 +479,7 @@ public class CaregiverMainActivity extends AppCompatActivity {
 
 
     }
+
 
 
     //This pop up is for caregiver to see pairing history and progress

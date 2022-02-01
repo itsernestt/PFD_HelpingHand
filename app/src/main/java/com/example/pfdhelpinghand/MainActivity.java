@@ -81,6 +81,7 @@ import java.util.TimerTask;
 
 public class MainActivity extends AppCompatActivity implements IBaseGpsListener {
     private static final int PERMISSIONS_FINE_LOCATION = 99;
+    private static final int PERMISSION_PHONE_CALL = 10;
 
     FirebaseAuth fAuth;
     FirebaseUser user;
@@ -93,6 +94,8 @@ public class MainActivity extends AppCompatActivity implements IBaseGpsListener 
     ElderlyLocation currentLocation;
     String locationAddress;
     String locationURL;
+
+    String phoneNumber;
 
     TextView test1, test2, test3, test4;
     Switch trackingSwitch;
@@ -337,7 +340,9 @@ public class MainActivity extends AppCompatActivity implements IBaseGpsListener 
 
                                                      //startActivity(callIntent);
                                                      //Toast.makeText(getApplicationContext(), "Calling "+number+", please wait", Toast.LENGTH_SHORT).show();
-                                                     Toast.makeText(getApplicationContext(), emergencyPeople.get(0).getPhoneNumber(), Toast.LENGTH_SHORT).show();
+                                                     phoneNumber = emergencyPeople.get(0).getPhoneNumber();
+                                                     makePhonecall(phoneNumber);
+                                                     Toast.makeText(getApplicationContext(), phoneNumber, Toast.LENGTH_SHORT).show();
 
 
                                                  }
@@ -495,6 +500,14 @@ public class MainActivity extends AppCompatActivity implements IBaseGpsListener 
             } else {
                 Toast.makeText(this, "Permission not granted!", Toast.LENGTH_SHORT).show();
                 finish();
+            }
+        }
+
+        if (requestCode == PERMISSION_PHONE_CALL)
+        {
+            if (grantResults.length>0 && grantResults[0] == PackageManager.PERMISSION_GRANTED)
+            {
+                makePhonecall(phoneNumber);
             }
         }
     }
@@ -774,6 +787,31 @@ public class MainActivity extends AppCompatActivity implements IBaseGpsListener 
             overridePendingTransition(0, 0);
         }
     };
+
+    //for phone call
+    public void makePhonecall(String phoneNum)
+    {
+        if (phoneNum != null)
+        {
+            if (ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.CALL_PHONE)
+                    != PackageManager.PERMISSION_GRANTED)
+            {
+                ActivityCompat.requestPermissions((Activity) MainActivity.this, new String[] {Manifest.permission.CALL_PHONE} , PERMISSION_PHONE_CALL);
+            }
+            else
+            {
+
+                String s = "tel:" + phoneNum;
+                Intent intent = new Intent(Intent.ACTION_CALL);
+                intent.setData(Uri.parse(s));
+                startActivity(intent);
+            }
+        }
+        else {
+            Toast.makeText(MainActivity.this, "NO phone number set!", Toast.LENGTH_SHORT).show();
+        }
+    }
+
 
 
 }

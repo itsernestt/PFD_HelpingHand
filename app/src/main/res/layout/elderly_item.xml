@@ -63,16 +63,15 @@
             android:id="@+id/elderlyItem_phonecall"
             android:layout_width="36dp"
             android:layout_height="36dp"
-            app:tint="@android:color/black"
             android:layout_marginLeft="40dp"
             android:layout_marginRight="80dp"
             android:layout_toRightOf="@id/elderlyItem_name"
-
             android:adjustViewBounds="false"
             android:background="@null"
             android:elevation="5dp"
             android:scaleType="fitXY"
-            app:srcCompat="@drawable/e_phonecall" />
+            app:srcCompat="@drawable/e_phonecall"
+            app:tint="@android:color/black" />
 
         <ImageButton
             android:id="@+id/elderlyItem_viewMore"

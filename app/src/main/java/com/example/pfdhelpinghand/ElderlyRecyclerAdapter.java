@@ -4,7 +4,10 @@ package com.example.pfdhelpinghand;
 import static android.content.ContentValues.TAG;
 
 import static androidx.core.content.ContextCompat.getSystemService;
+import static androidx.core.content.ContextCompat.startActivity;
 
+import android.Manifest;
+import android.app.Activity;
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
@@ -12,8 +15,10 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.graphics.Typeface;
+import android.net.Uri;
 import android.os.Build;
 import android.os.CountDownTimer;
 import android.util.Log;
@@ -27,8 +32,10 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
+import androidx.core.app.ActivityCompat;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -57,6 +64,8 @@ import java.util.concurrent.TimeUnit;
 
 
 public class ElderlyRecyclerAdapter extends RecyclerView.Adapter<ElderlyRecyclerAdapter.MyViewHolder>
+        implements ActivityCompat.OnRequestPermissionsResultCallback
+
 {
     private ArrayList<Elderly> elderlyArrayList;
     Caretaker caretaker;
@@ -71,12 +80,50 @@ public class ElderlyRecyclerAdapter extends RecyclerView.Adapter<ElderlyRecycler
     Integer timeCounter;
     Boolean isLastRecordCancel;
     Context context;
+    Integer requestCodeInt = 1;
+    String phoneNumber;
 
 
     public ElderlyRecyclerAdapter(ArrayList<Elderly> eList)
     {
         this.elderlyArrayList = eList;
     }
+
+    public void makePhonecall(String phoneNum)
+    {
+        if (phoneNum != null)
+        {
+            if (ContextCompat.checkSelfPermission(context, Manifest.permission.CALL_PHONE)
+                    != PackageManager.PERMISSION_GRANTED)
+            {
+                ActivityCompat.requestPermissions((Activity) context, new String[] {Manifest.permission.CALL_PHONE} , requestCodeInt);
+            }
+            else
+            {
+
+                String s = "tel:" + phoneNum;
+                Intent intent = new Intent(Intent.ACTION_CALL);
+                intent.setData(Uri.parse(s));
+                context.startActivity(intent);
+            }
+        }
+        else {
+            Toast.makeText(context, "NO phone number set!", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        if (requestCode == requestCodeInt)
+        {
+            if (grantResults.length>0 && grantResults[0] == PackageManager.PERMISSION_GRANTED)
+            {
+                makePhonecall(phoneNumber);
+            }
+        }
+    }
+
+
 
     public class MyViewHolder extends RecyclerView.ViewHolder{
         TextView elderlyIndex, elderlyApptLoc, eldelyName,
@@ -150,7 +197,9 @@ public class ElderlyRecyclerAdapter extends RecyclerView.Adapter<ElderlyRecycler
     //Here can change the text of the text holder
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
-    public void onBindViewHolder(@NonNull ElderlyRecyclerAdapter.MyViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull ElderlyRecyclerAdapter.MyViewHolder holder, int position)
+    {
+
 
 
 
@@ -170,9 +219,20 @@ public class ElderlyRecyclerAdapter extends RecyclerView.Adapter<ElderlyRecycler
         ArrayList<Medication> mList = elderlyArrayList.get(position).getMedList();
 
 
+        phoneNumber = elderlyArrayList.get(position).getPhoneNumber();
 
 
-        // ---To do: get the lastest med record according to the current date time---
+
+        holder.phonecall.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                makePhonecall(phoneNumber);
+            }
+        });
+
+
+
+        // FOR MEDICATION //
         if (mList.size() == 0)
         {
             holder.elderlyMedName.setText("No record found");
@@ -411,7 +471,6 @@ public class ElderlyRecyclerAdapter extends RecyclerView.Adapter<ElderlyRecycler
                     holder.elderlyApptTime.setText("done!");
 
 
-                    
                 }
             };
 
@@ -466,4 +525,6 @@ public class ElderlyRecyclerAdapter extends RecyclerView.Adapter<ElderlyRecycler
     public int getItemCount() {
         return elderlyArrayList.size();
     }
+
+
 }
