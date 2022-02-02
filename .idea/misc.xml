@@ -11,18 +11,21 @@
         <entry key="..\:/IT 2021/sem 2/portfolio/PFD_HelpingHand/app/src/main/res/layout/activity_sign_up_elderly.xml" value="0.3625" />
         <entry key="..\:/Users/Chen Han/PFD_HelpingHand/app/src/main/res/drawable/ic_pairup.xml" value="0.1527777777777778" />
         <entry key="..\:/Users/Chen Han/PFD_HelpingHand/app/src/main/res/layout/activity_caregiver_main.xml" value="0.5" />
+        <entry key="..\:/Users/Chen Han/PFD_HelpingHand/app/src/main/res/layout/activity_elderly_appointment_report.xml" value="0.22916666666666666" />
+        <entry key="..\:/Users/Chen Han/PFD_HelpingHand/app/src/main/res/layout/activity_elderly_medication_report.xml" value="0.22916666666666666" />
         <entry key="..\:/Users/Chen Han/PFD_HelpingHand/app/src/main/res/layout/activity_elderly_view_more.xml" value="0.33" />
         <entry key="..\:/Users/Chen Han/PFD_HelpingHand/app/src/main/res/layout/activity_login.xml" value="0.33" />
         <entry key="..\:/Users/Chen Han/PFD_HelpingHand/app/src/main/res/layout/activity_main.xml" value="0.33" />
         <entry key="..\:/Users/Chen Han/PFD_HelpingHand/app/src/main/res/layout/activity_pop_up_window.xml" value="0.1" />
         <entry key="..\:/Users/Chen Han/PFD_HelpingHand/app/src/main/res/layout/activity_pop_up_window2.xml" value="0.1" />
         <entry key="..\:/Users/Chen Han/PFD_HelpingHand/app/src/main/res/layout/activity_pop_up_window3.xml" value="0.33" />
-        <entry key="..\:/Users/Chen Han/PFD_HelpingHand/app/src/main/res/layout/activity_sign_up_elderly.xml" value="0.33" />
+        <entry key="..\:/Users/Chen Han/PFD_HelpingHand/app/src/main/res/layout/activity_sign_up_elderly.xml" value="0.1" />
         <entry key="..\:/Users/Chen Han/PFD_HelpingHand/app/src/main/res/layout/activity_sign_up_main.xml" value="0.33" />
         <entry key="..\:/Users/Chen Han/PFD_HelpingHand/app/src/main/res/layout/activity_view_caregiver_adapter.xml" value="0.3292572463768116" />
         <entry key="..\:/Users/Chen Han/PFD_HelpingHand/app/src/main/res/layout/activity_view_caregivers.xml" value="0.33" />
         <entry key="..\:/Users/Chen Han/PFD_HelpingHand/app/src/main/res/layout/activity_weekly_appointment.xml" value="0.25" />
         <entry key="..\:/Users/Chen Han/PFD_HelpingHand/app/src/main/res/layout/elderly_item.xml" value="0.4803921568627451" />
+        <entry key="..\:/Users/Chen Han/PFD_HelpingHand/app/src/main/res/layout/med_report_item.xml" value="0.22916666666666666" />
         <entry key="..\:/Users/Chen Han/PFD_HelpingHand/app/src/main/res/layout/pair_up_adapter.xml" value="0.2829827915869981" />
         <entry key="..\:/Users/ernes/AndroidStudioProjects/PFDHelpingHand/app/src/main/res/layout/activity_caregiver_main.xml" value="0.1" />
         <entry key="..\:/Users/ernes/AndroidStudioProjects/PFDHelpingHand/app/src/main/res/layout/activity_help_lost.xml" value="0.1" />
@@ -46,7 +49,7 @@
         <entry key="..\:/Users/nhaak/AndroidStudioProjects/PFD_HelpingHand/app/src/main/res/layout/activity_elderly_appointment_report.xml" value="0.27447916666666666" />
         <entry key="..\:/Users/nhaak/AndroidStudioProjects/PFD_HelpingHand/app/src/main/res/layout/activity_elderly_medication_report.xml" value="0.27447916666666666" />
         <entry key="..\:/Users/nhaak/AndroidStudioProjects/PFD_HelpingHand/app/src/main/res/layout/activity_elderly_view_more.xml" value="0.27447916666666666" />
-        <entry key="..\:/Users/nhaak/AndroidStudioProjects/PFD_HelpingHand/app/src/main/res/layout/activity_login.xml" value="0.4" />
+        <entry key="..\:/Users/nhaak/AndroidStudioProjects/PFD_HelpingHand/app/src/main/res/layout/activity_login.xml" value="0.536" />
         <entry key="..\:/Users/nhaak/AndroidStudioProjects/PFD_HelpingHand/app/src/main/res/layout/activity_medappt_alarm.xml" value="0.4" />
         <entry key="..\:/Users/nhaak/AndroidStudioProjects/PFD_HelpingHand/app/src/main/res/layout/activity_medication_alarm.xml" value="0.14375" />
         <entry key="..\:/Users/nhaak/AndroidStudioProjects/PFD_HelpingHand/app/src/main/res/layout/activity_pop_up_window.xml" value="0.14375" />
