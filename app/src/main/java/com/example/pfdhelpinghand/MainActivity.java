@@ -30,6 +30,7 @@ import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Handler;
 import android.provider.Settings;
+import android.telephony.SmsManager;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
@@ -83,6 +84,7 @@ import java.util.TimerTask;
 public class MainActivity extends AppCompatActivity implements IBaseGpsListener {
     private static final int PERMISSIONS_FINE_LOCATION = 99;
     private static final int PERMISSION_PHONE_CALL = 10;
+    private static final int MY_PERMISSIONS_REQUEST_SEND_SMS = 0;
 
     FirebaseAuth fAuth;
     FirebaseUser user;
@@ -344,8 +346,17 @@ public class MainActivity extends AppCompatActivity implements IBaseGpsListener 
                                                      //startActivity(callIntent);
                                                      //Toast.makeText(getApplicationContext(), "Calling "+number+", please wait", Toast.LENGTH_SHORT).show();
                                                      phoneNumber = emergencyPeople.get(0).getPhoneNumber();
-                                                     makePhonecall(phoneNumber);
-                                                     Toast.makeText(getApplicationContext(), phoneNumber, Toast.LENGTH_SHORT).show();
+                                                     if (sosToggle.isChecked() == true)
+                                                     {
+                                                         makePhonecall(phoneNumber);
+                                                         Toast.makeText(getApplicationContext(), phoneNumber, Toast.LENGTH_SHORT).show();
+                                                     }
+                                                     else
+                                                     {
+                                                         sendSMS(phoneNumber);
+                                                     }
+
+
 
 
                                                  }
@@ -505,6 +516,13 @@ public class MainActivity extends AppCompatActivity implements IBaseGpsListener 
         if (requestCode == PERMISSION_PHONE_CALL) {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 makePhonecall(phoneNumber);
+            }
+        }
+
+        if (requestCode == MY_PERMISSIONS_REQUEST_SEND_SMS) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                sendSMS(phoneNumber);
+                Toast.makeText(getApplicationContext(), "SMS Sent to " + phoneNumber, Toast.LENGTH_SHORT).show();
             }
         }
     }
@@ -836,6 +854,33 @@ public class MainActivity extends AppCompatActivity implements IBaseGpsListener 
         }
     }
 
-
-
+    public void sendSMS(String phoneNum)
+    {
+        if (phoneNum != null)
+        {
+            if (ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.SEND_SMS)
+                != PackageManager.PERMISSION_GRANTED)
+            {
+                if (ActivityCompat.shouldShowRequestPermissionRationale(MainActivity.this, Manifest.permission.SEND_SMS))
+                {
+                    ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.SEND_SMS},MY_PERMISSIONS_REQUEST_SEND_SMS);
+                }
+                else
+                {
+                    //SmsManager smsManager = SmsManager.getDefault();
+                    //smsManager.sendTextMessage(phoneNum, null, "Your elderly has activated SOS Button!", null, null);
+                    Toast.makeText(getApplicationContext(), "SOS SMS has been sent.", Toast.LENGTH_SHORT).show();
+                }
+            }
+        }
+    }
 }
+
+
+
+
+
+
+
+
+
