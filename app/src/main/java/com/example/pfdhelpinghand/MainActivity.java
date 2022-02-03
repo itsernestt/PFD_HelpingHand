@@ -73,6 +73,8 @@ import java.util.Calendar;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class MainActivity extends AppCompatActivity implements IBaseGpsListener {
     private static final int PERMISSIONS_FINE_LOCATION = 99;
@@ -87,7 +89,6 @@ public class MainActivity extends AppCompatActivity implements IBaseGpsListener 
 
     ArrayList<PairUpRequest> requests = new ArrayList<PairUpRequest>();
     ArrayList<EmergencyPerson> emergencyPeople;
-    ElderlyLocation currentLocation;
     String locationAddress;
     String locLat;
     String locLng;
@@ -108,6 +109,8 @@ public class MainActivity extends AppCompatActivity implements IBaseGpsListener 
 
     //A config file for all setting related to FuredLocationProviderClient
     LocationRequest locationRequest;
+
+    Location currentLocation;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -134,7 +137,6 @@ public class MainActivity extends AppCompatActivity implements IBaseGpsListener 
         locationRequest.setFastestInterval(1000);
 
         locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
-        currentLocation = new ElderlyLocation();
 
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
 
@@ -432,16 +434,20 @@ public class MainActivity extends AppCompatActivity implements IBaseGpsListener 
         });
 
 
-/*
+
         //update the elderly current location every 1 minute
         new Timer().scheduleAtFixedRate(new TimerTask() {
             @Override
             public void run() {
-                UpdateLocation();
+                if (currentLocation != null)
+                {
+
+                    UpdateLocation(currentLocation);
+                }
             }
         }, 0, 60000*3);//put here time 1000 milliseconds=1 second
 
- */
+
 //
 //
 //        new Timer().scheduleAtFixedRate(new TimerTask() {
@@ -558,7 +564,7 @@ public class MainActivity extends AppCompatActivity implements IBaseGpsListener 
     public void onLocationChanged(Location location) {
         //update location
 
-        UpdateLocation(location);
+        currentLocation = location;
 
         Geocoder geocoder = new Geocoder(MainActivity.this);
         try {
@@ -566,7 +572,7 @@ public class MainActivity extends AppCompatActivity implements IBaseGpsListener 
             locationAddress = addressList.get(0).getAddressLine(0);
 
         } catch (Exception e) {
-            Toast.makeText(getApplicationContext(), "Location did not track",Toast.LENGTH_SHORT).show();
+            Log.w(TAG, "onLocationChanged: did not ");
         }
 
 
@@ -617,21 +623,16 @@ public class MainActivity extends AppCompatActivity implements IBaseGpsListener 
     @RequiresApi(api = Build.VERSION_CODES.O)
     public void UpdateLocation(Location location) {
 
-
-
         LocalDateTime date = LocalDateTime.now();
         int seconds = date.toLocalTime().toSecondOfDay();
 
         double lat = location.getLatitude();
         double lng = location.getLongitude();
 
-        currentLocation.setLat(lat);
-        currentLocation.setLng(lng);
 
         locLat = String.valueOf(lat);
         locLng = String.valueOf(lng);
 
-        currentLocation.setTime(seconds);
         locationURL = String.format("geo:%1$f,%2$f", lat, lng);
 
         locationInCoords = String.valueOf(location.getLatitude()) + " , " + String.valueOf(location.getLongitude());

@@ -141,9 +141,9 @@ public class ElderlyPairingRequestAdapter extends RecyclerView.Adapter<ElderlyPa
                                                         {
                                                             caretakerList.add(caretaker.getID());
                                                         }
-                                                        if (!elderlyList.contains(elderly.getEmail()))
+                                                        if (!elderlyList.contains(elderly.getID()))
                                                         {
-                                                            elderlyList.add(elderly.getEmail());
+                                                            elderlyList.add(elderly.getID());
                                                         }
 
                                                         // 4. Updates the elderly on the fire store

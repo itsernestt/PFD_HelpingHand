@@ -2,15 +2,12 @@ package com.example.pfdhelpinghand;
 
 import static android.content.ContentValues.TAG;
 
-import static androidx.core.content.ContextCompat.getSystemService;
-
 import android.app.Dialog;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
@@ -30,7 +27,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.NotificationManagerCompat;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -239,7 +235,6 @@ public class CaregiverMainActivity extends AppCompatActivity {
 
                                                     QueryDocumentSnapshot queryDocumentSnapshot = dc.getDocument();
 
-                                                    Integer old_index = dc.getOldIndex();
                                                     Integer new_index = dc.getNewIndex();
 
                                                     //caregiverTest.setText("Old index: " + old_index + "//" + new_index);
@@ -264,7 +259,7 @@ public class CaregiverMainActivity extends AppCompatActivity {
                                                 recyclerView.setItemAnimator(new DefaultItemAnimator());
                                                 recyclerView.setAdapter(eAdapter);
                                                 eAdapter.notifyDataSetChanged();
-                                                Integer size = elderlyList.size();
+
 
 
 

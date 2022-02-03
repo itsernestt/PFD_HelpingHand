@@ -88,6 +88,8 @@ public class ElderlyRecyclerAdapter extends RecyclerView.Adapter<ElderlyRecycler
     String currentLocationString;
     double lat, lng;
 
+    Medication currentMedication;
+
 
 
     public ElderlyRecyclerAdapter(ArrayList<Elderly> eList)
@@ -298,10 +300,10 @@ public class ElderlyRecyclerAdapter extends RecyclerView.Adapter<ElderlyRecycler
                 }
 
                 public void onFinish() {
-                    holder.elderlyMedTime.setText("done!");
 
+                    currentMedication = elderlyArrayList.get(position).getMedList().get(0);
 
-                    CountDownTimer timer2 = new CountDownTimer(30 * 1000, 1000) {
+                    CountDownTimer timer2 = new CountDownTimer(31 * 1000, 1000) {
                         @Override
                         public void onTick(long millisUntilFinished) {
 
@@ -357,11 +359,47 @@ public class ElderlyRecyclerAdapter extends RecyclerView.Adapter<ElderlyRecycler
                             holder.elderly30s.setVisibility(View.INVISIBLE);
                             holder.elderlyAlertDesc.setVisibility(View.INVISIBLE);
 
+                            String elderlyID = elderlyArrayList.get(position).getID();
+
+                            fStore.collection("Elderly").document(elderlyID)
+                                    .get()
+                                    .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                                        @Override
+                                        public void onSuccess(DocumentSnapshot documentSnapshot) {
+                                            Elderly elderly = documentSnapshot.toObject(Elderly.class);
+                                            ArrayList<Medication> medicationArrayList = elderly.getMedList();
+
+                                            if (medicationArrayList.get(0).getDay().equals(currentMedication.getDay()))
+                                            {
+                                                medicationArrayList.remove(0);
+                                                fStore.collection("Elderly").document(elderlyID)
+                                                        .update("medList", medicationArrayList)
+                                                        .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                            @Override
+                                                            public void onSuccess(Void unused) {
+                                                                Log.w(TAG, "onSuccess: Updated successfully");
+                                                            }
+                                                        }).addOnFailureListener(new OnFailureListener() {
+                                                    @Override
+                                                    public void onFailure(@NonNull Exception e) {
+                                                        Log.e(TAG, "onFailure: Update failed" );
+                                                    }
+                                                });
+
+                                            }
+                                        }
+                                    }).addOnFailureListener(new OnFailureListener() {
+                                @Override
+                                public void onFailure(@NonNull Exception e) {
+                                    Log.e(TAG, "onFailure: Elderly record not found");
+                                }
+                            });
+
+
+
+                            //Generate a notifiation bar on top to notify the caregiver
 
                             String message = "Elderly has just missed taking ( " + medName + " )";
-
-
-
                             NotificationCompat.Builder builder = new NotificationCompat.Builder(context, "NotifyElderlyMed");
                             builder.setContentTitle("Alert! Elderly Has Missed Medication! ");
                             builder.setContentText(message);
@@ -407,6 +445,12 @@ public class ElderlyRecyclerAdapter extends RecyclerView.Adapter<ElderlyRecycler
                 }
             });
         }
+
+
+
+
+
+
 
 
         // For appointment
@@ -478,7 +522,6 @@ public class ElderlyRecyclerAdapter extends RecyclerView.Adapter<ElderlyRecycler
 
                 public void onFinish() {
                     holder.elderlyApptTime.setText("done!");
-
 
                 }
             };
