@@ -12,7 +12,7 @@
         android:layout_width="250dp"
         android:layout_height="250dp"
         android:layout_marginTop="-180dp"
-        app:backgroundTint="#FA6C6C"
+        app:backgroundTint="@android:color/holo_red_dark"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.497"
@@ -35,31 +35,37 @@
         app:layout_constraintHorizontal_bias="0.496"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.485" />
+        app:layout_constraintVertical_bias="0.467" />
 
     <ToggleButton
         android:id="@+id/toggleButton"
-        android:layout_width="150dp"
-        android:layout_height="40dp"
+        android:layout_width="163dp"
+        android:layout_height="53dp"
         android:background="@drawable/my_btn_toggle"
+        android:backgroundTint="@android:color/holo_red_dark"
         android:checked="true"
+        android:fontFamily="@font/roboto_medium"
+        android:textColor="@color/white"
         android:textOff="Non-Emergency"
         android:textOn="Emergency"
+        android:textSize="18dp"
         app:layout_constraintBottom_toTopOf="@+id/sosButton"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.862" />
+        app:layout_constraintVertical_bias="0.75" />
 
     <Button
         android:id="@+id/cancelButton"
         android:layout_width="200dp"
         android:layout_height="70dp"
         android:layout_marginTop="8dp"
-        android:backgroundTint="#FF4B4B"
+        android:backgroundTint="@android:color/holo_red_dark"
         android:text="CANCEL"
-        android:textSize="18dp"
+        android:textSize="23dp"
+        android:textColor="@android:color/white"
+
+        android:fontFamily="@font/roboto_medium"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@+id/sosButton"
         app:layout_constraintStart_toStartOf="@+id/sosButton"
@@ -74,15 +80,19 @@
         android:layout_marginBottom="27dp"
         android:background="@drawable/sosbutton"
         android:text="Med / Appt"
+        app:backgroundTint="@color/white"
+
+
         android:textColor="#000000"
-        android:textSize="20sp"
-        app:backgroundTint="#affdae"
+        android:textSize="24sp"
+        android:textStyle="bold"
+
         app:layout_constraintBottom_toTopOf="@+id/lostButton"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.117"
+        app:layout_constraintHorizontal_bias="0.141"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/cancelButton"
-        app:layout_constraintVertical_bias="0.272" />
+        app:layout_constraintVertical_bias="0.321" />
 
     <Button
         android:id="@+id/locationButton"
@@ -92,21 +102,26 @@
         android:background="@drawable/sosbutton"
         android:text="Go Home"
         android:textColor="#000000"
-        android:textSize="20sp"
-        app:backgroundTint="#affdae"
+        android:textSize="24dp"
+        android:textStyle="bold"
+        app:backgroundTint="@color/white"
         app:layout_constraintBottom_toTopOf="@+id/lostButton"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.933"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+
+
+        />
 
     <Button
         android:id="@+id/lostButton"
         android:layout_width="200dp"
         android:layout_height="80dp"
-        android:backgroundTint="#FA5c5c"
+        android:backgroundTint="@android:color/holo_red_dark"
         android:text="Help, I am Lost!"
         android:textColor="#ffffff"
-        android:textSize="16dp"
+        android:textSize="20dp"
+
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.497"
@@ -116,22 +131,25 @@
 
     <TextView
         android:id="@+id/sosText"
-        android:layout_width="210dp"
-        android:layout_height="154dp"
+        android:layout_width="225dp"
+        android:layout_height="102dp"
         android:layout_marginTop="32dp"
         android:elevation="7dp"
         android:text="SOS"
+        android:textAlignment="center"
         android:textColor="#ffffff"
         android:textSize="80dp"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="@+id/sosButton"
         app:layout_constraintEnd_toEndOf="@+id/sosButton"
-        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintHorizontal_bias="0.52"
         app:layout_constraintStart_toStartOf="@+id/sosButton"
         app:layout_constraintTop_toTopOf="@+id/sosButton"
-        app:layout_constraintVertical_bias="0.562" />
+        app:layout_constraintVertical_bias="0.293" />
+
 
     <Button
+        android:layout_margin="0dp"
         android:id="@+id/settingsBtn"
         android:layout_width="80dp"
         android:layout_height="65dp"
@@ -142,11 +160,10 @@
         android:textSize="10dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.996"
+        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.0" />
-
 
     <TextView
         android:id="@+id/elderlyTest1"
@@ -157,17 +174,6 @@
         app:layout_constraintHorizontal_bias="0.016"
         app:layout_constraintStart_toStartOf="parent" />
 
-
-    <TextView
-        android:id="@+id/elderlyTest4"
-        android:layout_width="210dp"
-        android:layout_height="24dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.398"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.0" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/floatingButtonElderly"
@@ -183,7 +189,7 @@
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.621"
+        app:layout_constraintVertical_bias="0.591"
         app:maxImageSize="46dp"
         app:srcCompat="@drawable/ic_pairup_notice"
         app:tint="@android:color/white" />
