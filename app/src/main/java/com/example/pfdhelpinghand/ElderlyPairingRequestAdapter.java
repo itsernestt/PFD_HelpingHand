@@ -13,10 +13,13 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import java.net.Inet4Address;
 import java.util.ArrayList;
 import java.util.List;
 
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.RecyclerView;
@@ -48,6 +51,13 @@ public class ElderlyPairingRequestAdapter extends RecyclerView.Adapter<ElderlyPa
     Elderly elderly;
     ArrayList<String> caretakerList;
     DocumentReference docRef = fStore.collection("Elderly").document(userID);
+
+    PairUpRequest pairUpRequest;
+
+    Boolean elderlyUpdated = false;
+    Boolean caregiverUpdated = false;
+
+    Context context;
 
 
     public ElderlyPairingRequestAdapter(ArrayList<PairUpRequest> requests)
@@ -89,12 +99,17 @@ public class ElderlyPairingRequestAdapter extends RecyclerView.Adapter<ElderlyPa
         });
 
         View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.pair_up_adapter, parent, false);
+        context = parent.getContext();
         return new MyViewHolder(itemView);
 
     }
 
     @Override
     public void onBindViewHolder(@NonNull ElderlyPairingRequestAdapter.MyViewHolder holder, int position) {
+
+        pairUpRequest = pairUpRequests.get(position);
+
+
         holder.email.setText(pairUpRequests.get(position).getSenderEmail());
 
 
@@ -102,7 +117,7 @@ public class ElderlyPairingRequestAdapter extends RecyclerView.Adapter<ElderlyPa
 
             @Override
             public void onClick(View view) {
-               DocumentReference r =  fStore.collection("PairingRequest").document(pairUpRequests.get(position).getDocumentID());
+               DocumentReference r =  fStore.collection("PairingRequest").document(pairUpRequest.getDocumentID());
 
                r.update("isPairUpSuccess", true)
                         .addOnSuccessListener(new OnSuccessListener<Void>() {
@@ -111,7 +126,7 @@ public class ElderlyPairingRequestAdapter extends RecyclerView.Adapter<ElderlyPa
                                 Log.d(TAG, "DocumentSnapshot successfully updated!");
 
                                 fStore.collection("Caregiver")
-                                        .whereEqualTo("email", pairUpRequests.get(position).getSenderEmail())
+                                        .whereEqualTo("email", pairUpRequest.getSenderEmail())
                                         .get()
                                         .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                                             @Override
@@ -137,20 +152,46 @@ public class ElderlyPairingRequestAdapter extends RecyclerView.Adapter<ElderlyPa
                                                                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                                                                     @Override
                                                                     public void onSuccess(Void aVoid) {
-                                                                        Log.d("TAG", "onSuccess: Caregiver user updated for" + userID);
+                                                                        Log.d(TAG, "onSuccess: Elderly user updated for" + userID);
+                                                                        elderlyUpdated = true;
+
                                                                     }
-                                                                });
+                                                                }).addOnFailureListener(new OnFailureListener() {
+                                                            @Override
+                                                            public void onFailure(@NonNull Exception e) {
+                                                                Log.d(TAG, "Failed Updating Elderly document");
+
+                                                            }
+                                                        });
+                                                        
+                                                        
                                                         fStore.collection("Caregiver").document(caretaker.getID())
                                                                 .update("elderlyList", elderlyList)
                                                                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                                                                     @Override
                                                                     public void onSuccess(Void unused) {
-                                                                        Log.d("TAG", "onSuccess: Elderly user updated for" + userID);
+                                                                        Log.d(TAG, "onSuccess: Caregiver user updated for" + userID);
+                                                                        caregiverUpdated = true;
                                                                     }
-                                                                });
+                                                                }).addOnFailureListener(new OnFailureListener() {
+                                                            @Override
+                                                            public void onFailure(@NonNull Exception e) {
+                                                                Log.d(TAG, "onFailure: Failed updating Caregiver document");
+                                                            }
+                                                        });
+
+
+                                                        if (caregiverUpdated && elderlyUpdated)
+                                                        {
+                                                            Toast.makeText(context, "Elderly and caretaker updated!", Toast.LENGTH_SHORT).show();
+                                                        }
+
                                                     }
+
+
                                                 } else {
                                                     Log.d(TAG, "Error getting documents: ", task.getException());
+                                                    Toast.makeText(view.getContext(), "Error getting document", Toast.LENGTH_SHORT).show();
                                                 }
                                             }
                                         });
