@@ -1,33 +1,33 @@
 {
   "project_info": {
-    "project_number": "810341901018",
-    "project_id": "helpinghandapp-2c621",
-    "storage_bucket": "helpinghandapp-2c621.appspot.com"
+    "project_number": "673441703796",
+    "project_id": "pfdhelpinghand",
+    "storage_bucket": "pfdhelpinghand.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:810341901018:android:6b9e042e58bf9091873be3",
+        "mobilesdk_app_id": "1:673441703796:android:223736df691785fb286e21",
         "android_client_info": {
           "package_name": "com.example.pfdhelpinghand"
         }
       },
       "oauth_client": [
         {
-          "client_id": "810341901018-8fjikotbuk9pv2dg837mcssnfbtp2fbc.apps.googleusercontent.com",
+          "client_id": "673441703796-m35bp2tkp8fbt54a4r5qe9r81ntgpaio.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyC8RdP03LN_7dD-nngSzp9YId3hpQ5_dHQ"
+          "current_key": "AIzaSyDTPpYZBK31F2a3hA7NzJHuLqJEXOuXBTc"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "810341901018-8fjikotbuk9pv2dg837mcssnfbtp2fbc.apps.googleusercontent.com",
+              "client_id": "673441703796-m35bp2tkp8fbt54a4r5qe9r81ntgpaio.apps.googleusercontent.com",
               "client_type": 3
             }
           ]

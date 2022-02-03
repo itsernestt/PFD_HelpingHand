@@ -20,14 +20,14 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 import com.google.android.gms.common.GooglePlayServicesRepairableException;
-import com.google.android.gms.fitness.data.Field;
+import com.google.android.gms.location.places.Place;
+import com.google.android.gms.location.places.ui.PlacePicker;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.libraries.places.api.Places;
 import com.google.android.libraries.places.api.net.PlacesClient;
-import com.google.android.libraries.places.widget.Autocomplete;
-import com.google.android.libraries.places.widget.model.AutocompleteActivityMode;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -35,16 +35,11 @@ import com.google.firebase.auth.UserProfileChangeRequest;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.google.android.gms.location.places.Place;
-import com.google.android.gms.location.places.ui.PlacePicker;
-
 // Add an import statement for the client library.
-import com.google.android.libraries.places.api.Places;
 
 
 
@@ -271,33 +266,6 @@ public class SignUpElderlyActivity extends AppCompatActivity {
                                         @Override
                                         public void onSuccess(Void unused) {
                                             Log.d("TAG","onSuccess: Elderly Appointment History profile created for " + userID);
-                                        }
-                                    }).addOnFailureListener(new OnFailureListener() {
-                                @Override
-                                public void onFailure(@NonNull Exception e) {
-                                    Log.e("TAG", "onFailure: " + e.toString());
-                                }
-                            });
-
-
-
-
-                            //Initialize ElderlyLocationML
-                            Map<String, Object> LocML = new HashMap<>();
-                            ArrayList<ElderlyLocation> elderlyLocationArrayList = new ArrayList<ElderlyLocation>();
-
-
-                            LocML.put("elderlyID", userID);
-                            LocML.put("elderlyName", elderly.getFullName());
-                            LocML.put("elderlyAddress", addressInCoords);
-                            LocML.put("locationList", elderlyLocationArrayList);
-
-                            fStore.collection("ElderlyLocationML").document(userID)
-                                    .set(LocML)
-                                    .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                        @Override
-                                        public void onSuccess(Void aVoid) {
-                                            Log.d("TAG","onSuccess: Elderly Location ML profile created for " + userID);
                                         }
                                     }).addOnFailureListener(new OnFailureListener() {
                                 @Override
