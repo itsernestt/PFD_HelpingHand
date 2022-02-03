@@ -96,12 +96,20 @@ public class MainActivity extends AppCompatActivity implements IBaseGpsListener 
     ArrayList<EmergencyPerson> emergencyPeople;
     ElderlyLocation currentLocation;
     String locationAddress;
+    String locLat;
+    String locLng;
+
     String locationURL;
+    String addressURL;
+
     String locationInCoords;
+    String addressLat;
+    String addressLng;
 
     String phoneNumber;
 
-    TextView test1, test2, test3, test4;
+    TextView test4;
+
     Switch trackingSwitch;
 
     Calendar currentTime = Calendar.getInstance();
@@ -132,9 +140,6 @@ public class MainActivity extends AppCompatActivity implements IBaseGpsListener 
         getAlarms();
 
         //Testing location tracking
-        test1 = findViewById(R.id.elderlyTest1);
-        test2 = findViewById(R.id.elderlyTest2);
-        test3 = findViewById(R.id.elderlyTest3);
         test4 = findViewById(R.id.elderlyTest4);
 
         //Set all properties for LocationRequest
@@ -188,6 +193,24 @@ public class MainActivity extends AppCompatActivity implements IBaseGpsListener 
             public void onSuccess(DocumentSnapshot documentSnapshot) {
                 elderly = documentSnapshot.toObject(Elderly.class);
                 emergencyPeople = elderly.getEmergencyPerson();
+
+                String address = elderly.getAddress();
+                String address2 = address.replaceAll("\\s+","");
+                String[] str = address2.split("[,]", 0);
+                String latString = str[0];
+                String lngString = str[1];
+                double lat = Double.parseDouble(latString);
+                double lng = Double.parseDouble(lngString);
+
+
+                addressLat = String.valueOf(lat);
+                addressLng = String.valueOf(lng);
+
+
+                addressURL = String.format("geo:%1$f,%2$f", lat, lng);
+
+
+
 
                 //Set up title action bar
                 getSupportActionBar().setTitle("Welcome, " + elderly.getFullName());
@@ -401,9 +424,10 @@ public class MainActivity extends AppCompatActivity implements IBaseGpsListener 
             @Override
             public void onClick(View v) {
 
-                Uri gmmIntentUri =
-                        //Uri.parse("geo:0,0?q=535 Clementi R, Singapore 599489");
-                        Uri.parse(locationURL);
+                String url = String.format("http://maps.google.com/maps?saddr=%1$s,%2$s&daddr=%3$s,%4$s&dir_action=navigate", locLat, locLng, addressLat, addressLng);
+
+                Uri gmmIntentUri = Uri.parse(url);
+
 
                 Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
                 mapIntent.setPackage("com.google.android.apps.maps");
@@ -611,19 +635,23 @@ public class MainActivity extends AppCompatActivity implements IBaseGpsListener 
     public void UpdateLocation(Location location) {
 
 
-        test1.setText("Lat: " + String.valueOf(location.getLatitude()));
-        test2.setText("Lng: " + String.valueOf(location.getLongitude()));
 
         LocalDateTime date = LocalDateTime.now();
         int seconds = date.toLocalTime().toSecondOfDay();
 
-        currentLocation.setLat(location.getLatitude());
-        currentLocation.setLng(location.getLongitude());
+        double lat = location.getLatitude();
+        double lng = location.getLongitude();
+
+        currentLocation.setLat(lat);
+        currentLocation.setLng(lng);
+
+        locLat = String.valueOf(lat);
+        locLng = String.valueOf(lng);
+
         currentLocation.setTime(seconds);
-        locationURL = String.format("geo:%1$f,%2$f", location.getLatitude(), location.getLongitude());
+        locationURL = String.format("geo:%1$f,%2$f", lat, lng);
 
         locationInCoords = String.valueOf(location.getLatitude()) + " , " + String.valueOf(location.getLongitude());
-
 
 
         fStore.collection("Elderly").document(user.getUid())

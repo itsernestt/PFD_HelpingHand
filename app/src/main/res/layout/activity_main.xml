@@ -23,19 +23,19 @@
 
     <TextView
         android:id="@+id/sosButtonOverlay"
-        android:background="@drawable/soscorrectbutton"
         android:layout_width="250dp"
         android:layout_height="250dp"
         android:layout_marginTop="-180dp"
-        app:backgroundTint="#94ff87"
+        android:background="@drawable/soscorrectbutton"
+        android:elevation="6dp"
         android:visibility="invisible"
+        app:backgroundTint="#94ff87"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.497"
+        app:layout_constraintHorizontal_bias="0.496"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.468"
-        android:elevation="6dp"    />
+        app:layout_constraintVertical_bias="0.485" />
 
     <ToggleButton
         android:id="@+id/toggleButton"
@@ -47,9 +47,10 @@
         android:textOn="Emergency"
         app:layout_constraintBottom_toTopOf="@+id/sosButton"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.825" />
+        app:layout_constraintVertical_bias="0.862" />
 
     <Button
         android:id="@+id/cancelButton"
@@ -67,38 +68,36 @@
 
     <Button
         android:id="@+id/medAlarmButton"
-        android:layout_width="143dp"
-        android:layout_height="67dp"
+        android:layout_width="170dp"
+        android:layout_height="80dp"
         android:layout_marginTop="28dp"
         android:layout_marginBottom="27dp"
         android:background="@drawable/sosbutton"
-        android:text="Appointments"
+        android:text="Med / Appt"
         android:textColor="#000000"
-        android:textSize="12sp"
+        android:textSize="20sp"
         app:backgroundTint="#affdae"
         app:layout_constraintBottom_toTopOf="@+id/lostButton"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.149"
+        app:layout_constraintHorizontal_bias="0.117"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/cancelButton"
-        app:layout_constraintVertical_bias="0.0" />
+        app:layout_constraintVertical_bias="0.272" />
 
     <Button
         android:id="@+id/locationButton"
-        android:layout_width="146dp"
-        android:layout_height="64dp"
-        android:layout_marginTop="32dp"
+        android:layout_width="170dp"
+        android:layout_height="80dp"
+        android:layout_marginBottom="8dp"
         android:background="@drawable/sosbutton"
-        android:text="Real Time Maps"
+        android:text="Go Home"
         android:textColor="#000000"
-        android:textSize="12sp"
+        android:textSize="20sp"
         app:backgroundTint="#affdae"
         app:layout_constraintBottom_toTopOf="@+id/lostButton"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.939"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/cancelButton"
-        app:layout_constraintVertical_bias="0.0" />
+        app:layout_constraintHorizontal_bias="0.933"
+        app:layout_constraintStart_toStartOf="parent" />
 
     <Button
         android:id="@+id/lostButton"
@@ -117,19 +116,20 @@
 
     <TextView
         android:id="@+id/sosText"
-        android:layout_width="100dp"
-        android:layout_height="100dp"
+        android:layout_width="210dp"
+        android:layout_height="154dp"
         android:layout_marginTop="32dp"
         android:elevation="7dp"
         android:text="SOS"
         android:textColor="#ffffff"
-        android:textSize="49dp"
+        android:textSize="80dp"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="@+id/sosButton"
         app:layout_constraintEnd_toEndOf="@+id/sosButton"
+        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="@+id/sosButton"
         app:layout_constraintTop_toTopOf="@+id/sosButton"
-        app:layout_constraintVertical_bias="0.492" />
+        app:layout_constraintVertical_bias="0.562" />
 
     <Button
         android:id="@+id/settingsBtn"
@@ -137,8 +137,9 @@
         android:layout_height="65dp"
         android:backgroundTint="#535252"
         android:backgroundTintMode="src_over"
+        android:padding="0dp"
         android:text="Settings"
-        android:textSize="8dp"
+        android:textSize="10dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.996"
@@ -154,32 +155,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.016"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.0" />
-
-    <TextView
-        android:id="@+id/elderlyTest2"
-        android:layout_width="129dp"
-        android:layout_height="20dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.012"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.041" />
-
-
-    <TextView
-        android:id="@+id/elderlyTest3"
-        android:layout_width="101dp"
-        android:layout_height="18dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.012"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.078" />
+        app:layout_constraintStart_toStartOf="parent" />
 
 
     <TextView
@@ -188,7 +164,7 @@
         android:layout_height="24dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.651"
+        app:layout_constraintHorizontal_bias="0.398"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.0" />
@@ -204,10 +180,10 @@
         app:fabCustomSize="64dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.997"
+        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.61"
+        app:layout_constraintVertical_bias="0.621"
         app:maxImageSize="46dp"
         app:srcCompat="@drawable/ic_pairup_notice"
         app:tint="@android:color/white" />
