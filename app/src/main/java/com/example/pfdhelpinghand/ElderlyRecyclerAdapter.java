@@ -51,6 +51,7 @@ import com.google.firebase.firestore.DocumentChange;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
+import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
@@ -385,6 +386,23 @@ public class ElderlyRecyclerAdapter extends RecyclerView.Adapter<ElderlyRecycler
                                                         Log.e(TAG, "onFailure: Update failed" );
                                                     }
                                                 });
+
+
+                                                DocumentReference addtoML = fStore.collection("ElderlyMedicationML").document(elderlyID);
+                                                addtoML.update("alarmFailed", FieldValue.arrayUnion(currentMedication))
+                                                        .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                            @Override
+                                                            public void onSuccess(Void unused) {
+                                                                Toast.makeText(context, "Added med record", Toast.LENGTH_SHORT).show();
+                                                            }
+                                                        }).addOnFailureListener(new OnFailureListener() {
+                                                    @Override
+                                                    public void onFailure(@NonNull Exception e) {
+                                                        Toast.makeText(context, "Fail to add ML record!", Toast.LENGTH_SHORT).show();
+                                                    }
+                                                });
+
+
 
                                             }
                                         }
