@@ -85,7 +85,7 @@ public class MainActivity extends AppCompatActivity implements IBaseGpsListener 
     Elderly elderly;
     Dialog pairUpDialog;
 
-    ArrayList<PairUpRequest> requests = new ArrayList<>();
+    ArrayList<PairUpRequest> requests = new ArrayList<PairUpRequest>();
     ArrayList<EmergencyPerson> emergencyPeople;
     ElderlyLocation currentLocation;
     String locationAddress;
@@ -237,8 +237,10 @@ public class MainActivity extends AppCompatActivity implements IBaseGpsListener 
                                             if (requests.size() > 0) {
                                                 viewPairUp.setVisibility(View.VISIBLE);
 
+
                                             } else {
                                                 viewPairUp.setVisibility(View.INVISIBLE);
+                                                pairUpDialog.dismiss();
                                             }
 
                                             return;
@@ -809,6 +811,8 @@ public class MainActivity extends AppCompatActivity implements IBaseGpsListener 
         recyclerView.setAdapter(adapter);
 
         pairUpDialog.show();
+        adapter.notifyDataSetChanged();
+
 
 
     }
