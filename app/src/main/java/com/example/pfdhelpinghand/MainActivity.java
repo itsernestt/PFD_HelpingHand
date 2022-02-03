@@ -4,7 +4,6 @@ package com.example.pfdhelpinghand;
 import static android.content.ContentValues.TAG;
 
 import android.Manifest;
-import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlarmManager;
 import android.app.AlertDialog;
@@ -30,18 +29,15 @@ import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Handler;
 import android.provider.Settings;
-import android.telephony.SmsManager;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CompoundButton;
-import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 
-import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
@@ -51,7 +47,6 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
-import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -78,8 +73,6 @@ import java.util.Calendar;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
 
 public class MainActivity extends AppCompatActivity implements IBaseGpsListener {
     private static final int PERMISSIONS_FINE_LOCATION = 99;
@@ -92,7 +85,7 @@ public class MainActivity extends AppCompatActivity implements IBaseGpsListener 
     Elderly elderly;
     Dialog pairUpDialog;
 
-    ArrayList<PairUpRequest> requests = new ArrayList<PairUpRequest>();
+    ArrayList<PairUpRequest> requests = new ArrayList<>();
     ArrayList<EmergencyPerson> emergencyPeople;
     ElderlyLocation currentLocation;
     String locationAddress;
@@ -108,12 +101,6 @@ public class MainActivity extends AppCompatActivity implements IBaseGpsListener 
 
     String phoneNumber;
 
-    TextView test4;
-
-    Switch trackingSwitch;
-
-    Calendar currentTime = Calendar.getInstance();
-
     String soundUrl = "https://www.youtube.com/watch?v=4YKpBYo61Cs";
 
     //Main component for location tracking
@@ -121,8 +108,6 @@ public class MainActivity extends AppCompatActivity implements IBaseGpsListener 
 
     //A config file for all setting related to FuredLocationProviderClient
     LocationRequest locationRequest;
-    LocationCallback locationCallBack;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -140,7 +125,6 @@ public class MainActivity extends AppCompatActivity implements IBaseGpsListener 
         getAlarms();
 
         //Testing location tracking
-        test4 = findViewById(R.id.elderlyTest4);
 
         //Set all properties for LocationRequest
         locationRequest = new LocationRequest();
@@ -208,8 +192,6 @@ public class MainActivity extends AppCompatActivity implements IBaseGpsListener 
 
 
                 addressURL = String.format("geo:%1$f,%2$f", lat, lng);
-
-
 
 
                 //Set up title action bar
@@ -354,7 +336,7 @@ public class MainActivity extends AppCompatActivity implements IBaseGpsListener 
                                              new CountDownTimer(seconds[0], 1000) {
 
                                                  public void onTick(long millisUntilFinished) {
-                                                     sosText.setText("   " + millisUntilFinished / 1000);
+                                                     sosText.setText(String.valueOf(millisUntilFinished / 1000));
                                                  }
 
                                                  public void onClick(View view) {
@@ -427,7 +409,6 @@ public class MainActivity extends AppCompatActivity implements IBaseGpsListener 
                 String url = String.format("http://maps.google.com/maps?saddr=%1$s,%2$s&daddr=%3$s,%4$s&dir_action=navigate", locLat, locLng, addressLat, addressLng);
 
                 Uri gmmIntentUri = Uri.parse(url);
-
 
                 Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
                 mapIntent.setPackage("com.google.android.apps.maps");
@@ -580,12 +561,10 @@ public class MainActivity extends AppCompatActivity implements IBaseGpsListener 
         Geocoder geocoder = new Geocoder(MainActivity.this);
         try {
             List<Address> addressList = geocoder.getFromLocation(location.getLatitude(), location.getLongitude(), 1);
-            test4.setText(addressList.get(0).getAddressLine(0));
             locationAddress = addressList.get(0).getAddressLine(0);
 
         } catch (Exception e) {
-            test4.setText("Not available");
-
+            Toast.makeText(getApplicationContext(), "Location did not track",Toast.LENGTH_SHORT).show();
         }
 
 
@@ -619,6 +598,7 @@ public class MainActivity extends AppCompatActivity implements IBaseGpsListener 
             return;
         }
         fusedLocationProviderClient.getLastLocation().addOnCompleteListener(new OnCompleteListener<Location>() {
+            @RequiresApi(api = Build.VERSION_CODES.O)
             @Override
             public void onComplete(@NonNull Task<Location> task) {
                 Location loc = task.getResult();
@@ -632,6 +612,7 @@ public class MainActivity extends AppCompatActivity implements IBaseGpsListener 
 
 
     // Updates the database of the location
+    @RequiresApi(api = Build.VERSION_CODES.O)
     public void UpdateLocation(Location location) {
 
 
