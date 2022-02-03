@@ -649,21 +649,6 @@ public class MainActivity extends AppCompatActivity implements IBaseGpsListener 
                 Log.e("TAG", "onFailure: " + e.toString());
             }
         });
-
-        fStore.collection("ElderlyLocationML").document(user.getUid())
-                .update("locationList", FieldValue.arrayUnion(currentLocation))
-                .addOnSuccessListener(new OnSuccessListener<Void>() {
-                    @Override
-                    public void onSuccess(Void unused) {
-                        Log.d("TAG", "onSuccess: Location updated");
-                    }
-                }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-
-                Log.e("TAG", "onFailure: " + e.toString());
-            }
-        });
     }
 
 
