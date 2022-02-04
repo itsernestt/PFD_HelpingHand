@@ -13,6 +13,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.airbnb.lottie.LottieAnimationView;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.api.Distribution;
 import com.google.firebase.auth.FirebaseAuth;
@@ -36,6 +37,7 @@ public class WeeklyMedicationActivity extends AppCompatActivity {
     RecyclerView medRV;
     SharedPreferences sharedPreferences;
     DocumentReference docRef;
+    LottieAnimationView emptyMed;
 
 
     @Override
@@ -47,6 +49,7 @@ public class WeeklyMedicationActivity extends AppCompatActivity {
         fStore = FirebaseFirestore.getInstance();
         user = fAuth.getCurrentUser();
         meds = new ArrayList<Medication>();
+        emptyMed = findViewById(R.id.emptyMedAnimationView);
 
         medRV = findViewById(R.id.allMedsRV);
         sharedPreferences = getSharedPreferences("CaretakerValues", Context.MODE_PRIVATE);
@@ -68,6 +71,10 @@ public class WeeklyMedicationActivity extends AppCompatActivity {
 
                 meds = elderly.getMedList();
                 Collections.sort(meds);
+
+                if (meds.isEmpty()){
+                    emptyMed.setVisibility(View.VISIBLE);
+                }
 
                 MedAdapter medAdapter = new MedAdapter(meds);
                 medRV.setAdapter(medAdapter);

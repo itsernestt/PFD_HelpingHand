@@ -11,6 +11,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 
+import com.airbnb.lottie.LottieAnimationView;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -34,6 +35,7 @@ public class WeeklyAppointmentActivity extends AppCompatActivity {
     RecyclerView apptsRV;
     SharedPreferences sharedPreferences;
     DocumentReference docRef;
+    LottieAnimationView emptyAnimation;
 
     @Override
     public void onRestart() {
@@ -51,7 +53,7 @@ public class WeeklyAppointmentActivity extends AppCompatActivity {
         fStore = FirebaseFirestore.getInstance();
         user = fAuth.getCurrentUser();
         appts = new ArrayList<Appointment>();
-
+        emptyAnimation = findViewById(R.id.emptyApptAnimationView);
         apptsRV = findViewById(R.id.allApptsRV);
         String userID;
 
@@ -76,6 +78,10 @@ public class WeeklyAppointmentActivity extends AppCompatActivity {
 
                 appts = elderly.getApptList();
                 Collections.sort(appts);
+
+                if (appts.isEmpty()){
+                    emptyAnimation.setVisibility(View.VISIBLE);
+                }
 
                 ApptAdapter apptAdapter = new ApptAdapter(appts);
                 apptsRV.setAdapter(apptAdapter);
