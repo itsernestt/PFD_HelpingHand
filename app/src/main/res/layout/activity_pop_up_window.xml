@@ -33,7 +33,7 @@
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="5dp"
             android:fontFamily="@font/roboto_medium"
-            android:text="MANUALLY PAIRRING "
+            android:text="MANUAL PAIRING"
             android:textColor="@color/white"
             android:textSize="20sp"
             android:textStyle="bold" />

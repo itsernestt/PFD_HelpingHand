@@ -7,6 +7,9 @@ import android.app.Dialog;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.media.MediaPlayer;
+import android.media.RingtoneManager;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.util.Log;
@@ -45,6 +48,11 @@ public class CountdownDialog extends AppCompatActivity{
         headerTV = findViewById(R.id.headerTV);
 
         if (intent.hasExtra("medname")){
+
+            Uri notification = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM);
+            MediaPlayer mp = MediaPlayer.create(getApplicationContext(), notification);
+            mp.start();
+
             headerTV.setText("Time to take medication!");
             CountDownTimer cTimer = null;
 
@@ -53,6 +61,8 @@ public class CountdownDialog extends AppCompatActivity{
                     countdownTimerTV.setText((int) (millisUntilFinished/1000) + " seconds remaining");
                 }
                 public void onFinish() {
+                    mp.stop();
+                    mp.release();
                     deleteMedRecord();
                     cancel();
                 }
@@ -64,6 +74,8 @@ public class CountdownDialog extends AppCompatActivity{
                 @Override
                 public void onClick(View v) {
                     finalCTimer.cancel();
+                    mp.stop();
+                    mp.release();
                     Context context = CountdownDialog.this;
                     Intent i = new Intent(context, MedicationAppointmentActivity.class);
                     i.putExtra("medname", intent.getStringExtra("medname"));
@@ -76,6 +88,10 @@ public class CountdownDialog extends AppCompatActivity{
             headerTV.setText("Appointment in 1 hour!");
             goBtn.setText("Check details");
             CountDownTimer cTimer = null;
+
+            Uri notification = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_RINGTONE);
+            MediaPlayer mp = MediaPlayer.create(getApplicationContext(), notification);
+            mp.start();
 
             cTimer = new CountDownTimer(60000, 1000) {
                 public void onTick(long millisUntilFinished) {
