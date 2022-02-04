@@ -98,6 +98,8 @@ public class CountdownDialog extends AppCompatActivity{
                     countdownTimerTV.setText((int) (millisUntilFinished/1000) + " seconds remaining");
                 }
                 public void onFinish() {
+                    mp.stop();
+                    mp.release();
                     cancel();
                 }
             };
@@ -107,6 +109,8 @@ public class CountdownDialog extends AppCompatActivity{
             goBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    mp.stop();
+                    mp.release();
                     finalCTimer.cancel();
                     Context context = CountdownDialog.this;
                     Intent i = new Intent(context, MedicationAppointmentActivity.class);
