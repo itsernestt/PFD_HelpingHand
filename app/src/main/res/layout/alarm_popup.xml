@@ -43,6 +43,17 @@
         android:textColor="@color/black"
         android:textSize="19sp" />
 
+    <com.airbnb.lottie.LottieAnimationView
+        android:id="@+id/animationView"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@id/timingTV"
+        android:layout_marginTop="50dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:lottie_url="https://assets2.lottiefiles.com/packages/lf20_cyyxrhlr.json"
+        app:lottie_autoPlay="true"
+        app:lottie_loop="true"/>
+
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
