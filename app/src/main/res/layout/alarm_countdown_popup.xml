@@ -7,6 +7,16 @@
     android:background="@drawable/popupalarmbackground">
 
 
+    <com.airbnb.lottie.LottieAnimationView
+        android:id="@+id/emptyApptAnimationView"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_marginTop="10dp"
+        android:layout_centerHorizontal="true"
+        app:lottie_autoPlay="true"
+        app:lottie_loop="true"
+        app:lottie_url="https://assets4.lottiefiles.com/packages/lf20_ixzOq9.json" />
+
     <TextView
         android:id="@+id/headerTV"
         android:layout_width="wrap_content"
