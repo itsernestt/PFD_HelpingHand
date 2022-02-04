@@ -1,6 +1,7 @@
 package com.example.pfdhelpinghand;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -45,6 +46,13 @@ public class MedReportAdapter extends RecyclerView.Adapter<MedReportAdapter.MedR
         }else{
             holder.medName.setText(currentMed.medName);
             holder.medRatio.setText(currentMed.numSucceed + "/" + currentMed.totalNumber);
+            if (currentMed.totalNumber ==currentMed.numSucceed){
+                holder.medRatio.setTextColor(Color.parseColor("#17D7A0"));
+            }else if (currentMed.numSucceed == 0){
+                holder.medRatio.setTextColor(Color.parseColor("#FC4F4F"));
+            }else{
+                holder.medRatio.setTextColor(Color.parseColor("#FFCE45"));
+            }
             holder.medPB.setMax(currentMed.totalNumber);
             holder.medPB.setProgress(currentMed.numSucceed);
             holder.medDes.setText(currentMed.medDes);
