@@ -28,6 +28,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -89,6 +90,9 @@ public class ElderlyRecyclerAdapter extends RecyclerView.Adapter<ElderlyRecycler
     String currentLocationString;
     double lat, lng;
 
+    String addressInCoords;
+    String address;
+
     Medication currentMedication;
 
 
@@ -138,9 +142,11 @@ public class ElderlyRecyclerAdapter extends RecyclerView.Adapter<ElderlyRecycler
         TextView elderlyIndex, elderlyApptLoc, eldelyName,
                 elderlyPhone, elderlyMedName, elderlyMedTime,
                 elderlyApptName, elderlyApptTime, elderlyLoc,
-                elderly30s, elderlyAlert, elderlyAlertDesc;
+                elderly30s, elderlyAlert, elderlyAlertDesc, atHomeText;
 
         ImageButton viewMed, viewAppt, viewLoc, phonecall, viewMore;
+
+        ImageView locImage;
 
 
 
@@ -166,7 +172,7 @@ public class ElderlyRecyclerAdapter extends RecyclerView.Adapter<ElderlyRecycler
             elderly30s = view.findViewById(R.id.elderlyItem_med_countdown);
             elderlyAlert = view.findViewById(R.id.elderlyItem_med_pvalue);
             elderlyAlertDesc = view.findViewById(R.id.elderlyItem_med_alertText);
-
+            atHomeText = view.findViewById(R.id.elderlyItem_atHome);
 
             //Image Buttons
 
@@ -175,7 +181,7 @@ public class ElderlyRecyclerAdapter extends RecyclerView.Adapter<ElderlyRecycler
             viewLoc = view.findViewById(R.id.elderlyItem_locationBut);
             phonecall = view.findViewById(R.id.elderlyItem_phonecall);
             viewMore = view.findViewById(R.id.elderlyItem_viewMore);
-
+            locImage = view.findViewById(R.id.elderly_locPic);
 
 
 
@@ -579,27 +585,52 @@ public class ElderlyRecyclerAdapter extends RecyclerView.Adapter<ElderlyRecycler
         // For elderly current location
 
         currentLocationString = elderlyArrayList.get(position).getCurrentLocation();
-
+        
+        addressInCoords = elderlyArrayList.get(position).getAddress();
 
         Geocoder geocoder = new Geocoder(context);
         try {
-            String eLocation2 = currentLocationString.replaceAll("\\s+","");
-            String[] str = eLocation2.split("[,]", 0);
-            String latString = str[0];
-            String lngString = str[1];
-            lat = Double.parseDouble(latString);
-            lng = Double.parseDouble(lngString);
+            String eLocation = addressInCoords.replaceAll("\\s+","");
+            String[] str = eLocation.split("[,]", 0);
+            String latString1 = str[0];
+            String lngString1 = str[1];
+            double lat1 = Double.parseDouble(latString1);
+            double lng1 = Double.parseDouble(lngString1);
+            List<Address> addressList = geocoder.getFromLocation(lat1, lng1, 1);
+            address = addressList.get(0).getAddressLine(0);
 
-            List<Address> addressList = geocoder.getFromLocation(lat, lng, 1);
-            String addressLine = addressList.get(0).getAddressLine(0);
+
+
+            String eLocation2 = currentLocationString.replaceAll("\\s+","");
+            String[] str2 = eLocation2.split("[,]", 0);
+            String latString2 = str2[0];
+            String lngString2 = str2[1];
+            lat = Double.parseDouble(latString2);
+            lng = Double.parseDouble(lngString2);
+            List<Address> addressList2 = geocoder.getFromLocation(lat, lng, 1);
+            String addressLine = addressList2.get(0).getAddressLine(0);
             holder.elderlyLoc.setText(addressLine);
 
+            if (address.equals(addressLine))
+            {
+                holder.locImage.setColorFilter(Color.GREEN);
+                holder.atHomeText.setText("At home");
+            }
 
+            else
+            {
+                holder.locImage.setColorFilter(Color.RED);
+                holder.atHomeText.setText("Outside");
+            }
         }
         catch (Exception e)
         {
             holder.elderlyLoc.setText("not available at the moment!");
         }
+        
+
+
+
 
 
         // For viewing elderly current location

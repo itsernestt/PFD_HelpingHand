@@ -61,8 +61,8 @@
 
         <ImageButton
             android:id="@+id/elderlyItem_phonecall"
-            android:layout_width="36dp"
-            android:layout_height="36dp"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
             android:layout_marginLeft="40dp"
             android:layout_marginRight="80dp"
             android:layout_toRightOf="@id/elderlyItem_name"
@@ -75,8 +75,8 @@
 
         <ImageButton
             android:id="@+id/elderlyItem_viewMore"
-            android:layout_width="38dp"
-            android:layout_height="38dp"
+            android:layout_width="42dp"
+            android:layout_height="42dp"
             android:layout_below="@id/elderlyItem_index"
             android:layout_alignParentRight="true"
             android:adjustViewBounds="false"
@@ -196,23 +196,19 @@
         <ImageButton
             android:id="@+id/elderlyItem_medBut"
 
-            android:layout_width="38dp"
-            android:layout_height="38dp"
-
+            android:layout_width="42dp"
+            android:layout_height="42dp"
             android:layout_below="@id/elderlyItem_phonecall"
 
-            android:layout_alignBaseline="@id/elderly_medPic"
+            android:layout_alignTop="@+id/elderly_medPic"
             android:layout_alignParentRight="true"
-            android:layout_marginTop="40dp"
+
             android:background="@null"
-
             android:backgroundTint="#FFFFFF"
-
             android:elevation="3dp"
             android:scaleType="fitXY"
             android:src="@drawable/e_medclick"
             android:textAlignment="center"
-
             app:tint="@android:color/holo_red_dark" />
 
         <ImageView
@@ -276,14 +272,14 @@
         <ImageButton
             android:id="@+id/elderlyItem_apptBut"
 
-            android:layout_width="38dp"
-            android:layout_height="38dp"
+            android:layout_width="42dp"
+            android:layout_height="42dp"
 
             android:layout_below="@id/elderlyItem_medBut"
 
-            android:layout_alignBaseline="@id/elderly_apptPic"
+            android:layout_alignTop="@+id/elderly_apptPic"
+
             android:layout_alignParentRight="true"
-            android:layout_marginTop="40dp"
             android:background="@null"
 
             android:backgroundTint="#FFFFFF"
@@ -304,15 +300,27 @@
             app:srcCompat="@drawable/e_location"
             app:tint="@color/purple_700" />
 
+        <TextView
+            android:id="@+id/elderlyItem_atHome"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/elderly_locPic"
+            android:layout_alignParentLeft="true"
+            android:layout_marginTop="10dp"
+            android:text=""
+            android:textColor="@color/black"
+            android:textSize="14dp"
+            android:textStyle="bold" />
+
 
         <TextView
             android:id="@+id/elderlyItem_locName"
-            android:layout_width="250dp"
-            android:layout_height="41dp"
+            android:layout_width="243dp"
+            android:layout_height="63dp"
             android:layout_below="@id/elderlyItem_apptTime"
             android:layout_marginStart="10dp"
             android:layout_marginLeft="10dp"
-            android:layout_marginTop="30dp"
+            android:layout_marginTop="20dp"
             android:layout_toEndOf="@id/elderly_locPic"
             android:layout_toRightOf="@+id/elderly_locPic"
 
@@ -324,14 +332,13 @@
 
         <ImageButton
             android:id="@+id/elderlyItem_locationBut"
-            android:layout_width="38dp"
-            android:layout_height="38dp"
+            android:layout_width="42dp"
+            android:layout_height="42dp"
 
             android:layout_below="@id/elderlyItem_apptBut"
+            android:layout_alignTop="@id/elderly_locPic"
 
-            android:layout_alignBaseline="@id/elderly_locPic"
             android:layout_alignParentRight="true"
-            android:layout_marginTop="40dp"
 
 
             android:background="@null"

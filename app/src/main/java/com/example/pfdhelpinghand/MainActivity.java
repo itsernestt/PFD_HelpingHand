@@ -445,7 +445,7 @@ public class MainActivity extends AppCompatActivity implements IBaseGpsListener 
                     UpdateLocation(currentLocation);
                 }
             }
-        }, 0, 60000*3);//put here time 1000 milliseconds=1 second
+        }, 0, 60000*1);//put here time 1000 milliseconds=1 second
 
 
 //
