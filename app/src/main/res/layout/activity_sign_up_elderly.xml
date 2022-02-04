@@ -158,22 +158,18 @@
                         android:layout_gravity="center"
                         android:layout_marginTop="10dp">
 
-                        <TextView
 
-                            android:id="@+id/elderlyAddressPickerText"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginLeft="20dp"
-                            android:text="Pick your address below!"
-                            android:textSize="15sp"></TextView>
 
-                        <Button
-                            android:id="@+id/elderlyAddressPicker"
-                            android:layout_width="wrap_content"
+                        <fragment
+                            android:id="@+id/autocomplete_fragment"
+                            android:name="com.google.android.libraries.places.widget.AutocompleteSupportFragment"
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_below="@+id/elderlyAddressPickerText"
-                            android:layout_centerHorizontal="true"
-                            android:text="Pick" />
+                            android:textSize="16dp"
+                            style="@style/modifiedEditText"
+
+
+                            ></fragment>
 
 
                     </RelativeLayout>
@@ -191,6 +187,10 @@
                             android:layout_centerHorizontal="true"
 
                             android:text="Register" />
+
+
+
+
                     </RelativeLayout>
 
 

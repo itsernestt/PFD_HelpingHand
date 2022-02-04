@@ -1,5 +1,7 @@
 package com.example.pfdhelpinghand;
 
+import static android.service.controls.ControlsProviderService.TAG;
+
 import android.content.Context;
 import android.content.Intent;
 import android.location.Address;
@@ -18,16 +20,20 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
-import com.google.android.gms.common.GooglePlayServicesRepairableException;
-import com.google.android.gms.location.places.Place;
-import com.google.android.gms.location.places.ui.PlacePicker;
+import com.google.android.gms.common.api.Status;
+import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.libraries.places.api.Places;
+import com.google.android.libraries.places.api.model.Place;
+import com.google.android.libraries.places.api.model.RectangularBounds;
+import com.google.android.libraries.places.api.model.TypeFilter;
 import com.google.android.libraries.places.api.net.PlacesClient;
+import com.google.android.libraries.places.widget.AutocompleteActivity;
+import com.google.android.libraries.places.widget.AutocompleteSupportFragment;
+import com.google.android.libraries.places.widget.listener.PlaceSelectionListener;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -35,6 +41,7 @@ import com.google.firebase.auth.UserProfileChangeRequest;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -52,7 +59,8 @@ public class SignUpElderlyActivity extends AppCompatActivity {
     String userID;
     ArrayList<EmergencyPerson> eList;
     Elderly elderly;
-    String addressInCoords;
+    LatLng addressLatLng;
+    String address;
 
     private final static int PLACE_PICKER_REQUEST = 999;
     WifiManager wifiManager;
@@ -74,45 +82,44 @@ public class SignUpElderlyActivity extends AppCompatActivity {
         eContactPhone = findViewById(R.id.elderlyContactPhone);
 
         eRegisterButton = findViewById(R.id.elderlyRegisterButton);
-        ePickAddr = findViewById(R.id.elderlyAddressPicker);
-        ePickAddrText = findViewById(R.id.elderlyAddressPickerText);
 
         fAuth = FirebaseAuth.getInstance();
         fStore = FirebaseFirestore.getInstance();
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            wifiManager= (WifiManager) this.getApplicationContext().getSystemService(Context.WIFI_SERVICE);
-        }
 
         // Initialize Places.
-        Places.initialize(getApplicationContext(), "AIzaSyAmh_CHKyEBR4VW1tscBLu1Sm0BJeK0ipE");
+        Places.initialize(getApplicationContext(), "AIzaSyAIsGuI_XxOHEQc3m_U1xsG93nFLnE_HNs");
 
         // Create a new Places client instance.
         PlacesClient placesClient = Places.createClient(this);
 
-        PlacePicker.IntentBuilder builder = new PlacePicker.IntentBuilder();
+        AutocompleteSupportFragment autocompleteSupportFragment = (AutocompleteSupportFragment)
+        getSupportFragmentManager().findFragmentById(R.id.autocomplete_fragment);
 
-        ePickAddr.setOnClickListener(new View.OnClickListener() {
+        autocompleteSupportFragment.setTypeFilter(TypeFilter.ADDRESS);
+
+        autocompleteSupportFragment.setCountries("SG");
+
+        autocompleteSupportFragment.setPlaceFields(Arrays.asList(
+                Place.Field.ID,
+                Place.Field.NAME,
+                Place.Field.ADDRESS,
+                Place.Field.LAT_LNG));
+
+        autocompleteSupportFragment.setOnPlaceSelectedListener(new PlaceSelectionListener() {
             @Override
-            public void onClick(View view) {
+            public void onError(@NonNull Status status) {
+                Log.i(TAG, "error");
+            }
 
-                try {
-                    startActivityForResult(builder.build(SignUpElderlyActivity.this), PLACE_PICKER_REQUEST);
+            @Override
+            public void onPlaceSelected(@NonNull Place place) {
+                Toast.makeText(getApplicationContext(),String.valueOf(place.getName()), Toast.LENGTH_LONG).show();
+                addressLatLng = place.getLatLng();
+                double lat = addressLatLng.latitude;
+                double lng = addressLatLng.longitude;
 
-                    //Enable Wifi
-                    wifiManager.setWifiEnabled(true);
-
-                } catch (GooglePlayServicesRepairableException e) {
-                    Log.d("Exception",e.getMessage());
-
-                    e.printStackTrace();
-                } catch (GooglePlayServicesNotAvailableException e) {
-                    Log.d("Exception",e.getMessage());
-
-                    e.printStackTrace();
-                }
-
-
+                address = String.format("%1$f, %2$f",lat, lng);
 
             }
         });
@@ -136,13 +143,8 @@ public class SignUpElderlyActivity extends AppCompatActivity {
                 String phone = ePhone.getText().toString().trim();
                 String password = ePassword.getText().toString().trim();
 
-
-
                 String contactName = eContactName.getText().toString();
-
                 String contactPhone = eContactPhone.getText().toString().trim();
-
-                String address = ePickAddrText.getText().toString();
 
 
                 if (TextUtils.isEmpty(userFullName)) {
@@ -186,9 +188,9 @@ public class SignUpElderlyActivity extends AppCompatActivity {
                     eContactPhone.setError("Contact person phone number is required!");
                     return;
                 }
-                if (address.equals("Pick your address below!"))
+                if (address == null)
                 {
-                    ePickAddrText.setError("Address is required!");
+                    Toast.makeText(getApplicationContext(), "Please enter your address!", Toast.LENGTH_SHORT).show();
                     return;
                 }
 
@@ -212,7 +214,7 @@ public class SignUpElderlyActivity extends AppCompatActivity {
 
                             ArrayList<Medication> mList = new ArrayList<Medication>();
 
-                            elderly = new Elderly(userID, userFullName, email, phone, password, p, addressInCoords,"", eList, mList, new ArrayList<Appointment>(), new ArrayList<String>() );
+                            elderly = new Elderly(userID, userFullName, email, phone, password, p, address,"", eList, mList, new ArrayList<Appointment>(), new ArrayList<String>() );
 
 
 
@@ -288,36 +290,5 @@ public class SignUpElderlyActivity extends AppCompatActivity {
 
     }
 
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-
-        if (resultCode == RESULT_OK) {
-            switch (requestCode) {
-                case PLACE_PICKER_REQUEST:
-                    Place place = PlacePicker.getPlace(SignUpElderlyActivity.this, data);
-
-                    double latitude = place.getLatLng().latitude;
-                    double longitude = place.getLatLng().longitude;
-
-
-                    addressInCoords = String.valueOf(latitude) + " , " + String.valueOf(longitude);
-
-                    Geocoder geocoder = new Geocoder(SignUpElderlyActivity.this);
-                    try {
-                        List<Address> addressList = geocoder.getFromLocation(latitude, longitude, 1);
-                        ePickAddrText.setText(addressList.get(0).getAddressLine(0));
-                    }
-                    catch (Exception e)
-                    {
-                        ePickAddrText.setText("Not available");
-
-                    }
-
-
-            }
-        }
-    }
 
 }
