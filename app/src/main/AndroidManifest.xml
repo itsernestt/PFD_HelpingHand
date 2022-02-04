@@ -31,7 +31,7 @@
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="AIzaSyAmh_CHKyEBR4VW1tscBLu1Sm0BJeK0ipE" />
+            android:value="AIzaSyAIsGuI_XxOHEQc3m_U1xsG93nFLnE_HNs" />
 
         <activity
             android:name=".CountdownDialog"
