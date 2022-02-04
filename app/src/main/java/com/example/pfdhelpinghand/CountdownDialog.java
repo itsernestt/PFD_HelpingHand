@@ -50,8 +50,8 @@ public class CountdownDialog extends AppCompatActivity{
         if (intent.hasExtra("medname")){
 
             Uri notification = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM);
-            MediaPlayer mp = MediaPlayer.create(getApplicationContext(), notification);
-            mp.start();
+            final MediaPlayer[] mp = {MediaPlayer.create(getApplicationContext(), notification)};
+            mp[0].start();
 
             headerTV.setText("Time to take medication!");
             CountDownTimer cTimer = null;
@@ -61,8 +61,17 @@ public class CountdownDialog extends AppCompatActivity{
                     countdownTimerTV.setText((int) (millisUntilFinished/1000) + " seconds remaining");
                 }
                 public void onFinish() {
-                    mp.stop();
-                    mp.release();
+                    try{
+                        if (mp[0] !=null){
+                            if (mp[0].isPlaying()){
+                                mp[0].stop();
+                            }
+                            mp[0].release();
+                            mp[0] = null;
+                        }
+                    }catch (Exception e){
+                        e.printStackTrace();
+                    }
                     deleteMedRecord();
                     cancel();
                 }
@@ -74,8 +83,18 @@ public class CountdownDialog extends AppCompatActivity{
                 @Override
                 public void onClick(View v) {
                     finalCTimer.cancel();
-                    mp.stop();
-                    mp.release();
+
+                    try{
+                        if (mp[0] !=null){
+                            if (mp[0].isPlaying()){
+                                mp[0].stop();
+                            }
+                            mp[0].release();
+                            mp[0] = null;
+                        }
+                    }catch (Exception e){
+                        e.printStackTrace();
+                    }
                     Context context = CountdownDialog.this;
                     Intent i = new Intent(context, MedicationAppointmentActivity.class);
                     i.putExtra("medname", intent.getStringExtra("medname"));
@@ -90,16 +109,25 @@ public class CountdownDialog extends AppCompatActivity{
             CountDownTimer cTimer = null;
 
             Uri notification = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_RINGTONE);
-            MediaPlayer mp = MediaPlayer.create(getApplicationContext(), notification);
-            mp.start();
+            final MediaPlayer[] mp = {MediaPlayer.create(getApplicationContext(), notification)};
+            mp[0].start();
 
             cTimer = new CountDownTimer(60000, 1000) {
                 public void onTick(long millisUntilFinished) {
                     countdownTimerTV.setText((int) (millisUntilFinished/1000) + " seconds remaining");
                 }
                 public void onFinish() {
-                    mp.stop();
-                    mp.release();
+                    try{
+                        if (mp[0] !=null){
+                            if (mp[0].isPlaying()){
+                                mp[0].stop();
+                            }
+                            mp[0].release();
+                            mp[0] = null;
+                        }
+                    }catch (Exception e){
+                        e.printStackTrace();
+                    }
                     cancel();
                 }
             };
@@ -109,8 +137,17 @@ public class CountdownDialog extends AppCompatActivity{
             goBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    mp.stop();
-                    mp.release();
+                    try{
+                        if (mp[0] !=null){
+                            if (mp[0].isPlaying()){
+                                mp[0].stop();
+                            }
+                            mp[0].release();
+                            mp[0] = null;
+                        }
+                    }catch (Exception e){
+                        e.printStackTrace();
+                    }
                     finalCTimer.cancel();
                     Context context = CountdownDialog.this;
                     Intent i = new Intent(context, MedicationAppointmentActivity.class);
