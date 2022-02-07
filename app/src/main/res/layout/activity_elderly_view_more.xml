@@ -307,10 +307,10 @@
                 android:id="@+id/viewMore_deleteButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/viewMore_buttons"
+                android:layout_below="@+id/viewMore_emergencyPhone"
+
                 android:layout_centerHorizontal="true"
-                android:layout_marginLeft="50dp"
-                android:layout_marginTop="50dp"
+                android:layout_marginTop="30dp"
                 android:layout_weight="1"
                 android:backgroundTint="@android:color/holo_red_dark"
                 android:text="Delete" />
