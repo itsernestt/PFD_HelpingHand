@@ -393,6 +393,26 @@ public class ElderlyRecyclerAdapter extends RecyclerView.Adapter<ElderlyRecycler
                                                     }
                                                 });
 
+                                                String message = "Elderly has just missed taking ( " + medName + " )";
+                                                NotificationCompat.Builder builder = new NotificationCompat.Builder(context, "NotifyElderlyMed");
+                                                builder.setContentTitle("Alert! Elderly Has Missed Medication! ");
+                                                builder.setContentText(message);
+                                                builder.setContentInfo("Please follow up!");
+                                                builder.setSmallIcon(R.drawable.app_icon);
+                                                builder.setPriority(NotificationCompat.PRIORITY_HIGH);
+                                                builder.setDefaults(NotificationCompat.DEFAULT_ALL);
+                                                builder.setAutoCancel(true);
+                                                Intent intent = new Intent(context, CaregiverMainActivity.class);
+
+                                                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                                intent.putExtra("message", message);
+                                                PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+                                                builder.setContentIntent(pendingIntent);
+
+
+                                                NotificationManagerCompat managerCompat =  NotificationManagerCompat.from(context);
+                                                managerCompat.notify(0, builder.build());
+
 
                                                 DocumentReference addtoML = fStore.collection("ElderlyMedicationML").document(elderlyID);
                                                 addtoML.update("alarmFailed", FieldValue.arrayUnion(currentMedication))
@@ -421,27 +441,7 @@ public class ElderlyRecyclerAdapter extends RecyclerView.Adapter<ElderlyRecycler
 
 
 
-                            //Generate a notifiation bar on top to notify the caregiver
-
-                            String message = "Elderly has just missed taking ( " + medName + " )";
-                            NotificationCompat.Builder builder = new NotificationCompat.Builder(context, "NotifyElderlyMed");
-                            builder.setContentTitle("Alert! Elderly Has Missed Medication! ");
-                            builder.setContentText(message);
-                            builder.setContentInfo("Please follow up!");
-                            builder.setSmallIcon(R.drawable.app_icon);
-                            builder.setPriority(NotificationCompat.PRIORITY_HIGH);
-                            builder.setDefaults(NotificationCompat.DEFAULT_ALL);
-                            builder.setAutoCancel(true);
-                            Intent intent = new Intent(context, CaregiverMainActivity.class);
-
-                            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                            intent.putExtra("message", message);
-                            PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-                            builder.setContentIntent(pendingIntent);
-
-
-                            NotificationManagerCompat managerCompat =  NotificationManagerCompat.from(context);
-                            managerCompat.notify(0, builder.build());
+                            //Generate a notifiation bar on top to notify the caregive
 
 
 
