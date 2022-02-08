@@ -176,12 +176,14 @@ public class MedicationAppointmentActivity extends AppCompatActivity {
                     TextView timing = (TextView) alarmDialog.findViewById(R.id.timingTV);
                     timing.setVisibility(View.GONE);
 
+                    Medication removeMed = new Medication();
+
                     for (Medication m:
-                        meds){
-                        if (m.medName.equals(medname)){
+                        meds) {
+                        if (m.medName.equals(medname)) {
                             medName.setText(medname);
                             medDesc.setText(m.medDescription);
-                            meds.remove(m);
+                            removeMed = m;
 
                             DocumentReference addtoML = fStore.collection("ElderlyMedicationML").document(userID);
                             addtoML.update("alarmSuccess", FieldValue.arrayUnion(m)).addOnFailureListener(new OnFailureListener() {
@@ -192,6 +194,7 @@ public class MedicationAppointmentActivity extends AppCompatActivity {
                             });
                         }
                     }
+                    meds.remove(removeMed);
                     alarmDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
                     alarmDialog.show();
                     Collections.sort(meds);
