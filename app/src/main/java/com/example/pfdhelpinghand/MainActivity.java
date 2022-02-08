@@ -14,6 +14,7 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
@@ -81,6 +82,7 @@ public class MainActivity extends AppCompatActivity implements IBaseGpsListener 
     private static final int PERMISSION_PHONE_CALL = 10;
     private static final int MY_PERMISSIONS_REQUEST_SEND_SMS = 0;
 
+    SharedPreferences sharedPreferences;
     FirebaseAuth fAuth;
     FirebaseUser user;
     FirebaseFirestore fStore;
@@ -119,13 +121,15 @@ public class MainActivity extends AppCompatActivity implements IBaseGpsListener 
         setContentView(R.layout.activity_main);
 
         createNotificationChannel();
+        sharedPreferences = getSharedPreferences("refresher",Context.MODE_PRIVATE);
+        boolean refreshed = sharedPreferences.getBoolean("alarms", false);
+
 
         Button cancelButton = findViewById(R.id.cancelButton);
 
         fAuth = FirebaseAuth.getInstance();
         fStore = FirebaseFirestore.getInstance();
         user = fAuth.getCurrentUser();
-        getAlarms();
 
         //Testing location tracking
 
@@ -163,16 +167,22 @@ public class MainActivity extends AppCompatActivity implements IBaseGpsListener 
             e.printStackTrace();
         }
 
-        fStore.collection("Elderly").document(userID).addSnapshotListener(new EventListener<DocumentSnapshot>() {
-            @Override
-            public void onEvent(@Nullable DocumentSnapshot documentSnapshot, @Nullable FirebaseFirestoreException e) {
-                if (e != null) {
-                    Log.w(TAG, "Listen failed.", e);
-                    return;
+        if (!refreshed){
+            fStore.collection("Elderly").document(userID).addSnapshotListener(new EventListener<DocumentSnapshot>() {
+                @Override
+                public void onEvent(@Nullable DocumentSnapshot documentSnapshot, @Nullable FirebaseFirestoreException e) {
+                    if (e != null) {
+                        Log.w(TAG, "Listen failed.", e);
+                        return;
+                    }
+                    getAlarms();
                 }
-                getAlarms();
-            }
-        });
+            });
+            SharedPreferences.Editor editor = sharedPreferences.edit();
+            editor.putBoolean("alarms", true);
+            editor.commit();
+        }
+
 
         docRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
             @Override
@@ -488,6 +498,11 @@ public class MainActivity extends AppCompatActivity implements IBaseGpsListener 
 
     }// end of on create method
 
+    @Override
+    protected void onStop() {
+        super.onStop();
+    }
+
     public void askForOverlay() {
         new AlertDialog.Builder(MainActivity.this)
                 .setTitle("Request permission")
@@ -665,16 +680,15 @@ public class MainActivity extends AppCompatActivity implements IBaseGpsListener 
                 elderly = documentSnapshot.toObject(Elderly.class);
                 ArrayList<Medication> mList = elderly.getMedList();
                 ArrayList<Appointment> aList = elderly.getApptList();
-                int counter = 1;
-                int counter2 = 100;
 
                 for (Medication m: mList) {
                     Calendar tempCal = Calendar.getInstance();
                     tempCal.setTimeInMillis(m.getDay().toDate().getTime());
                     Calendar currentTime = Calendar.getInstance();
                     float x = currentTime.compareTo(tempCal);
+                    int hash = m.medName.hashCode();
                     if (x<0){
-                        setAlarm(counter, tempCal, m.medName);
+                        setAlarm(hash, tempCal, m.medName, true);
                     }else if (x>0){
                         mList.remove(m);
                         Collections.sort(mList);
@@ -684,7 +698,7 @@ public class MainActivity extends AppCompatActivity implements IBaseGpsListener 
                                 Toast.makeText(MainActivity.this, "Fail to delete medication!", Toast.LENGTH_SHORT).show();
                             }
                         });
-                        cancelAlarm(counter);
+                        cancelAlarm(hash);
                         DocumentReference addtoML = fStore.collection("ElderlyMedicationML").document(user.getUid());
                         addtoML.update("alarmFailed", FieldValue.arrayUnion(m)).addOnFailureListener(new OnFailureListener() {
                             @Override
@@ -693,10 +707,11 @@ public class MainActivity extends AppCompatActivity implements IBaseGpsListener 
                             }
                         });
                     }
-                    counter++;
                 }
 
                 for (Appointment a: aList){
+
+                    int hash = a.apptName.hashCode();
                     Calendar tempCal = Calendar.getInstance();
                     tempCal.setTimeInMillis(a.getTime().toDate().getTime());
 
@@ -708,7 +723,7 @@ public class MainActivity extends AppCompatActivity implements IBaseGpsListener 
                     float y = tempCal2.compareTo(tempCal3);
                     float x = tempCal2.compareTo(tempCal);
                     if (x<0 && y<0){
-                        setAlarm(counter2, tempCal, a.apptName);
+                        setAlarm(hash, tempCal, a.apptName, false);
                     }else if (x>0){
                         aList.remove(a);
                         Collections.sort(aList);
@@ -718,9 +733,8 @@ public class MainActivity extends AppCompatActivity implements IBaseGpsListener 
                                 Toast.makeText(MainActivity.this, "Fail to delete appointment!", Toast.LENGTH_SHORT).show();
                             }
                         });
-                        cancelAlarm(counter2);
+                        cancelAlarm(hash);
                     }
-                    counter2--;
                 }
             }
         });
@@ -731,11 +745,13 @@ public class MainActivity extends AppCompatActivity implements IBaseGpsListener 
 
         PendingIntent pendingIntent = PendingIntent.getBroadcast(this, counter, intent, PendingIntent.FLAG_NO_CREATE);
         AlarmManager am = (AlarmManager) getSystemService(Activity.ALARM_SERVICE);
-        am.cancel(pendingIntent);
+        if (pendingIntent!=null){
+            am.cancel(pendingIntent);
+        }
     }
 
-    private void setAlarm(int counter, Calendar tempCal, String itemName) {
-        if (counter<50){
+    private void setAlarm(int counter, Calendar tempCal, String itemName, boolean med) {
+        if (med){
             Intent intent = new Intent(this, AlarmReceiver.class);
             intent.putExtra("alarmid", counter);
             intent.putExtra("medname", itemName);
@@ -743,7 +759,7 @@ public class MainActivity extends AppCompatActivity implements IBaseGpsListener 
 
             AlarmManager am = (AlarmManager) getSystemService(Activity.ALARM_SERVICE);
             am.setExact(AlarmManager.RTC_WAKEUP, tempCal.getTimeInMillis(), pi);
-        }else if (counter>=50){
+        }else{
             Intent intent = new Intent(this, AlarmReceiver.class);
             intent.putExtra("alarmid", counter);
             intent.putExtra("apptname", itemName);

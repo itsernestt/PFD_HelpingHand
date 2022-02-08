@@ -8,6 +8,7 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.media.MediaPlayer;
+import android.media.Ringtone;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Bundle;
@@ -36,6 +37,11 @@ public class CountdownDialog extends AppCompatActivity{
     FirebaseFirestore fStore;
     FirebaseAuth fAuth;
     FirebaseUser user;
+    CountDownTimer cTimer = null;
+    Uri notificationa = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM);
+    Uri notificationb= RingtoneManager.getDefaultUri(RingtoneManager.TYPE_RINGTONE);
+    MediaPlayer mp1;
+    MediaPlayer mp2;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,14 +53,14 @@ public class CountdownDialog extends AppCompatActivity{
         countdownTimerTV = findViewById(R.id.countdownTimer);
         headerTV = findViewById(R.id.headerTV);
 
+        mp1 = MediaPlayer.create(getApplicationContext(), notificationa);
+        mp2 = MediaPlayer.create(getApplicationContext(), notificationb);
+
         if (intent.hasExtra("medname")){
 
-            Uri notification = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM);
-            final MediaPlayer[] mp = {MediaPlayer.create(getApplicationContext(), notification)};
-            mp[0].start();
+            mp1.start();
 
             headerTV.setText("Time to take medication!");
-            CountDownTimer cTimer = null;
 
             cTimer = new CountDownTimer(30000, 1000) {
                 public void onTick(long millisUntilFinished) {
@@ -62,12 +68,12 @@ public class CountdownDialog extends AppCompatActivity{
                 }
                 public void onFinish() {
                     try{
-                        if (mp[0] !=null){
-                            if (mp[0].isPlaying()){
-                                mp[0].stop();
+                        if (mp1 !=null){
+                            if (mp1.isPlaying()){
+                                mp1.stop();
                             }
-                            mp[0].release();
-                            mp[0] = null;
+                            mp1.release();
+                            mp1 = null;
                         }
                     }catch (Exception e){
                         e.printStackTrace();
@@ -78,19 +84,18 @@ public class CountdownDialog extends AppCompatActivity{
             };
             cTimer.start();
 
-            CountDownTimer finalCTimer = cTimer;
             goBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    finalCTimer.cancel();
+                    cTimer.cancel();
 
                     try{
-                        if (mp[0] !=null){
-                            if (mp[0].isPlaying()){
-                                mp[0].stop();
+                        if (mp1 !=null){
+                            if (mp1.isPlaying()){
+                                mp1.stop();
                             }
-                            mp[0].release();
-                            mp[0] = null;
+                            mp1.release();
+                            mp1 = null;
                         }
                     }catch (Exception e){
                         e.printStackTrace();
@@ -106,11 +111,8 @@ public class CountdownDialog extends AppCompatActivity{
         }else if (intent.hasExtra("apptname")){
             headerTV.setText("Appointment in 1 hour!");
             goBtn.setText("Check details");
-            CountDownTimer cTimer = null;
 
-            Uri notification = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_RINGTONE);
-            final MediaPlayer[] mp = {MediaPlayer.create(getApplicationContext(), notification)};
-            mp[0].start();
+            mp2.start();
 
             cTimer = new CountDownTimer(60000, 1000) {
                 public void onTick(long millisUntilFinished) {
@@ -118,12 +120,12 @@ public class CountdownDialog extends AppCompatActivity{
                 }
                 public void onFinish() {
                     try{
-                        if (mp[0] !=null){
-                            if (mp[0].isPlaying()){
-                                mp[0].stop();
+                        if (mp2 !=null){
+                            if (mp2.isPlaying()){
+                                mp2.stop();
                             }
-                            mp[0].release();
-                            mp[0] = null;
+                            mp2.release();
+                            mp2 = null;
                         }
                     }catch (Exception e){
                         e.printStackTrace();
@@ -133,22 +135,21 @@ public class CountdownDialog extends AppCompatActivity{
             };
             cTimer.start();
 
-            CountDownTimer finalCTimer = cTimer;
             goBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     try{
-                        if (mp[0] !=null){
-                            if (mp[0].isPlaying()){
-                                mp[0].stop();
+                        if (mp2 !=null){
+                            if (mp2.isPlaying()){
+                                mp2.stop();
                             }
-                            mp[0].release();
-                            mp[0] = null;
+                            mp2.release();
+                            mp2 = null;
                         }
                     }catch (Exception e){
                         e.printStackTrace();
                     }
-                    finalCTimer.cancel();
+                    cTimer.cancel();
                     Context context = CountdownDialog.this;
                     Intent i = new Intent(context, MedicationAppointmentActivity.class);
                     i.putExtra("apptname", intent.getStringExtra("apptname"));
@@ -162,6 +163,7 @@ public class CountdownDialog extends AppCompatActivity{
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        cTimer = null;
     }
 
 
