@@ -34,12 +34,14 @@ public class LoginActivity extends AppCompatActivity {
     String userID;
     FirebaseUser user;
     SharedPreferences sharedPreferences;
+    SharedPreferences sharedPreferences2;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         sharedPreferences = getSharedPreferences("usertype", Context.MODE_PRIVATE);
+        sharedPreferences2 = getSharedPreferences("refresher", Context.MODE_PRIVATE);
         fAuth = FirebaseAuth.getInstance();
         user = fAuth.getCurrentUser();
 
@@ -64,6 +66,9 @@ public class LoginActivity extends AppCompatActivity {
                     SharedPreferences.Editor editor = sharedPreferences.edit();
                     editor.putString("type", "Elderly");
                     editor.commit();
+                    SharedPreferences.Editor editor2 = sharedPreferences2.edit();
+                    editor2.putBoolean("alarms", false);
+                    editor2.commit();
                     startActivity(new Intent(getApplicationContext(), MainActivity.class));
                 }
         }
@@ -130,6 +135,9 @@ public class LoginActivity extends AppCompatActivity {
                                     SharedPreferences.Editor editor = sharedPreferences.edit();
                                     editor.putString("type", "Elderly");
                                     editor.commit();
+                                    SharedPreferences.Editor editor2 = sharedPreferences2.edit();
+                                    editor2.putBoolean("alarms", false);
+                                    editor2.commit();
                                     startActivity(new Intent(getApplicationContext(), MainActivity.class));
                                 }
 
