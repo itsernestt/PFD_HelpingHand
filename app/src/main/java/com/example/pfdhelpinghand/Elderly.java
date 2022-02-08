@@ -1,11 +1,7 @@
 package com.example.pfdhelpinghand;
 
 
-import android.location.Address;
-import android.location.Geocoder;
-
 import java.util.ArrayList;
-import java.util.List;
 
 public class Elderly extends User{
 
@@ -163,7 +159,7 @@ public class Elderly extends User{
         }
         else
         {
-            return "Very low p_score, \nvery insistent in taking medication!";
+            return "Very low p_score, \nvery inconsistent in taking medication!";
         }
 
     }

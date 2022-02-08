@@ -310,6 +310,9 @@ public class ElderlyRecyclerAdapter extends RecyclerView.Adapter<ElderlyRecycler
 
                     currentMedication = elderlyArrayList.get(position).getMedList().get(0);
 
+                    //countdownStartMillis = end_millis;
+                    //countDownEndMillis = end_millis += (31 * 1000);
+
                     CountDownTimer timer2 = new CountDownTimer(31 * 1000, 1000) {
                         @Override
                         public void onTick(long millisUntilFinished) {
@@ -376,58 +379,41 @@ public class ElderlyRecyclerAdapter extends RecyclerView.Adapter<ElderlyRecycler
                                             Elderly elderly = documentSnapshot.toObject(Elderly.class);
                                             ArrayList<Medication> medicationArrayList = elderly.getMedList();
 
-                                            if (medicationArrayList.get(0).getDay().equals(currentMedication.getDay()))
+                                            if (medicationArrayList.size() > 0)
                                             {
-                                                medicationArrayList.remove(0);
-                                                fStore.collection("Elderly").document(elderlyID)
-                                                        .update("medList", medicationArrayList)
-                                                        .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                                            @Override
-                                                            public void onSuccess(Void unused) {
-                                                                Log.w(TAG, "onSuccess: Updated successfully");
-                                                            }
-                                                        }).addOnFailureListener(new OnFailureListener() {
-                                                    @Override
-                                                    public void onFailure(@NonNull Exception e) {
-                                                        Log.e(TAG, "onFailure: Update failed" );
-                                                    }
-                                                });
 
-                                                String message = "Elderly has just missed taking ( " + medName + " )";
-                                                NotificationCompat.Builder builder = new NotificationCompat.Builder(context, "NotifyElderlyMed");
-                                                builder.setContentTitle("Alert! Elderly Has Missed Medication! ");
-                                                builder.setContentText(message);
-                                                builder.setContentInfo("Please follow up!");
-                                                builder.setSmallIcon(R.drawable.app_icon);
-                                                builder.setPriority(NotificationCompat.PRIORITY_HIGH);
-                                                builder.setDefaults(NotificationCompat.DEFAULT_ALL);
-                                                builder.setAutoCancel(true);
-                                                Intent intent = new Intent(context, CaregiverMainActivity.class);
+                                                if (medicationArrayList.get(0).getDay().equals(currentMedication.getDay()))
+                                                {
+                                                    medicationArrayList.remove(0);
+                                                    fStore.collection("Elderly").document(elderlyID)
+                                                            .update("medList", medicationArrayList)
+                                                            .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                                @Override
+                                                                public void onSuccess(Void unused) {
+                                                                    Log.w(TAG, "onSuccess: Updated successfully");
+                                                                }
+                                                            }).addOnFailureListener(new OnFailureListener() {
+                                                        @Override
+                                                        public void onFailure(@NonNull Exception e) {
+                                                            Log.e(TAG, "onFailure: Update failed" );
+                                                        }
+                                                    });
 
-                                                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                                                intent.putExtra("message", message);
-                                                PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-                                                builder.setContentIntent(pendingIntent);
+                                                    DocumentReference addtoML = fStore.collection("ElderlyMedicationML").document(elderlyID);
+                                                    addtoML.update("alarmFailed", FieldValue.arrayUnion(currentMedication))
+                                                            .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                                @Override
+                                                                public void onSuccess(Void unused) {
+                                                                    Toast.makeText(context, "Added med record", Toast.LENGTH_SHORT).show();
+                                                                }
+                                                            }).addOnFailureListener(new OnFailureListener() {
+                                                        @Override
+                                                        public void onFailure(@NonNull Exception e) {
+                                                            Toast.makeText(context, "Fail to add ML record!", Toast.LENGTH_SHORT).show();
+                                                        }
+                                                    });
 
-
-                                                NotificationManagerCompat managerCompat =  NotificationManagerCompat.from(context);
-                                                managerCompat.notify(0, builder.build());
-
-
-                                                DocumentReference addtoML = fStore.collection("ElderlyMedicationML").document(elderlyID);
-                                                addtoML.update("alarmFailed", FieldValue.arrayUnion(currentMedication))
-                                                        .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                                            @Override
-                                                            public void onSuccess(Void unused) {
-                                                                Toast.makeText(context, "Added med record", Toast.LENGTH_SHORT).show();
-                                                            }
-                                                        }).addOnFailureListener(new OnFailureListener() {
-                                                    @Override
-                                                    public void onFailure(@NonNull Exception e) {
-                                                        Toast.makeText(context, "Fail to add ML record!", Toast.LENGTH_SHORT).show();
-                                                    }
-                                                });
-
+                                                }
 
 
                                             }
@@ -442,6 +428,28 @@ public class ElderlyRecyclerAdapter extends RecyclerView.Adapter<ElderlyRecycler
 
 
                             //Generate a notifiation bar on top to notify the caregive
+
+                            String message = "Elderly has just missed taking ( " + medName + " )";
+                            NotificationCompat.Builder builder = new NotificationCompat.Builder(context, "NotifyElderlyMed");
+                            builder.setContentTitle("Alert! Elderly Has Missed Medication! ");
+                            builder.setContentText(message);
+                            builder.setContentInfo("Please follow up!");
+                            builder.setSmallIcon(R.drawable.app_icon);
+                            builder.setPriority(NotificationCompat.PRIORITY_HIGH);
+                            builder.setDefaults(NotificationCompat.DEFAULT_ALL);
+                            builder.setAutoCancel(true);
+
+                           // Intent intent = new Intent(context, CaregiverMainActivity.class);
+
+                            //intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                            //intent.putExtra("message", message);
+                           // PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+                          //  builder.setContentIntent(pendingIntent);
+
+
+                            NotificationManagerCompat managerCompat =  NotificationManagerCompat.from(context);
+                            managerCompat.notify(0, builder.build());
+
 
 
 
