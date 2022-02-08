@@ -80,6 +80,7 @@ public class CountdownDialog extends AppCompatActivity{
                     }
                     deleteMedRecord();
                     cancel();
+                    finish();
                 }
             };
             cTimer.start();
@@ -105,6 +106,7 @@ public class CountdownDialog extends AppCompatActivity{
                     i.putExtra("medname", intent.getStringExtra("medname"));
                     i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                     startActivity(i);
+                    finish();
                 }
             });
 
@@ -130,7 +132,8 @@ public class CountdownDialog extends AppCompatActivity{
                     }catch (Exception e){
                         e.printStackTrace();
                     }
-                    cancel();
+                    cTimer.cancel();
+                    finish();
                 }
             };
             cTimer.start();
@@ -155,6 +158,7 @@ public class CountdownDialog extends AppCompatActivity{
                     i.putExtra("apptname", intent.getStringExtra("apptname"));
                     i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                     startActivity(i);
+                    finish();
                 }
             });
         }
