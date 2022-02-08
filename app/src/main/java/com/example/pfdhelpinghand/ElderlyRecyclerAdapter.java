@@ -58,12 +58,14 @@ import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 
@@ -288,6 +290,8 @@ public class ElderlyRecyclerAdapter extends RecyclerView.Adapter<ElderlyRecycler
 
             long total_millis = (end_millis - start_millis);
 
+            long countdown2_end = end_millis + (29 * 1000);
+
             CountDownTimer timer = new CountDownTimer(total_millis, 1000) {
 
                 public void onTick(long millisUntilFinished) {
@@ -308,155 +312,218 @@ public class ElderlyRecyclerAdapter extends RecyclerView.Adapter<ElderlyRecycler
 
                 public void onFinish() {
 
-                    currentMedication = elderlyArrayList.get(position).getMedList().get(0);
+                    Calendar start = Calendar.getInstance();
+                    long startMilis = Math.abs(start.getTimeInMillis());
 
-                    //countdownStartMillis = end_millis;
-                    //countDownEndMillis = end_millis += (31 * 1000);
+                    if (countdown2_end > startMilis)
+                    {
+                        long total = (countdown2_end - startMilis);
 
-                    CountDownTimer timer2 = new CountDownTimer(31 * 1000, 1000) {
-                        @Override
-                        public void onTick(long millisUntilFinished) {
-
-                            holder.elderly30s.setVisibility(View.VISIBLE);
-                            holder.elderlyAlertDesc.setVisibility(View.VISIBLE);
-                            holder.elderlyAlertDesc.setTextColor(Color.BLACK);
-
-                            Elderly elderly1 = elderlyArrayList.get(position);
-
-                            if (elderly1.getLevelOfAlert() != 0)
-                            {
-
-                                holder.elderlyAlert.setVisibility(View.VISIBLE);
-                                holder.elderlyAlert.setText("Alert level: " + elderly1.getLevelOfAlert());
-                            }
-                            holder.elderlyAlertDesc.setText(elderly1.getAlertMessage());
+                        currentMedication = elderlyArrayList.get(position).getMedList().get(0);
 
 
-                            long seconds = TimeUnit.MILLISECONDS.toSeconds(millisUntilFinished);
-                            holder.elderly30s.setText("< " + seconds + " > ");
-                            fStore.collection("ElderlyMedicationML")
-                                    .whereEqualTo("elderlyID", elderlyArrayList.get(position).getID() )
-                                    .addSnapshotListener(new EventListener<QuerySnapshot>() {
-                                        @Override
-                                        public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException e) {
-                                            if (e != null) {
-                                                Log.w(TAG, "listen:error", e);
-                                                return;
-                                            }
-                                            for(DocumentChange dc: queryDocumentSnapshots.getDocumentChanges())
-                                            {
-                                                switch (dc.getType()) {
-                                                    case ADDED:
-                                                    case REMOVED:
-                                                        break;
-                                                    case MODIFIED:
-                                                        holder.elderly30s.setVisibility(View.INVISIBLE);
-                                                        holder.elderlyAlert.setVisibility(View.INVISIBLE);
-                                                        holder.elderlyAlertDesc.setVisibility(View.INVISIBLE);
-                                                        return;
-                                                };
-                                            }
+                        CountDownTimer timer2 = new CountDownTimer(total, 1000) {
+                            @Override
+                            public void onTick(long millisUntilFinished) {
 
-                                        }
-                                    });
+                                holder.elderly30s.setVisibility(View.VISIBLE);
+                                holder.elderlyAlertDesc.setVisibility(View.VISIBLE);
+                                holder.elderlyAlertDesc.setTextColor(Color.BLACK);
+
+                                Elderly elderly1 = elderlyArrayList.get(position);
+
+                                if (elderly1.getLevelOfAlert() != 0)
+                                {
+                                    holder.elderlyAlert.setVisibility(View.VISIBLE);
+                                    holder.elderlyAlert.setText("Alert level: " + elderly1.getLevelOfAlert());
+                                }
+                                holder.elderlyAlertDesc.setText(elderly1.getAlertMessage());
 
 
-                        }
+                                long seconds = TimeUnit.MILLISECONDS.toSeconds(millisUntilFinished);
+                                holder.elderly30s.setText("< " + seconds + " > ");
 
-                        @Override
-                        public void onFinish() {
-                            holder.elderlyAlert.setVisibility(View.INVISIBLE);
-                            holder.elderly30s.setVisibility(View.INVISIBLE);
-                            holder.elderlyAlertDesc.setVisibility(View.INVISIBLE);
 
-                            String elderlyID = elderlyArrayList.get(position).getID();
-
-                            fStore.collection("Elderly").document(elderlyID)
-                                    .get()
-                                    .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-                                        @Override
-                                        public void onSuccess(DocumentSnapshot documentSnapshot) {
-                                            Elderly elderly = documentSnapshot.toObject(Elderly.class);
-                                            ArrayList<Medication> medicationArrayList = elderly.getMedList();
-
-                                            if (medicationArrayList.size() > 0)
-                                            {
-
-                                                if (medicationArrayList.get(0).getDay().equals(currentMedication.getDay()))
+                                fStore.collection("ElderlyMedicationML")
+                                        .whereEqualTo("elderlyID", elderlyArrayList.get(position).getID() )
+                                        .addSnapshotListener(new EventListener<QuerySnapshot>() {
+                                            @Override
+                                            public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException e) {
+                                                if (e != null) {
+                                                    Log.w(TAG, "listen:error", e);
+                                                    return;
+                                                }
+                                                for(DocumentChange dc: queryDocumentSnapshots.getDocumentChanges())
                                                 {
-                                                    medicationArrayList.remove(0);
-                                                    fStore.collection("Elderly").document(elderlyID)
-                                                            .update("medList", medicationArrayList)
-                                                            .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                                                @Override
-                                                                public void onSuccess(Void unused) {
-                                                                    Log.w(TAG, "onSuccess: Updated successfully");
-                                                                }
-                                                            }).addOnFailureListener(new OnFailureListener() {
-                                                        @Override
-                                                        public void onFailure(@NonNull Exception e) {
-                                                            Log.e(TAG, "onFailure: Update failed" );
-                                                        }
-                                                    });
+                                                    switch (dc.getType()) {
+                                                        case ADDED:
+                                                        case REMOVED:
+                                                            break;
+                                                        case MODIFIED:
+                                                            holder.elderly30s.setVisibility(View.INVISIBLE);
+                                                            holder.elderlyAlert.setVisibility(View.INVISIBLE);
+                                                            holder.elderlyAlertDesc.setVisibility(View.INVISIBLE);
+                                                            cancel();
+                                                    };
+                                                }
+                                            }
+                                        });
 
-                                                    DocumentReference addtoML = fStore.collection("ElderlyMedicationML").document(elderlyID);
-                                                    addtoML.update("alarmFailed", FieldValue.arrayUnion(currentMedication))
-                                                            .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                                                @Override
-                                                                public void onSuccess(Void unused) {
-                                                                    Toast.makeText(context, "Added med record", Toast.LENGTH_SHORT).show();
-                                                                }
-                                                            }).addOnFailureListener(new OnFailureListener() {
-                                                        @Override
-                                                        public void onFailure(@NonNull Exception e) {
-                                                            Toast.makeText(context, "Fail to add ML record!", Toast.LENGTH_SHORT).show();
-                                                        }
-                                                    });
 
+
+                            }
+
+                            @Override
+                            public void onFinish() {
+                                holder.elderlyAlert.setVisibility(View.INVISIBLE);
+                                holder.elderly30s.setVisibility(View.INVISIBLE);
+                                holder.elderlyAlertDesc.setVisibility(View.INVISIBLE);
+
+
+                                String elderlyID = elderlyArrayList.get(position).getID();
+
+
+                                String message = "Elderly has just missed taking ( " + medName + " )";
+                                NotificationCompat.Builder builder = new NotificationCompat.Builder(context, "NotifyElderlyMed");
+                                builder.setContentTitle("Alert! Elderly Has Missed Medication! ");
+                                builder.setContentText(message);
+                                builder.setContentInfo("Please follow up!");
+                                builder.setSmallIcon(R.drawable.app_icon);
+                                builder.setPriority(NotificationCompat.PRIORITY_HIGH);
+                                builder.setDefaults(NotificationCompat.DEFAULT_ALL);
+                                builder.setAutoCancel(true);
+
+                                // Intent intent = new Intent(context, CaregiverMainActivity.class);
+
+                                //intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                //intent.putExtra("message", message);
+                                // PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+                                //  builder.setContentIntent(pendingIntent);
+
+
+                                NotificationManagerCompat managerCompat =  NotificationManagerCompat.from(context);
+                                managerCompat.notify(0, builder.build());
+
+                                /*
+
+                                fStore.collection("Elderly").document(elderlyID)
+                                        .get()
+                                        .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                                            @Override
+                                            public void onSuccess(DocumentSnapshot documentSnapshot) {
+                                                Elderly elderly = documentSnapshot.toObject(Elderly.class);
+                                                ArrayList<Medication> medicationArrayList = elderly.getMedList();
+
+                                                if (medicationArrayList.size() > 0)
+                                                {
+
+                                                    if (medicationArrayList.get(0).getDay().equals(currentMedication.getDay()))
+                                                    {
+                                                        medicationArrayList.remove(0);
+                                                        fStore.collection("Elderly").document(elderlyID)
+                                                                .update("medList", medicationArrayList)
+                                                                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                                    @Override
+                                                                    public void onSuccess(Void unused) {
+                                                                        Log.w(TAG, "onSuccess: Updated successfully");
+                                                                    }
+                                                                }).addOnFailureListener(new OnFailureListener() {
+                                                            @Override
+                                                            public void onFailure(@NonNull Exception e) {
+                                                                Log.e(TAG, "onFailure: Update failed" );
+                                                            }
+                                                        });
+
+                                                        DocumentReference addtoML = fStore.collection("ElderlyMedicationML").document(elderlyID);
+                                                        addtoML.update("alarmFailed", FieldValue.arrayUnion(currentMedication))
+                                                                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                                    @Override
+                                                                    public void onSuccess(Void unused) {
+                                                                        Toast.makeText(context, "Added med record", Toast.LENGTH_SHORT).show();
+                                                                    }
+                                                                }).addOnFailureListener(new OnFailureListener() {
+                                                            @Override
+                                                            public void onFailure(@NonNull Exception e) {
+                                                                Toast.makeText(context, "Fail to add ML record!", Toast.LENGTH_SHORT).show();
+                                                            }
+                                                        });
+
+                                                    }
+
+
+                                                }
+                                            }
+                                        }).addOnFailureListener(new OnFailureListener() {
+                                    @Override
+                                    public void onFailure(@NonNull Exception e) {
+                                        Log.e(TAG, "onFailure: Elderly record not found");
+                                    }
+                                });
+
+                                 */
+
+                                /*
+
+
+
+                                //Generate a notifiation bar on top to notify the caregiver
+                                fStore.collection("ElderlyMedicationML").document(elderlyID)
+                                        .get()
+                                        .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                                            @Override
+                                            public void onSuccess(DocumentSnapshot documentSnapshot) {
+
+                                                MedicationML medicationML = documentSnapshot.toObject(MedicationML.class);
+
+                                                ArrayList<Medication> failedList = medicationML.getAlarmFailed();
+
+                                                if (failedList.get(failedList.size() - 1).getDay().equals(currentMedication.getDay()))
+                                                {
+                                                    String message = "Elderly has just missed taking ( " + medName + " )";
+                                                    NotificationCompat.Builder builder = new NotificationCompat.Builder(context, "NotifyElderlyMed");
+                                                    builder.setContentTitle("Alert! Elderly Has Missed Medication! ");
+                                                    builder.setContentText(message);
+                                                    builder.setContentInfo("Please follow up!");
+                                                    builder.setSmallIcon(R.drawable.app_icon);
+                                                    builder.setPriority(NotificationCompat.PRIORITY_HIGH);
+                                                    builder.setDefaults(NotificationCompat.DEFAULT_ALL);
+                                                    builder.setAutoCancel(true);
+
+                                                    // Intent intent = new Intent(context, CaregiverMainActivity.class);
+
+                                                    //intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                                    //intent.putExtra("message", message);
+                                                    // PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+                                                    //  builder.setContentIntent(pendingIntent);
+
+
+                                                    NotificationManagerCompat managerCompat =  NotificationManagerCompat.from(context);
+                                                    managerCompat.notify(0, builder.build());
                                                 }
 
 
+
                                             }
-                                        }
-                                    }).addOnFailureListener(new OnFailureListener() {
-                                @Override
-                                public void onFailure(@NonNull Exception e) {
-                                    Log.e(TAG, "onFailure: Elderly record not found");
-                                }
-                            });
+                                        }).addOnFailureListener(new OnFailureListener() {
+                                    @Override
+                                    public void onFailure(@NonNull Exception e) {
+                                        Log.e(TAG, "onFailure: " + e.toString());
+                                    }
+                                });
 
-
-
-                            //Generate a notifiation bar on top to notify the caregive
-
-                            String message = "Elderly has just missed taking ( " + medName + " )";
-                            NotificationCompat.Builder builder = new NotificationCompat.Builder(context, "NotifyElderlyMed");
-                            builder.setContentTitle("Alert! Elderly Has Missed Medication! ");
-                            builder.setContentText(message);
-                            builder.setContentInfo("Please follow up!");
-                            builder.setSmallIcon(R.drawable.app_icon);
-                            builder.setPriority(NotificationCompat.PRIORITY_HIGH);
-                            builder.setDefaults(NotificationCompat.DEFAULT_ALL);
-                            builder.setAutoCancel(true);
-
-                           // Intent intent = new Intent(context, CaregiverMainActivity.class);
-
-                            //intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                            //intent.putExtra("message", message);
-                           // PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-                          //  builder.setContentIntent(pendingIntent);
-
-
-                            NotificationManagerCompat managerCompat =  NotificationManagerCompat.from(context);
-                            managerCompat.notify(0, builder.build());
+                                 */
 
 
 
 
 
-                        }
-                    };
-                    timer2.start();
+
+                            }
+                        };
+                        timer2.start();
+
+
+                    }
 
                 }
             };
